@@ -1,0 +1,351 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  labels:
+    name: argocd
+    app.kubernetes.io/name: argocd
+    app.kubernetes.io/part-of: quantumnest-platform
+    security.quantumnest.com/data-classification: restricted
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: quantumnest-production
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: quantumnest-production
+    app.kubernetes.io/part-of: quantumnest-platform
+    environment: production
+    compliance.quantumnest.com/pci-dss: "true"
+    compliance.quantumnest.com/sox: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: quantumnest-financial
+  source:
+    repoURL: https://github.com/quantumnest/infrastructure
+    targetRevision: main
+    path: kubernetes/environments/prod
+    helm:
+      valueFiles:
+        - values.yaml
+        - secrets.yaml
+      parameters:
+        - name: image.tag
+          value: "1.0.0"
+        - name: environment
+          value: "production"
+        - name: replicas
+          value: "3"
+        - name: resources.requests.memory
+          value: "512Mi"
+        - name: resources.requests.cpu
+          value: "250m"
+        - name: resources.limits.memory
+          value: "2Gi"
+        - name: resources.limits.cpu
+          value: "1000m"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: quantumnest-prod
+  syncPolicy:
+    automated:
+      prune: false  # Disabled for financial compliance
+      selfHeal: false  # Manual intervention required
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: ""
+      kind: ConfigMap
+      jsonPointers:
+        - /data/timestamp
+  info:
+    - name: 'Compliance'
+      value: 'PCI DSS, SOX, SOC 2'
+    - name: 'Environment'
+      value: 'Production'
+    - name: 'Owner'
+      value: 'QuantumNest Platform Team'
+    - name: 'Emergency Contact'
+      value: 'platform-team@quantumnest.com'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: quantumnest-financial
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: quantumnest-financial
+    app.kubernetes.io/part-of: quantumnest-platform
+    compliance.quantumnest.com/financial: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  description: "QuantumNest Financial Platform Applications"
+  sourceRepos:
+    - 'https://github.com/quantumnest/infrastructure'
+    - 'https://github.com/quantumnest/applications'
+    - 'https://helm.quantumnest.com'
+  destinations:
+    - namespace: 'quantumnest-*'
+      server: https://kubernetes.default.svc
+    - namespace: 'monitoring'
+      server: https://kubernetes.default.svc
+    - namespace: 'security'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: 'rbac.authorization.k8s.io'
+      kind: ClusterRole
+    - group: 'rbac.authorization.k8s.io'
+      kind: ClusterRoleBinding
+    - group: 'networking.k8s.io'
+      kind: NetworkPolicy
+    - group: 'policy'
+      kind: PodSecurityPolicy
+    - group: 'security.istio.io'
+      kind: PeerAuthentication
+    - group: 'security.istio.io'
+      kind: AuthorizationPolicy
+  namespaceResourceWhitelist:
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ServiceAccount
+    - group: 'apps'
+      kind: Deployment
+    - group: 'apps'
+      kind: StatefulSet
+    - group: 'apps'
+      kind: DaemonSet
+    - group: 'batch'
+      kind: Job
+    - group: 'batch'
+      kind: CronJob
+    - group: 'networking.k8s.io'
+      kind: Ingress
+    - group: 'networking.k8s.io'
+      kind: NetworkPolicy
+    - group: 'policy'
+      kind: PodDisruptionBudget
+    - group: 'autoscaling'
+      kind: HorizontalPodAutoscaler
+    - group: 'monitoring.coreos.com'
+      kind: ServiceMonitor
+    - group: 'monitoring.coreos.com'
+      kind: PodMonitor
+  roles:
+    - name: financial-admin
+      description: "Full access to financial applications"
+      policies:
+        - p, proj:quantumnest-financial:financial-admin, applications, *, quantumnest-financial/*, allow
+        - p, proj:quantumnest-financial:financial-admin, repositories, *, *, allow
+        - p, proj:quantumnest-financial:financial-admin, clusters, *, *, allow
+      groups:
+        - quantumnest:financial-admins
+        - quantumnest:platform-team
+    - name: financial-developer
+      description: "Developer access to non-production environments"
+      policies:
+        - p, proj:quantumnest-financial:financial-developer, applications, get, quantumnest-financial/*, allow
+        - p, proj:quantumnest-financial:financial-developer, applications, sync, quantumnest-financial/*-dev, allow
+        - p, proj:quantumnest-financial:financial-developer, applications, sync, quantumnest-financial/*-staging, allow
+        - p, proj:quantumnest-financial:financial-developer, repositories, get, *, allow
+      groups:
+        - quantumnest:developers
+    - name: financial-viewer
+      description: "Read-only access to financial applications"
+      policies:
+        - p, proj:quantumnest-financial:financial-viewer, applications, get, quantumnest-financial/*, allow
+        - p, proj:quantumnest-financial:financial-viewer, repositories, get, *, allow
+        - p, proj:quantumnest-financial:financial-viewer, clusters, get, *, allow
+      groups:
+        - quantumnest:financial-analysts
+        - quantumnest:compliance-officers
+  orphanedResources:
+    warn: true
+    ignore:
+      - group: ''
+        kind: Secret
+        name: 'argocd-*'
+      - group: ''
+        kind: ConfigMap
+        name: 'argocd-*'
+  signatureKeys:
+    - keyID: 'quantumnest-financial-key'
+  syncWindows:
+    - kind: allow
+      schedule: '0 9-17 * * MON-FRI'  # Business hours only
+      duration: 8h
+      applications:
+        - '*-prod'
+      manualSync: false
+    - kind: deny
+      schedule: '0 0-8,18-23 * * *'  # Outside business hours
+      duration: 10h
+      applications:
+        - '*-prod'
+      manualSync: true
+    - kind: allow
+      schedule: '* * * * *'  # Always allow non-prod
+      duration: 24h
+      applications:
+        - '*-dev'
+        - '*-staging'
+      manualSync: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Server configuration
+  server.insecure: "false"
+  server.grpc.web: "true"
+  server.enable.proxy.extension: "true"
+  
+  # Repository server configuration
+  reposerver.parallelism.limit: "10"
+  reposerver.disable.tls: "false"
+  
+  # Application controller configuration
+  controller.status.processors: "20"
+  controller.operation.processors: "10"
+  controller.self.heal.timeout.seconds: "5"
+  controller.repo.server.timeout.seconds: "60"
+  
+  # Security configuration
+  server.enable.grpc.web: "true"
+  server.grpc.web.root.path: "/api"
+  
+  # Compliance configuration
+  application.instanceLabelKey: "argocd.argoproj.io/instance"
+  server.enable.proxy.extension: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-server-config
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-server-config
+    app.kubernetes.io/part-of: argocd
+data:
+  url: https://argocd.quantumnest.com
+  application.instanceLabelKey: argocd.argoproj.io/instance
+  
+  # OIDC configuration for SSO
+  oidc.config: |
+    name: QuantumNest SSO
+    issuer: https://sso.quantumnest.com
+    clientId: argocd
+    clientSecret: $oidc.quantumnest.clientSecret
+    requestedScopes: ["openid", "profile", "email", "groups"]
+    requestedIDTokenClaims: {"groups": {"essential": true}}
+  
+  # RBAC configuration
+  policy.default: role:readonly
+  policy.csv: |
+    # Admin role
+    p, role:admin, applications, *, */*, allow
+    p, role:admin, clusters, *, *, allow
+    p, role:admin, repositories, *, *, allow
+    
+    # Financial admin role
+    p, role:financial-admin, applications, *, quantumnest-financial/*, allow
+    p, role:financial-admin, clusters, get, *, allow
+    p, role:financial-admin, repositories, get, *, allow
+    
+    # Developer role
+    p, role:developer, applications, get, */*, allow
+    p, role:developer, applications, sync, */*-dev, allow
+    p, role:developer, applications, sync, */*-staging, allow
+    p, role:developer, repositories, get, *, allow
+    
+    # Readonly role
+    p, role:readonly, applications, get, */*, allow
+    p, role:readonly, repositories, get, *, allow
+    p, role:readonly, clusters, get, *, allow
+    
+    # Group mappings
+    g, quantumnest:platform-admins, role:admin
+    g, quantumnest:financial-admins, role:financial-admin
+    g, quantumnest:developers, role:developer
+    g, quantumnest:compliance-officers, role:readonly
+    g, quantumnest:financial-analysts, role:readonly
+  
+  # TLS configuration
+  tls.config: |
+    ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256
+    minVersion: "1.2"
+    maxVersion: "1.3"
+  
+  # Webhook configuration for compliance notifications
+  webhook.github.secret: $webhook.github.secret
+  
+  # Resource customizations
+  resource.customizations: |
+    argoproj.io/Application:
+      health.lua: |
+        hs = {}
+        hs.status = "Progressing"
+        hs.message = ""
+        if obj.status ~= nil then
+          if obj.status.health ~= nil then
+            hs.status = obj.status.health.status
+            if obj.status.health.message ~= nil then
+              hs.message = obj.status.health.message
+            end
+          end
+        end
+        return hs
+  
+  # Notification configuration
+  service.slack: |
+    token: $slack-token
+    username: ArgoCD
+    channel: quantumnest-deployments
+    iconEmoji: ":rocket:"
+    title: "QuantumNest Deployment Notification"
+    
+  service.email: |
+    host: smtp.quantumnest.com
+    port: 587
+    username: argocd@quantumnest.com
+    password: $email-password
+    from: argocd@quantumnest.com
+    tls: true
+    
+  # Compliance and audit configuration
+  audit.enabled: "true"
+  audit.logLevel: "info"
+  audit.logFormat: "json"
+

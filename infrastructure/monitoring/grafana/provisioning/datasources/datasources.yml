@@ -1,0 +1,105 @@
+# Grafana Configuration for QuantumNest Financial Platform
+
+apiVersion: 1
+
+# Data sources configuration
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: https://prometheus.quantumnest.internal:9090
+    isDefault: true
+    jsonData:
+      tlsAuth: true
+      tlsAuthWithCACert: true
+      tlsSkipVerify: false
+      httpMethod: POST
+    secureJsonData:
+      tlsCACert: |
+        -----BEGIN CERTIFICATE-----
+        # CA Certificate content
+        -----END CERTIFICATE-----
+      tlsClientCert: |
+        -----BEGIN CERTIFICATE-----
+        # Client Certificate content
+        -----END CERTIFICATE-----
+      tlsClientKey: |
+        -----BEGIN PRIVATE KEY-----
+        # Client Private Key content
+        -----END PRIVATE KEY-----
+
+  - name: Elasticsearch
+    type: elasticsearch
+    access: proxy
+    url: https://elasticsearch.quantumnest.internal:9200
+    database: "logstash-*"
+    jsonData:
+      interval: Daily
+      timeField: "@timestamp"
+      esVersion: "7.10.0"
+      tlsAuth: true
+      tlsAuthWithCACert: true
+    secureJsonData:
+      tlsCACert: |
+        -----BEGIN CERTIFICATE-----
+        # Elasticsearch CA Certificate
+        -----END CERTIFICATE-----
+      tlsClientCert: |
+        -----BEGIN CERTIFICATE-----
+        # Elasticsearch Client Certificate
+        -----END CERTIFICATE-----
+      tlsClientKey: |
+        -----BEGIN PRIVATE KEY-----
+        # Elasticsearch Client Key
+        -----END PRIVATE KEY-----
+
+  - name: Jaeger
+    type: jaeger
+    access: proxy
+    url: https://jaeger.quantumnest.internal:16686
+    jsonData:
+      tlsAuth: true
+      tlsAuthWithCACert: true
+
+# Dashboard providers
+providers:
+  - name: 'financial-dashboards'
+    orgId: 1
+    folder: 'Financial Services'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/financial
+
+  - name: 'infrastructure-dashboards'
+    orgId: 1
+    folder: 'Infrastructure'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/infrastructure
+
+  - name: 'security-dashboards'
+    orgId: 1
+    folder: 'Security & Compliance'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/security
+
+  - name: 'compliance-dashboards'
+    orgId: 1
+    folder: 'Compliance Reports'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/compliance
+

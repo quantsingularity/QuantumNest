@@ -1,0 +1,130 @@
+# Elasticsearch Configuration for QuantumNest Financial Platform
+# elasticsearch.yml
+
+cluster.name: quantumnest-logging-cluster
+node.name: ${HOSTNAME}
+node.roles: [ master, data, ingest, ml, remote_cluster_client ]
+
+# Network settings
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# Discovery settings for cluster
+discovery.seed_hosts: 
+  - elasticsearch-master-0.elasticsearch-master.elastic-system.svc.cluster.local
+  - elasticsearch-master-1.elasticsearch-master.elastic-system.svc.cluster.local
+  - elasticsearch-master-2.elasticsearch-master.elastic-system.svc.cluster.local
+
+cluster.initial_master_nodes:
+  - elasticsearch-master-0
+  - elasticsearch-master-1
+  - elasticsearch-master-2
+
+# Security settings
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
+
+# Audit logging for compliance
+xpack.security.audit.enabled: true
+xpack.security.audit.logfile.events.include:
+  - access_denied
+  - access_granted
+  - anonymous_access_denied
+  - authentication_failed
+  - authentication_success
+  - change_password
+  - connection_denied
+  - connection_granted
+  - tampered_request
+  - run_as_denied
+  - run_as_granted
+
+xpack.security.audit.logfile.events.exclude: []
+xpack.security.audit.logfile.events.emit_request_body: true
+
+# Machine Learning settings
+xpack.ml.enabled: true
+xpack.ml.max_machine_memory_percent: 30
+
+# Monitoring
+xpack.monitoring.enabled: true
+xpack.monitoring.collection.enabled: true
+xpack.monitoring.exporters:
+  prometheus:
+    type: http
+    host: ["https://prometheus.quantumnest.internal:9090"]
+    auth:
+      username: elasticsearch_exporter
+      password: ${ELASTICSEARCH_EXPORTER_PASSWORD}
+    ssl:
+      certificate_authorities: ["/usr/share/elasticsearch/config/certs/ca.crt"]
+      certificate: "/usr/share/elasticsearch/config/certs/client.crt"
+      key: "/usr/share/elasticsearch/config/certs/client.key"
+
+# Index settings for financial data
+index.number_of_shards: 3
+index.number_of_replicas: 2
+index.refresh_interval: 5s
+
+# Memory and performance settings
+indices.memory.index_buffer_size: 20%
+indices.memory.min_index_buffer_size: 96mb
+indices.fielddata.cache.size: 40%
+indices.queries.cache.size: 10%
+indices.requests.cache.size: 2%
+
+# Thread pool settings
+thread_pool.write.queue_size: 1000
+thread_pool.search.queue_size: 1000
+thread_pool.get.queue_size: 1000
+
+# Cluster settings
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 85%
+cluster.routing.allocation.disk.watermark.high: 90%
+cluster.routing.allocation.disk.watermark.flood_stage: 95%
+
+# Index lifecycle management
+xpack.ilm.enabled: true
+
+# Watcher for alerting
+xpack.watcher.enabled: true
+
+# Graph exploration
+xpack.graph.enabled: true
+
+# SQL support
+xpack.sql.enabled: true
+
+# Cross-cluster replication for disaster recovery
+xpack.ccr.enabled: true
+
+# Snapshot and restore settings
+path.repo: ["/usr/share/elasticsearch/backup"]
+
+# JVM heap size (set via environment variables)
+# ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+
+# Logging configuration
+logger.org.elasticsearch.deprecation: warn
+logger.org.elasticsearch.transport.netty4: warn
+logger.org.elasticsearch.http.netty4: warn
+logger.org.elasticsearch.cluster.coordination: info
+logger.org.elasticsearch.cluster.service: info
+
+# Financial services specific settings
+action.destructive_requires_name: true
+cluster.blocks.read_only_allow_delete: false
+
+# Custom index templates for financial data
+# These will be applied via API calls during setup
+
