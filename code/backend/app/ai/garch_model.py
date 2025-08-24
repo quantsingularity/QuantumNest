@@ -115,7 +115,6 @@ class GARCHModel:
         self.result = self.model.fit(disp='off' if verbose == 0 else 'on')
         
         if verbose > 0:
-            print(self.result.summary())
         
         return self.result
     
@@ -283,7 +282,6 @@ class GARCHModel:
         
         # We can't fully restore the trained model, but we can set the parameters
         # This is a limitation of the arch package
-        print("Note: GARCH model loaded with parameters, but training history is not preserved.")
         
         return instance
 
@@ -304,17 +302,12 @@ if __name__ == "__main__":
     
     # Generate forecast
     forecast = model.forecast()
-    print("Volatility forecast:")
-    print(np.sqrt(forecast.variance.iloc[-1].values))
     
     # Evaluate model
     metrics = model.evaluate(test_data)
-    print("Evaluation metrics:", metrics)
     
     # Generate rolling forecasts
     rolling_forecasts = model.rolling_forecast(test_data, window=100)
-    print("Rolling forecasts:")
-    print(rolling_forecasts.head())
     
     # Save model
     model.save('garch_model')

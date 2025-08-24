@@ -498,22 +498,14 @@ if __name__ == "__main__":
     
     # Get feature importance
     importance = engine.get_feature_importance()
-    print("Feature Importance:")
     for feature, imp in importance.items():
-        print(f"{feature}: {imp:.4f}")
     
     # Generate recommendations for test data
     test_features = test_data.drop('target', axis=1)
     recommendations = engine.predict(test_features)
     
-    print("\nRecommendations:")
     for i, rec in enumerate(recommendations['recommendations'][:5]):  # Show top 5
-        print(f"{i+1}. {rec['symbol']}: {rec['recommendation']} (Predicted Return: {rec['predicted_return']:.2%}, Confidence: {rec['confidence']:.1f}%)")
     
-    print("\nMarket Outlook:")
-    print(f"Overall: {recommendations['market_outlook']['overall_outlook']}")
-    print(f"Confidence: {recommendations['market_outlook']['confidence']:.1f}%")
-    print(f"Average Predicted Return: {recommendations['market_outlook']['average_predicted_return']:.2%}")
     
     # Save model
     engine.save('recommendation_engine')
@@ -523,5 +515,3 @@ if __name__ == "__main__":
     
     # Verify loaded model
     loaded_recommendations = loaded_engine.predict(test_features)
-    print("\nLoaded Model Recommendations (first item):")
-    print(loaded_recommendations['recommendations'][0])

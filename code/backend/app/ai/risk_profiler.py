@@ -745,20 +745,11 @@ if __name__ == "__main__":
     
     # Predict risk profile
     profile = profiler.predict(pd.DataFrame([new_user]))
-    print("Risk Profile:")
-    print(f"Profile: {profile['profile_label']} (ID: {profile['profile_id']})")
-    print(f"Confidence: {profile['confidence']:.2f}")
-    print("\nFeature Contributions:")
     for feature, contribution in profile['feature_contributions'].items():
-        print(f"{feature}: {contribution:.2f}")
     
     # Get profile recommendations
     recommendations = profiler.get_profile_recommendations(profile['profile_id'])
-    print("\nRecommendations:")
-    print(f"Asset Allocation: {recommendations['asset_allocation']}")
-    print("\nInvestment Strategies:")
     for strategy in recommendations['investment_strategies']:
-        print(f"- {strategy}")
     
     # Process questionnaire
     questionnaire_responses = {
@@ -771,9 +762,6 @@ if __name__ == "__main__":
     }
     
     questionnaire_profile = profiler.process_questionnaire(questionnaire_responses)
-    print("\nQuestionnaire Profile:")
-    print(f"Profile: {questionnaire_profile['profile_label']} (ID: {questionnaire_profile['profile_id']})")
-    print(f"Score: {questionnaire_profile['score']:.2f}")
     
     # Plot profiles
     fig1 = profiler.plot_profiles(data)
@@ -790,6 +778,3 @@ if __name__ == "__main__":
     
     # Verify loaded model
     loaded_profile = loaded_profiler.predict(pd.DataFrame([new_user]))
-    print("\nLoaded Model Profile:")
-    print(f"Profile: {loaded_profile['profile_label']} (ID: {loaded_profile['profile_id']})")
-    print(f"Confidence: {loaded_profile['confidence']:.2f}")

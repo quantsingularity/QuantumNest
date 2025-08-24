@@ -459,14 +459,9 @@ if __name__ == "__main__":
     pca_analyzer = PCAAnalyzer({'n_components': 'auto', 'explained_variance_threshold': 0.8})
     transformed_data = pca_analyzer.fit_transform(data)
     
-    print("Transformed data shape:", transformed_data.shape)
-    print("Explained variance ratio:", pca_analyzer.explained_variance_ratio_)
-    print("Total explained variance:", sum(pca_analyzer.explained_variance_ratio_))
     
     # Get feature importance
     importance = pca_analyzer.get_feature_importance()
-    print("\nFeature importance:")
-    print(importance.head(5))
     
     # Plot explained variance
     fig1 = pca_analyzer.plot_explained_variance()
@@ -485,5 +480,3 @@ if __name__ == "__main__":
     
     # Transform new data
     new_transformed = loaded_pca.transform(data.head(10))
-    print("\nTransformed new data:")
-    print(new_transformed.head())

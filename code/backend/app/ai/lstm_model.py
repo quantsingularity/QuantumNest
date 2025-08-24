@@ -295,7 +295,6 @@ if __name__ == "__main__":
     
     # Evaluate model
     metrics = model.evaluate(test_data)
-    print("Evaluation metrics:", metrics)
     
     # Make predictions
     predictions = model.predict(test_data)
@@ -310,4 +309,3 @@ if __name__ == "__main__":
     loaded_predictions = loaded_model.predict(test_data)
     
     # Verify predictions are the same
-    print("Predictions match:", np.allclose(predictions, loaded_predictions))

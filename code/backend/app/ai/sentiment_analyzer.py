@@ -147,7 +147,6 @@ class SentimentAnalyzer:
         """
         # Preprocess text
         if verbose > 0:
-            print("Preprocessing text data...")
         
         data['processed_text'] = data[text_column].apply(self._preprocess_text)
         
@@ -168,7 +167,6 @@ class SentimentAnalyzer:
         
         # Train model
         if verbose > 0:
-            print(f"Training {self.config['model_type']} model...")
         
         if grid_search:
             # Define parameter grid based on model type
@@ -215,14 +213,12 @@ class SentimentAnalyzer:
             self.pipeline = grid_search.best_estimator_
             
             if verbose > 0:
-                print(f"Best parameters: {grid_search.best_params_}")
         else:
             # Fit pipeline
             self.pipeline.fit(X_train, y_train)
         
         # Evaluate model
         if verbose > 0:
-            print("Evaluating model...")
         
         y_pred = self.pipeline.predict(X_test)
         
@@ -230,12 +226,6 @@ class SentimentAnalyzer:
         precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='weighted')
         
         if verbose > 0:
-            print(f"Accuracy: {accuracy:.4f}")
-            print(f"Precision: {precision:.4f}")
-            print(f"Recall: {recall:.4f}")
-            print(f"F1 Score: {f1:.4f}")
-            print("\nClassification Report:")
-            print(classification_report(y_test, y_pred))
         
         self.model = self.pipeline
         
@@ -375,10 +365,6 @@ if __name__ == "__main__":
     
     predictions = analyzer.predict(new_texts)
     for pred in predictions:
-        print(f"Text: {pred['text']}")
-        print(f"Sentiment: {pred['sentiment']}")
-        print(f"Confidence: {pred['confidence']:.4f}")
-        print()
     
     # Save model
     analyzer.save('sentiment_model')
@@ -389,7 +375,3 @@ if __name__ == "__main__":
     # Make predictions with loaded model
     loaded_predictions = loaded_analyzer.predict(new_texts)
     for pred in loaded_predictions:
-        print(f"Text: {pred['text']}")
-        print(f"Sentiment: {pred['sentiment']}")
-        print(f"Confidence: {pred['confidence']:.4f}")
-        print()

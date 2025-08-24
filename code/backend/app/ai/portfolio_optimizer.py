@@ -647,9 +647,6 @@ if __name__ == "__main__":
     
     # Optimize portfolio
     result = optimizer.optimize(returns_data)
-    print("Optimization result:")
-    print(f"Weights: {result['weights']}")
-    print(f"Performance: {result['performance']}")
     
     # Generate efficient frontier
     efficient_frontier = optimizer.generate_efficient_frontier(returns_data, num_portfolios=1000)
@@ -667,5 +664,3 @@ if __name__ == "__main__":
     loaded_optimizer = PortfolioOptimizer.load('portfolio_optimizer')
     
     # Verify loaded model
-    print("\nLoaded model config:", loaded_optimizer.config)
-    print("Loaded model weights:", loaded_optimizer.optimization_result['weights'])
