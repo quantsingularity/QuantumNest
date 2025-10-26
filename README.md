@@ -1,6 +1,6 @@
 # QuantumNest
 
-[![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumNest/ci-cd.yml?branch=main&label=CI/CD&logo=github)](https://github.com/abrar2030/QuantumNest/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
 [![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/abrar2030/QuantumNest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
