@@ -34,32 +34,40 @@ QuantumNest revolutionizes investment management by leveraging artificial intell
 ## Key Features
 
 ### AI-Powered Investment Strategies
-* **Predictive Analytics**: Machine learning models for market prediction and trend analysis
-* **Sentiment Analysis**: Natural language processing to analyze market sentiment from news and social media
-* **Portfolio Optimization**: Advanced algorithms for risk-adjusted portfolio construction
-* **Automated Rebalancing**: Smart rebalancing based on market conditions and risk parameters
-* **Anomaly Detection**: Identification of unusual market patterns and potential opportunities
+| Feature | Description |
+| :--- | :--- |
+| **Predictive Analytics** | Machine learning models for market prediction and trend analysis |
+| **Sentiment Analysis** | Natural language processing to analyze market sentiment from news and social media |
+| **Portfolio Optimization** | Advanced algorithms for risk-adjusted portfolio construction |
+| **Automated Rebalancing** | Smart rebalancing based on market conditions and risk parameters |
+| **Anomaly Detection** | Identification of unusual market patterns and potential opportunities |
 
 ### Tokenized Asset Management
-* **Asset Tokenization**: Fractional ownership of traditional and alternative assets
-* **Blockchain Transparency**: Immutable record of ownership and transactions
-* **Smart Contract Automation**: Automated dividend distribution and governance
-* **Cross-Chain Compatibility**: Support for multiple blockchain networks
-* **Regulatory Compliance**: Built-in compliance with securities regulations
+| Feature | Description |
+| :--- | :--- |
+| **Asset Tokenization** | Fractional ownership of traditional and alternative assets |
+| **Blockchain Transparency** | Immutable record of ownership and transactions |
+| **Smart Contract Automation** | Automated dividend distribution and governance |
+| **Cross-Chain Compatibility** | Support for multiple blockchain networks |
+| **Regulatory Compliance** | Built-in compliance with securities regulations |
 
 ### Quantitative Finance Tools
-* **Risk Assessment**: Sophisticated risk metrics and stress testing
-* **Performance Analytics**: Comprehensive performance measurement and attribution
-* **Factor Analysis**: Multi-factor models for investment analysis
-* **Volatility Forecasting**: GARCH models for volatility prediction
-* **Scenario Simulation**: Monte Carlo simulations for portfolio outcomes
+| Feature | Description |
+| :--- | :--- |
+| **Risk Assessment** | Sophisticated risk metrics and stress testing |
+| **Performance Analytics** | Comprehensive performance measurement and attribution |
+| **Factor Analysis** | Multi-factor models for investment analysis |
+| **Volatility Forecasting** | GARCH models for volatility prediction |
+| **Scenario Simulation** | Monte Carlo simulations for portfolio outcomes |
 
 ### User Experience
-* **Intuitive Dashboard**: Clear visualization of portfolio performance and analytics
-* **Personalized Recommendations**: AI-tailored investment suggestions
-* **Educational Resources**: Learning materials on investment strategies
-* **Mobile Accessibility**: Full-featured mobile application
-* **Social Features**: Community insights and expert commentary
+| Feature | Description |
+| :--- | :--- |
+| **Intuitive Dashboard** | Clear visualization of portfolio performance and analytics |
+| **Personalized Recommendations** | AI-tailored investment suggestions |
+| **Educational Resources** | Learning materials on investment strategies |
+| **Mobile Accessibility** | Full-featured mobile application |
+| **Social Features** | Community insights and expert commentary |
 
 ## Technology Stack
 
@@ -210,28 +218,34 @@ npm run blockchain:deploy:goerli
 ## Features
 
 ### Web Frontend
-* **Home Page**: Platform overview with key features and benefits
-* **Portfolio Dashboard**: Comprehensive view of investment holdings and performance
-* **Market Analysis**: Interactive charts and visualizations of market trends
-* **AI Recommendations**: Personalized investment suggestions based on user profile
-* **Blockchain Explorer**: Transparent view of on-chain transactions and assets
-* **User Dashboard**: Performance metrics, settings, and account management
-* **Admin Panel**: Platform management tools for administrators
+| Feature | Description |
+| :--- | :--- |
+| **Home Page** | Platform overview with key features and benefits |
+| **Portfolio Dashboard** | Comprehensive view of investment holdings and performance |
+| **Market Analysis** | Interactive charts and visualizations of market trends |
+| **AI Recommendations** | Personalized investment suggestions based on user profile |
+| **Blockchain Explorer** | Transparent view of on-chain transactions and assets |
+| **User Dashboard** | Performance metrics, settings, and account management |
+| **Admin Panel** | Platform management tools for administrators |
 
 ### Backend APIs
-* **User Authentication**: Secure JWT-based authentication system
-* **Portfolio Management**: APIs for creating and managing investment portfolios
-* **Market Data Integration**: Real-time and historical market data processing
-* **AI Model Endpoints**: API access to machine learning predictions
-* **Blockchain Interaction**: Services for interacting with smart contracts
-* **Admin Controls**: Administrative functions and platform management
+| Feature | Description |
+| :--- | :--- |
+| **User Authentication** | Secure JWT-based authentication system |
+| **Portfolio Management** | APIs for creating and managing investment portfolios |
+| **Market Data Integration** | Real-time and historical market data processing |
+| **AI Model Endpoints** | API access to machine learning predictions |
+| **Blockchain Interaction** | Services for interacting with smart contracts |
+| **Admin Controls** | Administrative functions and platform management |
 
 ### AI Models
-* **LSTM Models**: Long Short-Term Memory networks for financial time series prediction
-* **GARCH Models**: Generalized Autoregressive Conditional Heteroskedasticity for volatility forecasting
-* **Sentiment Analysis**: NLP models for market sentiment analysis
-* **Portfolio Optimization**: Multi-objective optimization algorithms
-* **Anomaly Detection**: Isolation forests and autoencoders for unusual pattern detection
+| Model Type | Purpose |
+| :--- | :--- |
+| **LSTM Models** | Long Short-Term Memory networks for financial time series prediction |
+| **GARCH Models** | Generalized Autoregressive Conditional Heteroskedasticity for volatility forecasting |
+| **Sentiment Analysis** | NLP models for market sentiment analysis |
+| **Portfolio Optimization** | Multi-objective optimization algorithms |
+| **Anomaly Detection** | Isolation forests and autoencoders for unusual pattern detection |
 
 ## Testing
 
@@ -250,22 +264,28 @@ The project maintains comprehensive test coverage across all components to ensur
 | Overall | 84% | ✅ |
 
 ### Unit Tests
-* Frontend component tests with Jest and React Testing Library
-* Backend service and controller tests
-* Smart contract function tests
-* AI model validation tests
+| Component | Description |
+| :--- | :--- |
+| Frontend | Component tests with Jest and React Testing Library |
+| Backend | Service and controller tests |
+| Smart Contract | Function tests |
+| AI Model | Validation tests |
 
 ### Integration Tests
-* API endpoint tests
-* Service interaction tests
-* Blockchain integration tests
-* Data pipeline tests
+| Test Type | Description |
+| :--- | :--- |
+| API endpoint tests | To verify correct routing and response |
+| Service interaction tests | To ensure seamless communication between services |
+| Blockchain integration tests | To validate interaction with smart contracts and networks |
+| Data pipeline tests | To verify data flow and transformation |
 
 ### End-to-End Tests
-* User journey tests with Cypress
-* Portfolio management workflows
-* Trading simulations
-* Authentication flows
+| Test Type | Description |
+| :--- | :--- |
+| User journey tests | With Cypress to cover complete user flows |
+| Portfolio management workflows | To validate core investment functionality |
+| Trading simulations | To test strategy execution in a simulated environment |
+| Authentication flows | To ensure secure and correct login/logout processes |
 
 ### Running Tests
 
@@ -286,15 +306,16 @@ npx hardhat test
 ./run_all_tests.sh
 ```
 
-## CI/CD Pipeline
-
+### CI/CD Pipeline
 QuantumNest uses GitHub Actions for continuous integration and deployment:
 
-* Automated testing on each pull request
-* Code quality checks with ESLint, Prettier, and Pylint
-* Security scanning for vulnerabilities
-* Docker image building and publishing
-* Automated deployment to staging and production environments
+| Stage | Description |
+| :--- | :--- |
+| Automated testing | On each pull request |
+| Code quality checks | With ESLint, Prettier, and Pylint |
+| Security scanning | For vulnerabilities |
+| Docker image building | And publishing |
+| Automated deployment | To staging and production environments |s
 
 ## Contributing
 
@@ -309,9 +330,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-* Thanks to all contributors who have helped shape this project
-* Special thanks to the open-source community for providing valuable tools and libraries
-* Appreciation to early users for their feedback and suggestions
