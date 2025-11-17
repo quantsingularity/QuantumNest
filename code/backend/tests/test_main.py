@@ -1,8 +1,9 @@
-import pytest
-from httpx import AsyncClient
-from app.main import app
-
 import asyncio
+
+import pytest
+from app.main import app
+from httpx import AsyncClient
+
 
 @pytest.mark.asyncio
 async def test_health_check():
@@ -11,6 +12,7 @@ async def test_health_check():
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
 
+
 @pytest.mark.asyncio
 async def test_root():
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -18,8 +20,11 @@ async def test_root():
     assert response.status_code == 200
     assert response.json() == {"message": "Welcome to QuantumNest Capital API"}
 
+
 @pytest.mark.asyncio
 async def test_login_for_access_token():
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/token", data={"username": "testuser", "password": "testpass"})
-    assert response.status_code == 401  # Assuming test credentials are invalid 
+        response = await ac.post(
+            "/token", data={"username": "testuser", "password": "testpass"}
+        )
+    assert response.status_code == 401  # Assuming test credentials are invalid

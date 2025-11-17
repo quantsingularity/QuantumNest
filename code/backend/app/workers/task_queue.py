@@ -1,5 +1,6 @@
 # from celery import Celery # Removed due to dependency issues
 import os
+
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -25,11 +26,14 @@ load_dotenv()
 #     task_acks_late=True,  # Acknowledge tasks after they are executed
 # )
 
+
 # Mock celery_app to satisfy imports
 class MockCeleryApp:
     def task(self, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
 
 celery_app = MockCeleryApp()

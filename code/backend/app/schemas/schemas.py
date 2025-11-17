@@ -1,26 +1,32 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import List, Optional
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, EmailStr, Field
+
 
 # User schemas
 class UserRole(str, Enum):
     ADMIN = "admin"
     USER = "user"
 
+
 class UserTier(str, Enum):
     BASIC = "basic"
     PREMIUM = "premium"
     ENTERPRISE = "enterprise"
 
+
 class UserBase(BaseModel):
     email: EmailStr
     name: str
+
 
 class UserCreate(UserBase):
     password: str
     role: Optional[UserRole] = UserRole.USER
     tier: Optional[UserTier] = UserTier.BASIC
+
 
 class UserResponse(UserBase):
     id: int
@@ -33,21 +39,26 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
+
 # Authentication schemas
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     username: Optional[str] = None
+
 
 # Portfolio schemas
 class PortfolioBase(BaseModel):
     name: str
     description: Optional[str] = None
 
+
 class PortfolioCreate(PortfolioBase):
     pass
+
 
 class Portfolio(PortfolioBase):
     id: int
@@ -58,6 +69,7 @@ class Portfolio(PortfolioBase):
     class Config:
         orm_mode = True
 
+
 # Asset schemas
 class AssetBase(BaseModel):
     symbol: str
@@ -65,8 +77,10 @@ class AssetBase(BaseModel):
     asset_type: str
     description: Optional[str] = None
 
+
 class AssetCreate(AssetBase):
     pass
+
 
 class Asset(AssetBase):
     id: int
@@ -76,6 +90,7 @@ class Asset(AssetBase):
     class Config:
         orm_mode = True
 
+
 # Portfolio Asset schemas
 class PortfolioAssetBase(BaseModel):
     portfolio_id: int
@@ -84,8 +99,10 @@ class PortfolioAssetBase(BaseModel):
     purchase_price: float
     purchase_date: datetime
 
+
 class PortfolioAssetCreate(PortfolioAssetBase):
     pass
+
 
 class PortfolioAsset(PortfolioAssetBase):
     id: int
@@ -95,13 +112,16 @@ class PortfolioAsset(PortfolioAssetBase):
     class Config:
         orm_mode = True
 
+
 # Asset Price schemas
 class AssetPriceBase(BaseModel):
     asset_id: int
     price: float
 
+
 class AssetPriceCreate(AssetPriceBase):
     pass
+
 
 class AssetPrice(AssetPriceBase):
     id: int
@@ -110,6 +130,7 @@ class AssetPrice(AssetPriceBase):
     class Config:
         orm_mode = True
 
+
 # Transaction schemas
 class TransactionType(str, Enum):
     BUY = "buy"
@@ -117,10 +138,12 @@ class TransactionType(str, Enum):
     DEPOSIT = "deposit"
     WITHDRAWAL = "withdrawal"
 
+
 class TransactionStatus(str, Enum):
     PENDING = "pending"
     COMPLETED = "completed"
     FAILED = "failed"
+
 
 class TransactionBase(BaseModel):
     user_id: int
@@ -130,8 +153,10 @@ class TransactionBase(BaseModel):
     quantity: Optional[float] = None
     price: Optional[float] = None
 
+
 class TransactionCreate(TransactionBase):
     pass
+
 
 class Transaction(TransactionBase):
     id: int
@@ -142,6 +167,7 @@ class Transaction(TransactionBase):
     class Config:
         orm_mode = True
 
+
 # AI Model schemas
 class AIModelBase(BaseModel):
     name: str
@@ -149,8 +175,10 @@ class AIModelBase(BaseModel):
     model_type: str
     accuracy: float
 
+
 class AIModelCreate(AIModelBase):
     pass
+
 
 class AIModel(AIModelBase):
     id: int
@@ -159,6 +187,7 @@ class AIModel(AIModelBase):
 
     class Config:
         orm_mode = True
+
 
 # AI Prediction schemas
 class AIPredictionBase(BaseModel):
@@ -169,8 +198,10 @@ class AIPredictionBase(BaseModel):
     confidence: float
     target_date: datetime
 
+
 class AIPredictionCreate(AIPredictionBase):
     pass
+
 
 class AIPrediction(AIPredictionBase):
     id: int
@@ -178,6 +209,7 @@ class AIPrediction(AIPredictionBase):
 
     class Config:
         orm_mode = True
+
 
 # Smart Contract schemas
 class SmartContractBase(BaseModel):
@@ -188,8 +220,10 @@ class SmartContractBase(BaseModel):
     bytecode: str
     network: str
 
+
 class SmartContractCreate(SmartContractBase):
     pass
+
 
 class SmartContract(SmartContractBase):
     id: int
@@ -198,6 +232,7 @@ class SmartContract(SmartContractBase):
 
     class Config:
         orm_mode = True
+
 
 # Blockchain Transaction schemas
 class BlockchainTransactionBase(BaseModel):
@@ -209,8 +244,10 @@ class BlockchainTransactionBase(BaseModel):
     gas_used: int
     status: str
 
+
 class BlockchainTransactionCreate(BlockchainTransactionBase):
     pass
+
 
 class BlockchainTransaction(BlockchainTransactionBase):
     id: int
@@ -219,14 +256,17 @@ class BlockchainTransaction(BlockchainTransactionBase):
     class Config:
         orm_mode = True
 
+
 # System Log schemas
 class SystemLogBase(BaseModel):
     log_level: str
     component: str
     message: str
 
+
 class SystemLogCreate(SystemLogBase):
     pass
+
 
 class SystemLog(SystemLogBase):
     id: int
@@ -235,13 +275,16 @@ class SystemLog(SystemLogBase):
     class Config:
         orm_mode = True
 
+
 # Portfolio with assets
 class PortfolioWithAssets(Portfolio):
     assets: List[PortfolioAsset] = []
 
+
 # User with portfolios
 class User(UserResponse):
     portfolios: List[Portfolio] = []
+
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
