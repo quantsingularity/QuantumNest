@@ -22,7 +22,7 @@ class UserCreate(UserBase):
     role: Optional[UserRole] = UserRole.USER
     tier: Optional[UserTier] = UserTier.BASIC
 
-class User(UserBase):
+class UserResponse(UserBase):
     id: int
     role: UserRole
     tier: UserTier
@@ -240,5 +240,13 @@ class PortfolioWithAssets(Portfolio):
     assets: List[PortfolioAsset] = []
 
 # User with portfolios
-class UserWithPortfolios(User):
+class User(UserResponse):
     portfolios: List[Portfolio] = []
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    name: Optional[str] = None
+    password: Optional[str] = None
+    role: Optional[UserRole] = None
+    tier: Optional[UserTier] = None
+    is_active: Optional[bool] = None

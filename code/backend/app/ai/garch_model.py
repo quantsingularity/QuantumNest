@@ -115,6 +115,7 @@ class GARCHModel:
         self.result = self.model.fit(disp='off' if verbose == 0 else 'on')
         
         if verbose > 0:
+            print(self.result.summary())
         
         return self.result
     

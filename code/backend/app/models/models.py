@@ -656,7 +656,7 @@ class SystemLog(Base):
     session_id = Column(String)
     
     # Additional data
-    metadata = Column(JSON)
+    log_metadata = Column(JSON)
     stack_trace = Column(Text)
     
     timestamp = Column(DateTime(timezone=True), server_default=func.now(), index=True)

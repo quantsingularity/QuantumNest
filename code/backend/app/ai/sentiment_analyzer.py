@@ -147,6 +147,7 @@ class SentimentAnalyzer:
         """
         # Preprocess text
         if verbose > 0:
+            print("Preprocessing data...")
         
         data['processed_text'] = data[text_column].apply(self._preprocess_text)
         
@@ -167,6 +168,7 @@ class SentimentAnalyzer:
         
         # Train model
         if verbose > 0:
+            print("Training model...")
         
         if grid_search:
             # Define parameter grid based on model type
@@ -213,12 +215,15 @@ class SentimentAnalyzer:
             self.pipeline = grid_search.best_estimator_
             
             if verbose > 0:
-        else:
-            # Fit pipeline
-            self.pipeline.fit(X_train, y_train)
+                print(f"Best parameters: {grid_search.best_params_}")
+            
+            else:
+                # Fit pipeline
+                self.pipeline.fit(X_train, y_train)
         
         # Evaluate model
         if verbose > 0:
+            print("Evaluating model...")
         
         y_pred = self.pipeline.predict(X_test)
         
@@ -226,6 +231,7 @@ class SentimentAnalyzer:
         precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='weighted')
         
         if verbose > 0:
+            print(f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}")
         
         self.model = self.pipeline
         
@@ -365,6 +371,7 @@ if __name__ == "__main__":
     
     predictions = analyzer.predict(new_texts)
     for pred in predictions:
+        print(f"Text: {pred['text']}, Sentiment: {pred['sentiment']}, Confidence: {pred['confidence']:.2f}")
     
     # Save model
     analyzer.save('sentiment_model')
@@ -375,3 +382,4 @@ if __name__ == "__main__":
     # Make predictions with loaded model
     loaded_predictions = loaded_analyzer.predict(new_texts)
     for pred in loaded_predictions:
+        print(f"Text: {pred['text']}, Sentiment: {pred['sentiment']}, Confidence: {pred['confidence']:.2f}")

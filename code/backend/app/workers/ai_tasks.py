@@ -12,7 +12,8 @@ from app.ai.recommendation_engine import RecommendationEngine
 
 logger = logging.getLogger(__name__)
 
-@celery_app.task(name="ai.predict_asset_price")
+def task(func): return func # Mock Celery task decorator
+@task
 def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
     """
     Asynchronous task to predict asset price
@@ -87,7 +88,7 @@ def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
         logger.error(f"Error predicting price for {asset_symbol}: {str(e)}")
         return {"error": str(e)}
 
-@celery_app.task(name="ai.analyze_sentiment")
+@task
 def analyze_sentiment(asset_symbol, sources=None):
     """
     Asynchronous task to analyze sentiment for an asset
@@ -153,7 +154,7 @@ def analyze_sentiment(asset_symbol, sources=None):
         logger.error(f"Error analyzing sentiment for {asset_symbol}: {str(e)}")
         return {"error": str(e)}
 
-@celery_app.task(name="ai.optimize_portfolio")
+@task
 def optimize_portfolio(portfolio_id, risk_tolerance=None, constraints=None):
     """
     Asynchronous task to optimize portfolio allocation
@@ -216,7 +217,7 @@ def optimize_portfolio(portfolio_id, risk_tolerance=None, constraints=None):
         logger.error(f"Error optimizing portfolio {portfolio_id}: {str(e)}")
         return {"error": str(e)}
 
-@celery_app.task(name="ai.analyze_portfolio_risk")
+@task
 def analyze_portfolio_risk(portfolio_id):
     """
     Asynchronous task to analyze portfolio risk
@@ -276,7 +277,7 @@ def analyze_portfolio_risk(portfolio_id):
         logger.error(f"Error analyzing risk for portfolio {portfolio_id}: {str(e)}")
         return {"error": str(e)}
 
-@celery_app.task(name="ai.generate_market_recommendations")
+@task
 def generate_market_recommendations():
     """
     Asynchronous task to generate market recommendations

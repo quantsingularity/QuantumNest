@@ -746,10 +746,12 @@ if __name__ == "__main__":
     # Predict risk profile
     profile = profiler.predict(pd.DataFrame([new_user]))
     for feature, contribution in profile['feature_contributions'].items():
+        print(f"Feature: {feature}, Contribution: {contribution}")
     
     # Get profile recommendations
     recommendations = profiler.get_profile_recommendations(profile['profile_id'])
     for strategy in recommendations['investment_strategies']:
+        print(f"Strategy: {strategy['name']} - {strategy['description']}")
     
     # Process questionnaire
     questionnaire_responses = {

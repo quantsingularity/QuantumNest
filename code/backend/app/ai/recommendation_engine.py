@@ -499,12 +499,14 @@ if __name__ == "__main__":
     # Get feature importance
     importance = engine.get_feature_importance()
     for feature, imp in importance.items():
+        print(f"Feature: {feature}, Importance: {imp}")
     
     # Generate recommendations for test data
     test_features = test_data.drop('target', axis=1)
     recommendations = engine.predict(test_features)
     
     for i, rec in enumerate(recommendations['recommendations'][:5]):  # Show top 5
+        print(f"Recommendation {i+1}: {rec['symbol']} - {rec['recommendation']} ({rec['confidence']:.2f}%)")
     
     
     # Save model
