@@ -1,32 +1,21 @@
 import warnings
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
-
-import numpy as np
-import pandas as pd
 
 warnings.filterwarnings("ignore")
 
 import os
 
 # NLP imports
-import openai
 from app.ai.advanced_lstm_model import AdvancedLSTMModel
-from app.ai.portfolio_optimization import (
-    AdvancedPortfolioOptimizer,
-    OptimizationConstraints,
-)
+from app.ai.portfolio_optimization import AdvancedPortfolioOptimizer
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
 from openai import OpenAI
-from sklearn.cluster import KMeans
 
 # Machine learning imports
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import StandardScaler
 
 logger = get_logger(__name__)
 
@@ -1113,7 +1102,7 @@ class AIFinancialAdvisor:
     async def _assess_economic_indicators(self, profile: UserProfile) -> Dict[str, Any]:
         """Assess impact of economic indicators"""
         try:
-            indicators = await self.market_data.get_economic_indicators()
+            await self.market_data.get_economic_indicators()
 
             assessment = {
                 "inflation_impact": "Monitor bond allocation if inflation rises",

@@ -1,20 +1,13 @@
-import asyncio
 from datetime import datetime, timedelta
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import bcrypt
 import jwt
 import pyotp
 import pytest
-from app.auth.authentication import (
-    AdvancedAuthenticationSystem,
-    AuthenticationMethod,
-    AuthenticationResult,
-    SessionInfo,
-    SessionStatus,
-)
-from app.models.models import LoginAttempt, User, UserSession
-from tests.conftest import TestDataFactory
+from app.auth.authentication import (AdvancedAuthenticationSystem, SessionInfo,
+                                     SessionStatus)
+from app.models.models import LoginAttempt, UserSession
 
 
 class TestAdvancedAuthenticationSystem:

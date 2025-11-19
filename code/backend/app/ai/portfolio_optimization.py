@@ -2,7 +2,7 @@ import warnings
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -10,21 +10,13 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 import cvxpy as cp
-
 # Financial libraries
-import yfinance as yf
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
-
 # Optimization imports
-from scipy.optimize import differential_evolution, minimize
-from scipy.stats import norm
-from sklearn.cluster import KMeans
-
+from scipy.optimize import minimize
 # Machine learning imports
-from sklearn.covariance import EmpiricalCovariance, LedoitWolf
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+from sklearn.covariance import LedoitWolf
 
 logger = get_logger(__name__)
 
@@ -504,7 +496,7 @@ class AdvancedPortfolioOptimizer:
             implied_returns = risk_aversion * np.dot(covariance_matrix, market_weights)
 
             # Black-Litterman formula (without views for simplicity)
-            tau = self.config["tau"]
+            self.config["tau"]
 
             # New expected returns (without investor views)
             bl_returns = implied_returns
@@ -529,7 +521,7 @@ class AdvancedPortfolioOptimizer:
     ) -> Dict[str, Any]:
         """Hierarchical Risk Parity optimization"""
         try:
-            from scipy.cluster.hierarchy import cut_tree, dendrogram, linkage
+            from scipy.cluster.hierarchy import cut_tree, linkage
             from scipy.spatial.distance import squareform
 
             # Calculate correlation matrix

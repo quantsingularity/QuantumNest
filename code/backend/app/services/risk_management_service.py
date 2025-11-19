@@ -1,21 +1,13 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-import pandas as pd
 from app.core.logging import get_logger
-from app.models.models import (
-    Asset,
-    AssetType,
-    Portfolio,
-    PortfolioAsset,
-    RiskLevel,
-    Transaction,
-    User,
-)
+from app.models.models import (Asset, AssetType, Portfolio, PortfolioAsset,
+                               RiskLevel, User)
 from app.services.market_data_service import MarketDataService
 from sqlalchemy.orm import Session
 

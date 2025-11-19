@@ -1,13 +1,12 @@
 import threading
 import time
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Dict, Generator, Optional
 
 from app.core.config import get_database_url, get_settings
 from app.core.logging import get_logger, performance_logger
 from sqlalchemy import create_engine, event, pool, text
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import QueuePool
 
@@ -314,7 +313,6 @@ class DatabaseManager:
     def _backup_sqlite(self, backup_path: str) -> bool:
         """Create SQLite backup"""
         import shutil
-        import sqlite3
 
         try:
             # Extract database path from URL

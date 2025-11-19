@@ -2,7 +2,6 @@ from datetime import datetime
 
 import pytest
 from app.main import app, create_access_token
-from app.models import models
 from httpx import AsyncClient
 
 # Test data

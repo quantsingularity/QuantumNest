@@ -1,7 +1,6 @@
-import logging
 import os
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import redis
 from app.ai.financial_advisor import AIFinancialAdvisor
@@ -9,21 +8,18 @@ from app.ai.fraud_detection import AdvancedFraudDetectionSystem
 from app.ai.portfolio_optimization import PortfolioOptimizer
 from app.auth.authentication import AdvancedAuthenticationSystem
 from app.auth.authorization import RoleBasedAccessControl
-
 # Import our custom modules
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
-from app.core.security import SecurityManager
-from app.middleware.security_middleware import SecurityConfig, SecurityMiddleware
-from app.models.models import Account, Portfolio, Transaction, User, db
+from app.middleware.security_middleware import (SecurityConfig,
+                                                SecurityMiddleware)
+from app.models.models import db
 from app.services.market_data_service import MarketDataService
 from app.services.risk_management_service import RiskManagementService
 from app.services.trading_service import TradingService
-from app.utils.encryption import encryption_manager
-from flask import Flask, g, jsonify, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
 
 
@@ -51,7 +47,7 @@ def create_app(config_name="development"):
 
     # Initialize extensions
     db.init_app(app)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # Setup CORS
     CORS(
@@ -95,7 +91,7 @@ def create_app(config_name="development"):
         max_request_size=10 * 1024 * 1024,  # 10MB
     )
 
-    security_middleware = SecurityMiddleware(app, security_config)
+    SecurityMiddleware(app, security_config)
 
     # Initialize services
     with app.app_context():

@@ -1,6 +1,6 @@
 import os
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest.mock import Mock, patch
 
 import pytest
@@ -8,9 +8,7 @@ import redis
 from app.ai.fraud_detection import AdvancedFraudDetectionSystem
 from app.auth.authentication import AdvancedAuthenticationSystem
 from app.auth.authorization import RoleBasedAccessControl
-
 # Import application modules
-from app.core.config import get_settings
 from app.models.models import Account, Base, Portfolio, Transaction, User
 from app.services.market_data_service import MarketDataService
 from app.services.trading_service import TradingService

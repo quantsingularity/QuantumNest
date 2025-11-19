@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Optional
 
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
 from app.schemas import schemas
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 router = APIRouter()

@@ -2,7 +2,7 @@ import os
 import secrets
 from enum import Enum
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from pydantic import BaseSettings, validator
 

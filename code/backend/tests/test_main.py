@@ -1,5 +1,3 @@
-import asyncio
-
 import pytest
 from app.main import app
 from httpx import AsyncClient

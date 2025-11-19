@@ -1,8 +1,8 @@
 import warnings
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -10,27 +10,20 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 import joblib
-import statsmodels.api as sm
-
 # Deep learning imports
 import tensorflow as tf
 from app.core.logging import get_logger
-
-# Statistical imports
-from scipy import stats
-from scipy.signal import find_peaks
-from sklearn.cluster import DBSCAN
-from sklearn.decomposition import PCA
-
 # Machine learning imports
 from sklearn.ensemble import IsolationForest
-from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import RobustScaler, StandardScaler
 from sklearn.svm import OneClassSVM
 from statsmodels.tsa.seasonal import seasonal_decompose
 from tensorflow.keras.layers import LSTM, Dense, Dropout, Input
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
+
+# Statistical imports
+
 
 logger = get_logger(__name__)
 
@@ -463,7 +456,7 @@ class FinancialAnomalyDetector:
         """Detect anomalies using Isolation Forest"""
         model = self.models["isolation_forest"]
         anomaly_scores = model.decision_function(features)
-        predictions = model.predict(features)
+        model.predict(features)
 
         # Convert to probabilities (higher = more anomalous)
         scores = (anomaly_scores.max() - anomaly_scores) / (
@@ -675,8 +668,8 @@ class FinancialAnomalyDetector:
 
         # Check if neighboring points are also anomalous
         window = 5
-        start_idx = max(0, index - window)
-        end_idx = min(len(data), index + window + 1)
+        max(0, index - window)
+        min(len(data), index + window + 1)
 
         # This would need the combined scores for the window
         # For now, return point anomaly as default

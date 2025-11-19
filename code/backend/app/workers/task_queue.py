@@ -1,5 +1,4 @@
 # from celery import Celery # Removed due to dependency issues
-import os
 
 from dotenv import load_dotenv
 

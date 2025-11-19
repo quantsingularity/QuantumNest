@@ -1,15 +1,9 @@
-import json
 import logging
 from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
 from app.ai.lstm_model import LSTMModel
-from app.ai.portfolio_optimizer import PortfolioOptimizer
-from app.ai.recommendation_engine import RecommendationEngine
-from app.ai.risk_profiler import RiskProfiler
-from app.ai.sentiment_analyzer import SentimentAnalyzer
-from app.workers.task_queue import celery_app
 
 logger = logging.getLogger(__name__)
 

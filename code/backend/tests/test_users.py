@@ -2,10 +2,7 @@ from datetime import timedelta
 
 import pytest
 from app.main import app, create_access_token
-from app.models import models
-from app.schemas import schemas
 from httpx import AsyncClient
-from sqlalchemy.orm import Session
 
 # Test data
 TEST_USER = {

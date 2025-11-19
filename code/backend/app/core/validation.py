@@ -1,14 +1,13 @@
 import re
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
-from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 import email_validator
 import phonenumbers
 from app.core.logging import get_logger
 from phonenumbers import NumberParseException
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import ValidationError, validator
 
 logger = get_logger(__name__)
 

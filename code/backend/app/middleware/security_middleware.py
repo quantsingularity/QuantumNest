@@ -4,22 +4,14 @@ import ipaddress
 import json
 import time
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List
 
 import jwt
 import redis
-from app.auth.authentication import AdvancedAuthenticationSystem
-from app.auth.authorization import (
-    AccessRequest,
-    Action,
-    ResourceType,
-    RoleBasedAccessControl,
-)
 from app.core.config import get_settings
 from app.core.logging import get_logger
-from cryptography.fernet import Fernet
 from flask import Flask, g, jsonify, request
 
 logger = get_logger(__name__)

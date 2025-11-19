@@ -1,12 +1,11 @@
 import base64
-import hashlib
 import io
 import json
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import bcrypt
 import jwt
@@ -17,9 +16,6 @@ from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.core.security import SecurityManager
 from app.models.models import LoginAttempt, User, UserSession
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from sqlalchemy.orm import Session
 
 logger = get_logger(__name__)

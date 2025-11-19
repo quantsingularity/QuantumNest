@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging
 import multiprocessing
@@ -6,11 +5,8 @@ import os
 import sys
 import time
 
-import pytest
 import requests
 import uvicorn
-from fastapi.testclient import TestClient
-from locust import HttpUser, between, task
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

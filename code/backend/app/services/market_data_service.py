@@ -1,18 +1,14 @@
 import asyncio
-import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
 import aiohttp
-import numpy as np
 import pandas as pd
 import yfinance as yf
 from app.core.config import get_settings
 from app.core.logging import get_logger
-from app.models.models import Asset, AssetPrice
-from sqlalchemy.orm import Session
 
 logger = get_logger(__name__)
 

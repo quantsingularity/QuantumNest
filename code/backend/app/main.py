@@ -1,6 +1,5 @@
-import os
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Optional
 
 from app.db.database import get_db
 from app.models import models
