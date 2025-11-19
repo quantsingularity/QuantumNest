@@ -65,28 +65,28 @@ class BlockchainService {
         try {
           // Request account access
           await window.ethereum.request({ method: 'eth_requestAccounts' });
-          
+
           // Get the connected account
           const accounts = await this.web3.eth.getAccounts();
           this.account = accounts[0];
-          
+
           // Get network ID
           this.networkId = await this.web3.eth.net.getId();
-          
+
           // Initialize contracts
           this.initializeContracts();
-          
+
           // Listen for account changes
           window.ethereum.on('accountsChanged', (accounts: string[]) => {
             this.account = accounts[0];
             this.handleAccountChange(accounts[0]);
           });
-          
+
           // Listen for network changes
           window.ethereum.on('chainChanged', (chainId: string) => {
             window.location.reload();
           });
-          
+
           this.isInitialized = true;
           return true;
         } catch (error) {
@@ -96,17 +96,17 @@ class BlockchainService {
       } else if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
         // Legacy dapp browsers
         this.web3 = new Web3(window.web3.currentProvider);
-        
+
         // Get the connected account
         const accounts = await this.web3.eth.getAccounts();
         this.account = accounts[0];
-        
+
         // Get network ID
         this.networkId = await this.web3.eth.net.getId();
-        
+
         // Initialize contracts
         this.initializeContracts();
-        
+
         this.isInitialized = true;
         return true;
       } else {
@@ -115,13 +115,13 @@ class BlockchainService {
           'https://mainnet.infura.io/v3/your-infura-project-id'
         );
         this.web3 = new Web3(provider);
-        
+
         // Get network ID
         this.networkId = await this.web3.eth.net.getId();
-        
+
         // Initialize contracts
         this.initializeContracts();
-        
+
         this.isInitialized = true;
         return true;
       }
@@ -134,22 +134,22 @@ class BlockchainService {
   // Initialize smart contracts
   private initializeContracts(): void {
     if (!this.web3) return;
-    
+
     this.portfolioManagerContract = new this.web3.eth.Contract(
       PortfolioManagerABI.abi as AbiItem[],
       PORTFOLIO_MANAGER_ADDRESS
     );
-    
+
     this.tokenizedAssetContract = new this.web3.eth.Contract(
       TokenizedAssetABI.abi as AbiItem[],
       TOKENIZED_ASSET_ADDRESS
     );
-    
+
     this.defiIntegrationContract = new this.web3.eth.Contract(
       DeFiIntegrationABI.abi as AbiItem[],
       DEFI_INTEGRATION_ADDRESS
     );
-    
+
     this.tradingPlatformContract = new this.web3.eth.Contract(
       TradingPlatformABI.abi as AbiItem[],
       TRADING_PLATFORM_ADDRESS
@@ -184,7 +184,7 @@ class BlockchainService {
   // Get network name based on ID
   getNetworkName(): string {
     if (!this.networkId) return 'Unknown';
-    
+
     switch (this.networkId) {
       case 1:
         return 'Ethereum Mainnet';
@@ -211,7 +211,7 @@ class BlockchainService {
       const initialized = await this.initialize();
       if (!initialized) return null;
     }
-    
+
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -222,7 +222,7 @@ class BlockchainService {
         return null;
       }
     }
-    
+
     return null;
   }
 
@@ -241,11 +241,11 @@ class BlockchainService {
     if (!this.isConnected() || !this.portfolioManagerContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const portfolioCount = await this.portfolioManagerContract.methods.getUserPortfolioCount(this.account).call();
       const portfolio: PortfolioAsset[] = [];
-      
+
       for (let i = 0; i < portfolioCount; i++) {
         const asset = await this.portfolioManagerContract.methods.getUserPortfolioAsset(this.account, i).call();
         portfolio.push({
@@ -257,7 +257,7 @@ class BlockchainService {
           tokenAddress: asset.tokenAddress
         });
       }
-      
+
       return portfolio;
     } catch (error) {
       console.error('Error fetching user portfolio:', error);
@@ -270,14 +270,14 @@ class BlockchainService {
     if (!this.isConnected() || !this.tradingPlatformContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const quantityWei = this.web3!.utils.toWei(quantity.toString(), 'ether');
       const tx = await this.tradingPlatformContract.methods.buyAsset(symbol, quantityWei).send({
         from: this.account,
         ...options
       });
-      
+
       return tx.transactionHash;
     } catch (error) {
       console.error('Error buying asset:', error);
@@ -290,14 +290,14 @@ class BlockchainService {
     if (!this.isConnected() || !this.tradingPlatformContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const quantityWei = this.web3!.utils.toWei(quantity.toString(), 'ether');
       const tx = await this.tradingPlatformContract.methods.sellAsset(symbol, quantityWei).send({
         from: this.account,
         ...options
       });
-      
+
       return tx.transactionHash;
     } catch (error) {
       console.error('Error selling asset:', error);
@@ -310,14 +310,14 @@ class BlockchainService {
     if (!this.isConnected() || !this.defiIntegrationContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const amountWei = this.web3!.utils.toWei(amount.toString(), 'ether');
       const tx = await this.defiIntegrationContract.methods.stake(amountWei).send({
         from: this.account,
         ...options
       });
-      
+
       return tx.transactionHash;
     } catch (error) {
       console.error('Error staking tokens:', error);
@@ -330,14 +330,14 @@ class BlockchainService {
     if (!this.isConnected() || !this.defiIntegrationContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const amountWei = this.web3!.utils.toWei(amount.toString(), 'ether');
       const tx = await this.defiIntegrationContract.methods.unstake(amountWei).send({
         from: this.account,
         ...options
       });
-      
+
       return tx.transactionHash;
     } catch (error) {
       console.error('Error unstaking tokens:', error);
@@ -350,7 +350,7 @@ class BlockchainService {
     if (!this.isConnected() || !this.defiIntegrationContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const rewards = await this.defiIntegrationContract.methods.getRewards(this.account).call();
       return parseFloat(this.web3!.utils.fromWei(rewards, 'ether'));
@@ -365,13 +365,13 @@ class BlockchainService {
     if (!this.isConnected() || !this.defiIntegrationContract || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const tx = await this.defiIntegrationContract.methods.claimRewards().send({
         from: this.account,
         ...options
       });
-      
+
       return tx.transactionHash;
     } catch (error) {
       console.error('Error claiming rewards:', error);
@@ -384,29 +384,29 @@ class BlockchainService {
     if (!this.isConnected() || !this.web3 || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       // Get the latest block number
       const latestBlock = await this.web3.eth.getBlockNumber();
-      
+
       // Get transactions from the last 1000 blocks (adjust as needed)
       const fromBlock = Math.max(0, latestBlock - 1000);
-      
+
       // Get transactions for the current account
       const transactions: TransactionData[] = [];
-      
+
       // This is a simplified approach - in a real app, you'd use an indexer or API
       for (let i = latestBlock; i >= fromBlock && transactions.length < limit; i--) {
         const block = await this.web3.eth.getBlock(i, true);
-        
+
         if (block && block.transactions) {
           for (const tx of block.transactions) {
-            if (typeof tx === 'object' && 
-                (tx.from.toLowerCase() === this.account.toLowerCase() || 
+            if (typeof tx === 'object' &&
+                (tx.from.toLowerCase() === this.account.toLowerCase() ||
                  tx.to?.toLowerCase() === this.account.toLowerCase())) {
-              
+
               const receipt = await this.web3.eth.getTransactionReceipt(tx.hash);
-              
+
               transactions.push({
                 hash: tx.hash,
                 from: tx.from,
@@ -417,13 +417,13 @@ class BlockchainService {
                 blockNumber: tx.blockNumber,
                 gasUsed: receipt.gasUsed
               });
-              
+
               if (transactions.length >= limit) break;
             }
           }
         }
       }
-      
+
       return transactions;
     } catch (error) {
       console.error('Error fetching transaction history:', error);
@@ -436,7 +436,7 @@ class BlockchainService {
     if (!this.isConnected() || !this.web3 || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const tokenContract = new this.web3.eth.Contract(
         [
@@ -450,7 +450,7 @@ class BlockchainService {
         ] as AbiItem[],
         tokenAddress
       );
-      
+
       const balance = await tokenContract.methods.balanceOf(this.account).call();
       return parseFloat(this.web3.utils.fromWei(balance, 'ether'));
     } catch (error) {
@@ -464,7 +464,7 @@ class BlockchainService {
     if (!this.isConnected() || !this.web3 || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const balance = await this.web3.eth.getBalance(this.account);
       return parseFloat(this.web3.utils.fromWei(balance, 'ether'));
@@ -479,14 +479,14 @@ class BlockchainService {
     if (!this.isConnected() || !this.web3 || !this.account) {
       throw new Error('Blockchain service not initialized or not connected');
     }
-    
+
     try {
       const signature = await this.web3.eth.personal.sign(
         message,
         this.account,
         '' // Password is not needed for MetaMask
       );
-      
+
       return signature;
     } catch (error) {
       console.error('Error signing message:', error);
@@ -499,7 +499,7 @@ class BlockchainService {
     if (!this.web3) {
       throw new Error('Blockchain service not initialized');
     }
-    
+
     try {
       const recoveredAddress = await this.web3.eth.personal.ecRecover(message, signature);
       return recoveredAddress.toLowerCase() === address.toLowerCase();

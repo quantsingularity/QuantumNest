@@ -128,36 +128,36 @@ export default function MarketAnalysis() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Market Analysis</h1>
           <div className="flex space-x-2">
-            <Button 
-              variant={timeRange === '1w' ? 'default' : 'outline'} 
+            <Button
+              variant={timeRange === '1w' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTimeRange('1w')}
             >
               1W
             </Button>
-            <Button 
-              variant={timeRange === '1m' ? 'default' : 'outline'} 
+            <Button
+              variant={timeRange === '1m' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTimeRange('1m')}
             >
               1M
             </Button>
-            <Button 
-              variant={timeRange === '3m' ? 'default' : 'outline'} 
+            <Button
+              variant={timeRange === '3m' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTimeRange('3m')}
             >
               3M
             </Button>
-            <Button 
-              variant={timeRange === '1y' ? 'default' : 'outline'} 
+            <Button
+              variant={timeRange === '1y' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTimeRange('1y')}
             >
               1Y
             </Button>
-            <Button 
-              variant={timeRange === 'all' ? 'default' : 'outline'} 
+            <Button
+              variant={timeRange === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTimeRange('all')}
             >
@@ -165,7 +165,7 @@ export default function MarketAnalysis() {
             </Button>
           </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
           <button
@@ -209,39 +209,39 @@ export default function MarketAnalysis() {
             Market News
           </button>
         </div>
-        
+
         {activeTab === 'overview' && (
           <>
             {/* Market Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {marketStats.map((stat, index) => (
-                <StatCard 
+                <StatCard
                   key={index}
-                  title={stat.title} 
-                  value={stat.value} 
-                  change={stat.change} 
+                  title={stat.title}
+                  value={stat.value}
+                  change={stat.change}
                 />
               ))}
             </div>
-            
+
             {/* Market Performance Chart */}
             <div className="mb-8">
-              <LineChart 
-                data={marketPerformanceData} 
-                title="Market Performance" 
+              <LineChart
+                data={marketPerformanceData}
+                title="Market Performance"
                 height={350}
               />
             </div>
-            
+
             {/* Sector Performance */}
             <div className="mb-8">
-              <BarChart 
-                data={sectorPerformanceData} 
-                title="Sector Performance" 
+              <BarChart
+                data={sectorPerformanceData}
+                title="Sector Performance"
                 height={350}
               />
             </div>
-            
+
             {/* Trending Assets */}
             <Card>
               <CardHeader>
@@ -266,7 +266,7 @@ export default function MarketAnalysis() {
             </Card>
           </>
         )}
-        
+
         {activeTab === 'stocks' && (
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Stock Market Analysis</h3>
@@ -275,7 +275,7 @@ export default function MarketAnalysis() {
             </p>
           </div>
         )}
-        
+
         {activeTab === 'crypto' && (
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Cryptocurrency Market</h3>
@@ -284,7 +284,7 @@ export default function MarketAnalysis() {
             </p>
           </div>
         )}
-        
+
         {activeTab === 'news' && (
           <Card>
             <CardHeader>

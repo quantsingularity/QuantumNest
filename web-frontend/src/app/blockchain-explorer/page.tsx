@@ -21,7 +21,7 @@ export default function BlockchainExplorer() {
 
   // Mock data for recent transactions
   const recentTransactions = [
-    { 
+    {
       hash: '0x7d92f8a1b4e6c74a9b5e3a65d1e2c8f3b4e5d6c7a8b9c0d1e2f3a4b5c6d7e8f9',
       from: '0x1234567890123456789012345678901234567890',
       to: '0x0987654321098765432109876543210987654321',
@@ -30,7 +30,7 @@ export default function BlockchainExplorer() {
       timestamp: new Date('2025-04-13T12:45:32'),
       status: 'confirmed'
     },
-    { 
+    {
       hash: '0x8c7b6a5d4e3f2c1b0a9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b',
       from: '0x2345678901234567890123456789012345678901',
       to: '0x1098765432109876543210987654321098765432',
@@ -39,7 +39,7 @@ export default function BlockchainExplorer() {
       timestamp: new Date('2025-04-13T12:42:18'),
       status: 'confirmed'
     },
-    { 
+    {
       hash: '0x9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e',
       from: '0x3456789012345678901234567890123456789012',
       to: '0x2109876543210987654321098765432109876543',
@@ -48,7 +48,7 @@ export default function BlockchainExplorer() {
       timestamp: new Date('2025-04-13T12:40:05'),
       status: 'confirmed'
     },
-    { 
+    {
       hash: '0xa9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8',
       from: '0x4567890123456789012345678901234567890123',
       to: '0x3210987654321098765432109876543210987654',
@@ -57,7 +57,7 @@ export default function BlockchainExplorer() {
       timestamp: new Date('2025-04-13T12:38:47'),
       status: 'confirmed'
     },
-    { 
+    {
       hash: '0xb0a9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9',
       from: '0x5678901234567890123456789012345678901234',
       to: '0x4321098765432109876543210987654321098765',
@@ -162,7 +162,7 @@ export default function BlockchainExplorer() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Blockchain Explorer</h1>
-        
+
         {/* Search Bar */}
         <div className="mb-8">
           <form onSubmit={handleSearch} className="flex w-full">
@@ -176,7 +176,7 @@ export default function BlockchainExplorer() {
             <Button type="submit" className="rounded-l-none">Search</Button>
           </form>
         </div>
-        
+
         {/* Tabs */}
         <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
           <button
@@ -220,7 +220,7 @@ export default function BlockchainExplorer() {
             My Assets
           </button>
         </div>
-        
+
         {activeTab === 'overview' && (
           <>
             {/* Blockchain Stats */}
@@ -234,7 +234,7 @@ export default function BlockchainExplorer() {
                 </Card>
               ))}
             </div>
-            
+
             {/* Recent Transactions */}
             <Card className="mb-8">
               <CardHeader>
@@ -274,7 +274,7 @@ export default function BlockchainExplorer() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Network Information */}
             <Card>
               <CardHeader>
@@ -337,7 +337,7 @@ export default function BlockchainExplorer() {
             </Card>
           </>
         )}
-        
+
         {activeTab === 'transactions' && (
           <Card>
             <CardHeader>
@@ -386,7 +386,7 @@ export default function BlockchainExplorer() {
             </CardContent>
           </Card>
         )}
-        
+
         {activeTab === 'contracts' && (
           <Card>
             <CardHeader>
@@ -433,7 +433,7 @@ export default function BlockchainExplorer() {
             </CardContent>
           </Card>
         )}
-        
+
         {activeTab === 'assets' && (
           <Card>
             <CardHeader>

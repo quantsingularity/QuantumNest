@@ -76,54 +76,54 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Removed Navbar rendering */}
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-      
+
       {/* Stats Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        <StatCard 
-          title="Portfolio Value" 
-          value={formatCurrency(portfolioValue)} 
-          change={portfolioChange} 
+        <StatCard
+          title="Portfolio Value"
+          value={formatCurrency(portfolioValue)}
+          change={portfolioChange}
           description="vs. last month"
         />
-        <StatCard 
-          title="Total Assets" 
-          value={totalAssets} 
+        <StatCard
+          title="Total Assets"
+          value={totalAssets}
         />
-        <StatCard 
+        <StatCard
           title="Transactions" // Shortened title for mobile
-          value={totalTransactions} 
+          value={totalTransactions}
         />
-        <StatCard 
+        <StatCard
           title="Perf. (YTD)" // Shortened title for mobile
-          value="+12.5%" 
+          value="+12.5%"
           description="vs bench +8.3%" // Shortened description
         />
       </div>
-      
+
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <LineChart 
-            data={performanceData} 
-            title="Portfolio Performance" 
+          <LineChart
+            data={performanceData}
+            title="Portfolio Performance"
             height={300} // Adjusted height slightly
           />
         </div>
         <div>
-          <DoughnutChart 
-            data={allocationData} 
-            title="Asset Allocation" 
+          <DoughnutChart
+            data={allocationData}
+            title="Asset Allocation"
             height={300} // Adjusted height slightly
           />
         </div>
       </div>
-      
+
       {/* Recent Transactions */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
-        <CardContent className="p-0 sm:p-6"> {/* Remove padding on smallest screens for table */} 
+        <CardContent className="p-0 sm:p-6"> {/* Remove padding on smallest screens for table */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -152,7 +152,7 @@ export default function Dashboard() {
           </Table>
         </CardContent>
       </Card>
-      
+
       {/* AI Insights */}
       <Card>
         <CardHeader>

@@ -224,4 +224,3 @@ The comprehensive documentation, procedures, and automation capabilities describ
 [9] OWASP Foundation. (2023). OWASP Top 10 and Application Security Guidelines. Retrieved from [https://owasp.org/](https://owasp.org/)
 
 [10] Kubernetes Documentation. (2023). Kubernetes Security Best Practices. Retrieved from [https://kubernetes.io/docs/concepts/security/](https://kubernetes.io/docs/concepts/security/)
-

@@ -225,5 +225,3 @@ This infrastructure design for QuantumNest Capital provides a robust framework f
 [17] Kubernetes. (n.d.). Retrieved from [https://kubernetes.io/](https://kubernetes.io/)
 [18] Terraform. (n.d.). Retrieved from [https://www.terraform.io/](https://www.terraform.io/)
 [19] Ansible. (n.d.). Retrieved from [https://www.ansible.com/](https://www.ansible.com/)
-
-

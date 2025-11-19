@@ -240,11 +240,11 @@ metadata:
 data:
   notification.sh: |
     #!/bin/bash
-    
+
     BACKUP_NAME="$1"
     BACKUP_STATUS="$2"
     BACKUP_NAMESPACE="$3"
-    
+
     # Slack notification
     if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
         if [[ "$BACKUP_STATUS" == "Completed" ]]; then
@@ -254,17 +254,17 @@ data:
             MESSAGE="❌ Kubernetes backup failed: $BACKUP_NAME (Status: $BACKUP_STATUS)"
             COLOR="danger"
         fi
-        
+
         curl -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\"$MESSAGE\", \"color\":\"$COLOR\"}" \
             "$SLACK_WEBHOOK_URL"
     fi
-    
+
     # Email notification for critical backups
     if [[ "$BACKUP_NAMESPACE" == "quantumnest-prod" ]]; then
         echo "$MESSAGE" | mail -s "QuantumNest K8s Backup Status" "${EMAIL_RECIPIENTS}"
     fi
-    
+
     # Audit logging
     echo "$(date -Iseconds) | K8S_BACKUP_AUDIT | $BACKUP_NAME | $BACKUP_STATUS | $BACKUP_NAMESPACE" >> /var/log/backup-audit.log
 ---
@@ -306,33 +306,33 @@ spec:
             - -c
             - |
               set -euo pipefail
-              
+
               echo "Starting backup verification process..."
-              
+
               # Get recent backups
               RECENT_BACKUPS=$(velero backup get --output json | jq -r '.items[] | select(.status.phase == "Completed" and (.metadata.creationTimestamp | fromdateiso8601) > (now - 86400)) | .metadata.name')
-              
+
               if [[ -z "$RECENT_BACKUPS" ]]; then
                 echo "ERROR: No completed backups found in the last 24 hours"
                 exit 1
               fi
-              
+
               # Verify each backup
               for backup in $RECENT_BACKUPS; do
                 echo "Verifying backup: $backup"
-                
+
                 # Check backup details
                 velero backup describe "$backup" --details
-                
+
                 # Verify backup in storage
                 velero backup logs "$backup" | grep -q "backup completed successfully" || {
                   echo "ERROR: Backup $backup verification failed"
                   exit 1
                 }
-                
+
                 echo "Backup $backup verified successfully"
               done
-              
+
               echo "All backup verifications completed successfully"
             env:
             - name: VELERO_NAMESPACE
@@ -383,42 +383,42 @@ spec:
             - -c
             - |
               set -euo pipefail
-              
+
               echo "Starting disaster recovery test..."
-              
+
               # Create test namespace
               kubectl create namespace quantumnest-dr-test || true
-              
+
               # Get latest production backup
               LATEST_BACKUP=$(velero backup get --selector="backup-type=daily,environment=production" --sort-by=.metadata.creationTimestamp --output jsonpath='{.items[-1:].metadata.name}')
-              
+
               if [[ -z "$LATEST_BACKUP" ]]; then
                 echo "ERROR: No production backup found for DR test"
                 exit 1
               fi
-              
+
               echo "Using backup for DR test: $LATEST_BACKUP"
-              
+
               # Create restore from backup
               RESTORE_NAME="dr-test-$(date +%Y%m%d-%H%M%S)"
               velero restore create "$RESTORE_NAME" \
                 --from-backup "$LATEST_BACKUP" \
                 --namespace-mappings quantumnest-prod:quantumnest-dr-test \
                 --wait
-              
+
               # Verify restore
               velero restore describe "$RESTORE_NAME" --details
-              
+
               # Check if pods are running in test namespace
               kubectl wait --for=condition=Ready pod -l app=quantumnest-backend -n quantumnest-dr-test --timeout=300s || {
                 echo "WARNING: DR test pods did not become ready within timeout"
               }
-              
+
               # Cleanup test namespace
               kubectl delete namespace quantumnest-dr-test || true
-              
+
               echo "Disaster recovery test completed"
-              
+
               # Send DR test notification
               if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
                 curl -X POST -H 'Content-type: application/json' \
@@ -440,4 +440,3 @@ spec:
           - name: tmp
             emptyDir: {}
           restartPolicy: OnFailure
-

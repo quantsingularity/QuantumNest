@@ -21,7 +21,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
             </Link>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-indigo-600 dark:text-indigo-400 mb-4">
@@ -35,7 +35,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
               Learn more →
             </Link>
           </div>
-          
+
           <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-indigo-600 dark:text-indigo-400 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,7 +48,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
               Learn more →
             </Link>
           </div>
-          
+
           <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-indigo-600 dark:text-indigo-400 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -62,13 +62,13 @@ export default function Home({ darkMode, toggleDarkMode }) {
             </Link>
           </div>
         </div>
-        
+
         <div className="bg-indigo-50 dark:bg-gray-800 rounded-2xl p-8 mb-16">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Why Choose QuantumNest Capital?</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Our platform combines cutting-edge technologies to provide unparalleled insights and performance for your investments.</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start">
               <div className="flex-shrink-0 bg-indigo-100 dark:bg-gray-700 rounded-lg p-3 mr-4">
@@ -81,7 +81,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
                 <p className="text-gray-600 dark:text-gray-300">Enterprise-grade security with blockchain verification and multi-factor authentication.</p>
               </div>
             </div>
-            
+
             <div className="flex items-start">
               <div className="flex-shrink-0 bg-indigo-100 dark:bg-gray-700 rounded-lg p-3 mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,7 +93,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
                 <p className="text-gray-600 dark:text-gray-300">AI-driven portfolio optimization with risk profiling and automated rebalancing.</p>
               </div>
             </div>
-            
+
             <div className="flex items-start">
               <div className="flex-shrink-0 bg-indigo-100 dark:bg-gray-700 rounded-lg p-3 mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +105,7 @@ export default function Home({ darkMode, toggleDarkMode }) {
                 <p className="text-gray-600 dark:text-gray-300">Predictive analytics and market sentiment analysis to stay ahead of market trends.</p>
               </div>
             </div>
-            
+
             <div className="flex items-start">
               <div className="flex-shrink-0 bg-indigo-100 dark:bg-gray-700 rounded-lg p-3 mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -6,9 +6,13 @@ from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
 from app.schemas import schemas
-from app.workers.ai_tasks import (analyze_portfolio_risk, analyze_sentiment,
-                                  generate_market_recommendations,
-                                  optimize_portfolio, predict_asset_price)
+from app.workers.ai_tasks import (
+    analyze_portfolio_risk,
+    analyze_sentiment,
+    generate_market_recommendations,
+    optimize_portfolio,
+    predict_asset_price,
+)
 from celery.result import AsyncResult
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session

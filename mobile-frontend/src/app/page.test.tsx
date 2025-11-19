@@ -99,4 +99,4 @@ describe('Mobile Frontend Main Page', () => {
     expect(screen.getByText(/total value/i)).toBeInTheDocument();
     expect(screen.getByText(/24h change/i)).toBeInTheDocument();
   });
-}); 
+});

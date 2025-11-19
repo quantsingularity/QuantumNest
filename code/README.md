@@ -109,27 +109,27 @@ code/
    ```env
    # Database
    DATABASE_URL=postgresql://username:password@localhost:5432/quantumnest
-   
+
    # Redis
    REDIS_HOST=localhost
    REDIS_PORT=6379
    REDIS_PASSWORD=
-   
+
    # Security
    SECRET_KEY=your-secret-key-here
    JWT_SECRET_KEY=your-jwt-secret-key-here
    API_SECRET_KEY=your-api-secret-key-here
    API_KEY=your-api-key-here
-   
+
    # Features
    ENABLE_REQUEST_SIGNING=true
    ENABLE_IP_FILTERING=false
    ENABLE_CSRF_PROTECTION=true
-   
+
    # External APIs
    ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
    OPENAI_API_KEY=your-openai-key
-   
+
    # Allowed Origins
    ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
    ```
@@ -138,7 +138,7 @@ code/
    ```bash
    # Create database
    createdb quantumnest
-   
+
    # Initialize database (using Flask app)
    python -c "from app.main_flask import app; app.app_context().push(); from app.models.models import db; db.create_all()"
    ```
@@ -147,7 +147,7 @@ code/
    ```bash
    # Using Flask (recommended for enhanced features)
    python app/main_flask.py
-   
+
    # Or using FastAPI (original)
    python app/main.py
    ```

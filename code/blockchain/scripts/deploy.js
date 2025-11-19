@@ -165,7 +165,7 @@ async function main() {
     await defiIntegration.setInvestmentsEnabled(true);
 
     console.log("\nAll contracts deployed and tested successfully!");
-    
+
     // Save deployment addresses to a file
     const fs = require('fs');
     const deploymentInfo = {
@@ -178,7 +178,7 @@ async function main() {
       deployer: deployer,
       timestamp: new Date().toISOString()
     };
-    
+
     fs.writeFileSync(
       'deployment.json',
       JSON.stringify(deploymentInfo, null, 2)

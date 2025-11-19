@@ -242,12 +242,12 @@
       command: aideinit
       become: yes
       creates: /var/lib/aide/aide.db.new
-      
+
     - name: Move AIDE database to production location
       command: mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
       become: yes
       creates: /var/lib/aide/aide.db
-      
+
     - name: Configure AIDE cron job for daily checks
       cron:
         name: "AIDE integrity check"
@@ -266,7 +266,7 @@
       command: freshclam
       become: yes
       ignore_errors: yes
-      
+
     - name: Configure ClamAV daemon
       template:
         src: clamd.conf.j2
@@ -276,7 +276,7 @@
         mode: '0644'
       become: yes
       notify: restart clamav-daemon
-      
+
     - name: Configure daily ClamAV scan
       cron:
         name: "ClamAV daily scan"
@@ -309,19 +309,19 @@
         url: https://pkg.osquery.io/deb/pubkey.gpg
         state: present
       become: yes
-      
+
     - name: Add osquery repository
       apt_repository:
         repo: "deb [arch=amd64] https://pkg.osquery.io/deb deb main"
         state: present
       become: yes
-      
+
     - name: Install osquery
       package:
         name: osquery
         state: present
       become: yes
-      
+
     - name: Configure osquery
       template:
         src: osquery.conf.j2
@@ -495,4 +495,3 @@
   tags:
     - security
     - notifications
-

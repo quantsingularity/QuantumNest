@@ -22,4 +22,3 @@ This directory contains configurations for comprehensive secrets management usin
 - **PCI DSS**: Secure handling of payment card data
 - **GDPR**: Data protection and privacy controls
 - **FIPS 140-2**: Cryptographic module standards
-

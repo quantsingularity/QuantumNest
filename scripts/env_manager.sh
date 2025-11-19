@@ -47,9 +47,9 @@ function show_help {
 # Function to check status of environment files
 function check_status {
   echo -e "${BLUE}Checking environment file status across components...${NC}"
-  
+
   local missing=0
-  
+
   # Check web frontend
   if [ -f "${WEB_FRONTEND_DIR}/.env" ]; then
     echo -e "${GREEN}✓ Web Frontend .env file exists${NC}"
@@ -60,7 +60,7 @@ function check_status {
     echo "  Expected location: ${WEB_FRONTEND_DIR}/.env"
     missing=$((missing+1))
   fi
-  
+
   # Check mobile frontend
   if [ -f "${MOBILE_FRONTEND_DIR}/.env" ]; then
     echo -e "${GREEN}✓ Mobile Frontend .env file exists${NC}"
@@ -71,7 +71,7 @@ function check_status {
     echo "  Expected location: ${MOBILE_FRONTEND_DIR}/.env"
     missing=$((missing+1))
   fi
-  
+
   # Check backend
   if [ -f "${BACKEND_DIR}/.env" ]; then
     echo -e "${GREEN}✓ Backend .env file exists${NC}"
@@ -82,7 +82,7 @@ function check_status {
     echo "  Expected location: ${BACKEND_DIR}/.env"
     missing=$((missing+1))
   fi
-  
+
   # Check blockchain
   if [ -f "${BLOCKCHAIN_DIR}/.env" ]; then
     echo -e "${GREEN}✓ Blockchain .env file exists${NC}"
@@ -93,7 +93,7 @@ function check_status {
     echo "  Expected location: ${BLOCKCHAIN_DIR}/.env"
     missing=$((missing+1))
   fi
-  
+
   echo ""
   if [ $missing -eq 0 ]; then
     echo -e "${GREEN}All environment files are present.${NC}"
@@ -106,7 +106,7 @@ function check_status {
 # Function to generate template .env files
 function generate_templates {
   echo -e "${BLUE}Generating template .env files...${NC}"
-  
+
   # Web Frontend template
   if [ ! -f "${WEB_FRONTEND_DIR}/.env" ]; then
     cat > "${WEB_FRONTEND_DIR}/.env" << EOF
@@ -136,7 +136,7 @@ EOF
   else
     echo -e "${YELLOW}! Web Frontend .env already exists, skipping${NC}"
   fi
-  
+
   # Mobile Frontend template
   if [ ! -f "${MOBILE_FRONTEND_DIR}/.env" ]; then
     cat > "${MOBILE_FRONTEND_DIR}/.env" << EOF
@@ -166,7 +166,7 @@ EOF
   else
     echo -e "${YELLOW}! Mobile Frontend .env already exists, skipping${NC}"
   fi
-  
+
   # Backend template
   if [ ! -f "${BACKEND_DIR}/.env" ]; then
     cat > "${BACKEND_DIR}/.env" << EOF
@@ -201,7 +201,7 @@ EOF
   else
     echo -e "${YELLOW}! Backend .env already exists, skipping${NC}"
   fi
-  
+
   # Blockchain template
   if [ ! -f "${BLOCKCHAIN_DIR}/.env" ]; then
     cat > "${BLOCKCHAIN_DIR}/.env" << EOF
@@ -229,7 +229,7 @@ EOF
   else
     echo -e "${YELLOW}! Blockchain .env already exists, skipping${NC}"
   fi
-  
+
   echo -e "${GREEN}Template generation complete.${NC}"
   echo "Edit these files with your actual configuration values."
 }
@@ -237,47 +237,47 @@ EOF
 # Function to synchronize common variables across components
 function sync_variables {
   echo -e "${BLUE}Synchronizing common environment variables across components...${NC}"
-  
+
   # Check if all .env files exist
   local missing=0
   [ ! -f "${WEB_FRONTEND_DIR}/.env" ] && missing=$((missing+1))
   [ ! -f "${MOBILE_FRONTEND_DIR}/.env" ] && missing=$((missing+1))
   [ ! -f "${BACKEND_DIR}/.env" ] && missing=$((missing+1))
   [ ! -f "${BLOCKCHAIN_DIR}/.env" ] && missing=$((missing+1))
-  
+
   if [ $missing -gt 0 ]; then
     echo -e "${RED}Error: Some .env files are missing.${NC}"
     echo "Run './env_manager.sh status' to check status."
     echo "Run './env_manager.sh template' to generate missing files."
     return 1
   fi
-  
+
   # Extract backend API URL
   local BACKEND_PORT=$(grep "^PORT=" "${BACKEND_DIR}/.env" | cut -d= -f2)
   if [ -z "$BACKEND_PORT" ]; then
     BACKEND_PORT=8000
     echo -e "${YELLOW}! Backend PORT not found, using default: 8000${NC}"
   fi
-  
+
   # Update API URLs in frontend .env files
   sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://localhost:${BACKEND_PORT}|" "${WEB_FRONTEND_DIR}/.env"
   sed -i "s|^NEXT_PUBLIC_WEBSOCKET_URL=.*|NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:${BACKEND_PORT}/ws|" "${WEB_FRONTEND_DIR}/.env"
-  
+
   sed -i "s|^EXPO_PUBLIC_API_URL=.*|EXPO_PUBLIC_API_URL=http://localhost:${BACKEND_PORT}|" "${MOBILE_FRONTEND_DIR}/.env"
   sed -i "s|^EXPO_PUBLIC_WEBSOCKET_URL=.*|EXPO_PUBLIC_WEBSOCKET_URL=ws://localhost:${BACKEND_PORT}/ws|" "${MOBILE_FRONTEND_DIR}/.env"
-  
+
   # Extract blockchain contract address
   local CONTRACT_ADDRESS=$(grep "^CONTRACT_ADDRESS=" "${BACKEND_DIR}/.env" | cut -d= -f2)
   if [ -n "$CONTRACT_ADDRESS" ]; then
     sed -i "s|^NEXT_PUBLIC_CONTRACT_ADDRESS=.*|NEXT_PUBLIC_CONTRACT_ADDRESS=${CONTRACT_ADDRESS}|" "${WEB_FRONTEND_DIR}/.env"
     sed -i "s|^EXPO_PUBLIC_CONTRACT_ADDRESS=.*|EXPO_PUBLIC_CONTRACT_ADDRESS=${CONTRACT_ADDRESS}|" "${MOBILE_FRONTEND_DIR}/.env"
   fi
-  
+
   # Update CORS origins in backend to include frontend URLs
   local WEB_PORT=3000
   local MOBILE_PORT=19000
   sed -i "s|^CORS_ORIGINS=.*|CORS_ORIGINS=http://localhost:${WEB_PORT},http://localhost:${MOBILE_PORT}|" "${BACKEND_DIR}/.env"
-  
+
   echo -e "${GREEN}Environment variables synchronized successfully.${NC}"
 }
 
@@ -285,57 +285,57 @@ function sync_variables {
 function backup_env_files {
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local backup_dir="${PROJECT_DIR}/env_backups/${timestamp}"
-  
+
   echo -e "${BLUE}Backing up environment files to ${backup_dir}...${NC}"
-  
+
   mkdir -p "${backup_dir}"
-  
+
   # Backup each .env file if it exists
   [ -f "${WEB_FRONTEND_DIR}/.env" ] && cp "${WEB_FRONTEND_DIR}/.env" "${backup_dir}/web-frontend.env"
   [ -f "${MOBILE_FRONTEND_DIR}/.env" ] && cp "${MOBILE_FRONTEND_DIR}/.env" "${backup_dir}/mobile-frontend.env"
   [ -f "${BACKEND_DIR}/.env" ] && cp "${BACKEND_DIR}/.env" "${backup_dir}/backend.env"
   [ -f "${BLOCKCHAIN_DIR}/.env" ] && cp "${BLOCKCHAIN_DIR}/.env" "${backup_dir}/blockchain.env"
-  
+
   echo -e "${GREEN}Backup completed: ${backup_dir}${NC}"
 }
 
 # Function to restore environment files from backup
 function restore_env_files {
   local timestamp=$1
-  
+
   if [ -z "$timestamp" ]; then
     echo -e "${RED}Error: Timestamp required for restore.${NC}"
     echo "Available backups:"
     ls -1 "${PROJECT_DIR}/env_backups/" 2>/dev/null || echo "  No backups found."
     return 1
   fi
-  
+
   local backup_dir="${PROJECT_DIR}/env_backups/${timestamp}"
-  
+
   if [ ! -d "$backup_dir" ]; then
     echo -e "${RED}Error: Backup directory not found: ${backup_dir}${NC}"
     echo "Available backups:"
     ls -1 "${PROJECT_DIR}/env_backups/" 2>/dev/null || echo "  No backups found."
     return 1
   fi
-  
+
   echo -e "${BLUE}Restoring environment files from ${backup_dir}...${NC}"
-  
+
   # Restore each .env file if backup exists
   [ -f "${backup_dir}/web-frontend.env" ] && cp "${backup_dir}/web-frontend.env" "${WEB_FRONTEND_DIR}/.env"
   [ -f "${backup_dir}/mobile-frontend.env" ] && cp "${backup_dir}/mobile-frontend.env" "${MOBILE_FRONTEND_DIR}/.env"
   [ -f "${backup_dir}/backend.env" ] && cp "${backup_dir}/backend.env" "${BACKEND_DIR}/.env"
   [ -f "${backup_dir}/blockchain.env" ] && cp "${backup_dir}/blockchain.env" "${BLOCKCHAIN_DIR}/.env"
-  
+
   echo -e "${GREEN}Restore completed from backup: ${timestamp}${NC}"
 }
 
 # Function to validate environment files for required variables
 function validate_env_files {
   echo -e "${BLUE}Validating environment files for required variables...${NC}"
-  
+
   local errors=0
-  
+
   # Web Frontend required variables
   if [ -f "${WEB_FRONTEND_DIR}/.env" ]; then
     echo "Checking Web Frontend .env..."
@@ -350,7 +350,7 @@ function validate_env_files {
     echo -e "${RED}Web Frontend .env file missing${NC}"
     errors=$((errors+1))
   fi
-  
+
   # Mobile Frontend required variables
   if [ -f "${MOBILE_FRONTEND_DIR}/.env" ]; then
     echo "Checking Mobile Frontend .env..."
@@ -365,7 +365,7 @@ function validate_env_files {
     echo -e "${RED}Mobile Frontend .env file missing${NC}"
     errors=$((errors+1))
   fi
-  
+
   # Backend required variables
   if [ -f "${BACKEND_DIR}/.env" ]; then
     echo "Checking Backend .env..."
@@ -380,7 +380,7 @@ function validate_env_files {
     echo -e "${RED}Backend .env file missing${NC}"
     errors=$((errors+1))
   fi
-  
+
   # Blockchain required variables
   if [ -f "${BLOCKCHAIN_DIR}/.env" ]; then
     echo "Checking Blockchain .env..."
@@ -395,7 +395,7 @@ function validate_env_files {
     echo -e "${RED}Blockchain .env file missing${NC}"
     errors=$((errors+1))
   fi
-  
+
   echo ""
   if [ $errors -eq 0 ]; then
     echo -e "${GREEN}All environment files validated successfully.${NC}"

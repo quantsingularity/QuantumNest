@@ -75,48 +75,48 @@ export default function Dashboard() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Dashboard</h1>
-        
+
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard 
-            title="Portfolio Value" 
-            value={formatCurrency(portfolioValue)} 
-            change={portfolioChange} 
+          <StatCard
+            title="Portfolio Value"
+            value={formatCurrency(portfolioValue)}
+            change={portfolioChange}
             description="vs. last month"
           />
-          <StatCard 
-            title="Total Assets" 
-            value={totalAssets} 
+          <StatCard
+            title="Total Assets"
+            value={totalAssets}
           />
-          <StatCard 
-            title="Total Transactions" 
-            value={totalTransactions} 
+          <StatCard
+            title="Total Transactions"
+            value={totalTransactions}
           />
-          <StatCard 
-            title="Performance (YTD)" 
-            value="+12.5%" 
+          <StatCard
+            title="Performance (YTD)"
+            value="+12.5%"
             description="vs. benchmark +8.3%"
           />
         </div>
-        
+
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
-            <LineChart 
-              data={performanceData} 
-              title="Portfolio Performance" 
+            <LineChart
+              data={performanceData}
+              title="Portfolio Performance"
               height={350}
             />
           </div>
           <div>
-            <DoughnutChart 
-              data={allocationData} 
-              title="Asset Allocation" 
+            <DoughnutChart
+              data={allocationData}
+              title="Asset Allocation"
               height={350}
             />
           </div>
         </div>
-        
+
         {/* Recent Transactions */}
         <Card className="mb-8">
           <CardHeader>
@@ -151,7 +151,7 @@ export default function Dashboard() {
             </Table>
           </CardContent>
         </Card>
-        
+
         {/* AI Insights */}
         <Card>
           <CardHeader>

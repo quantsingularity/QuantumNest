@@ -22,4 +22,3 @@ This directory contains comprehensive Identity and Access Management (IAM) polic
 - ISO 27001
 - GDPR
 - Financial Industry Regulatory Authority (FINRA)
-

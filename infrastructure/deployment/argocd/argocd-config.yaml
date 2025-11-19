@@ -231,21 +231,21 @@ data:
   server.insecure: "false"
   server.grpc.web: "true"
   server.enable.proxy.extension: "true"
-  
+
   # Repository server configuration
   reposerver.parallelism.limit: "10"
   reposerver.disable.tls: "false"
-  
+
   # Application controller configuration
   controller.status.processors: "20"
   controller.operation.processors: "10"
   controller.self.heal.timeout.seconds: "5"
   controller.repo.server.timeout.seconds: "60"
-  
+
   # Security configuration
   server.enable.grpc.web: "true"
   server.grpc.web.root.path: "/api"
-  
+
   # Compliance configuration
   application.instanceLabelKey: "argocd.argoproj.io/instance"
   server.enable.proxy.extension: "true"
@@ -261,7 +261,7 @@ metadata:
 data:
   url: https://argocd.quantumnest.com
   application.instanceLabelKey: argocd.argoproj.io/instance
-  
+
   # OIDC configuration for SSO
   oidc.config: |
     name: QuantumNest SSO
@@ -270,7 +270,7 @@ data:
     clientSecret: $oidc.quantumnest.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
     requestedIDTokenClaims: {"groups": {"essential": true}}
-  
+
   # RBAC configuration
   policy.default: role:readonly
   policy.csv: |
@@ -278,39 +278,39 @@ data:
     p, role:admin, applications, *, */*, allow
     p, role:admin, clusters, *, *, allow
     p, role:admin, repositories, *, *, allow
-    
+
     # Financial admin role
     p, role:financial-admin, applications, *, quantumnest-financial/*, allow
     p, role:financial-admin, clusters, get, *, allow
     p, role:financial-admin, repositories, get, *, allow
-    
+
     # Developer role
     p, role:developer, applications, get, */*, allow
     p, role:developer, applications, sync, */*-dev, allow
     p, role:developer, applications, sync, */*-staging, allow
     p, role:developer, repositories, get, *, allow
-    
+
     # Readonly role
     p, role:readonly, applications, get, */*, allow
     p, role:readonly, repositories, get, *, allow
     p, role:readonly, clusters, get, *, allow
-    
+
     # Group mappings
     g, quantumnest:platform-admins, role:admin
     g, quantumnest:financial-admins, role:financial-admin
     g, quantumnest:developers, role:developer
     g, quantumnest:compliance-officers, role:readonly
     g, quantumnest:financial-analysts, role:readonly
-  
+
   # TLS configuration
   tls.config: |
     ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256
     minVersion: "1.2"
     maxVersion: "1.3"
-  
+
   # Webhook configuration for compliance notifications
   webhook.github.secret: $webhook.github.secret
-  
+
   # Resource customizations
   resource.customizations: |
     argoproj.io/Application:
@@ -327,7 +327,7 @@ data:
           end
         end
         return hs
-  
+
   # Notification configuration
   service.slack: |
     token: $slack-token
@@ -335,7 +335,7 @@ data:
     channel: quantumnest-deployments
     iconEmoji: ":rocket:"
     title: "QuantumNest Deployment Notification"
-    
+
   service.email: |
     host: smtp.quantumnest.com
     port: 587
@@ -343,9 +343,8 @@ data:
     password: $email-password
     from: argocd@quantumnest.com
     tls: true
-    
+
   # Compliance and audit configuration
   audit.enabled: "true"
   audit.logLevel: "info"
   audit.logFormat: "json"
-

@@ -21,27 +21,27 @@ interface ApiProviderProps {
 export function ApiProvider({ children }: ApiProviderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // In production, this would be set based on environment variables
   const apiUrl = 'http://localhost:8000';
 
   const handleResponse = async (response: Response) => {
     setIsLoading(false);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.detail || `Error: ${response.status} ${response.statusText}`;
       setError(errorMessage);
       throw new Error(errorMessage);
     }
-    
+
     return response.json();
   };
 
   const get = async <T,>(endpoint: string): Promise<T> => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'GET',
@@ -50,7 +50,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
           // In a real app, we would include authentication headers here
         },
       });
-      
+
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
@@ -63,7 +63,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
   const post = async <T,>(endpoint: string, data: any): Promise<T> => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
@@ -73,7 +73,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         },
         body: JSON.stringify(data),
       });
-      
+
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
@@ -86,7 +86,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
   const put = async <T,>(endpoint: string, data: any): Promise<T> => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'PUT',
@@ -96,7 +96,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         },
         body: JSON.stringify(data),
       });
-      
+
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
@@ -109,7 +109,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
   const deleteRequest = async <T,>(endpoint: string): Promise<T> => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'DELETE',
@@ -118,7 +118,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
           // In a real app, we would include authentication headers here
         },
       });
-      
+
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
@@ -143,10 +143,10 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
 export function useApi() {
   const context = useContext(ApiContext);
-  
+
   if (context === undefined) {
     throw new Error('useApi must be used within an ApiProvider');
   }
-  
+
   return context;
 }

@@ -94,7 +94,7 @@ sudo systemctl start postgresql
 #### Database Consistency Verification
 ```sql
 -- Verify database consistency after recovery
-SELECT 
+SELECT
     schemaname,
     tablename,
     n_tup_ins,
@@ -110,7 +110,7 @@ ORDER BY n_tup_ins DESC;
 SELECT * FROM pg_stat_database WHERE datname = 'quantumnest_prod';
 
 -- Verify critical financial data integrity
-SELECT 
+SELECT
     COUNT(*) as total_transactions,
     SUM(amount) as total_amount,
     MAX(created_at) as latest_transaction
@@ -171,7 +171,7 @@ echo "Verifying application health after recovery..."
 
 for endpoint in "${ENDPOINTS[@]}"; do
     echo "Checking: $endpoint"
-    
+
     if curl -f -s --max-time 30 "$endpoint" > /dev/null; then
         echo "✅ $endpoint - OK"
     else
@@ -331,4 +331,3 @@ QuantumNest Operations Team
 - **Next Review**: April 2024
 - **Owner**: QuantumNest Platform Team
 - **Approved By**: Chief Technology Officer, Chief Risk Officer
-

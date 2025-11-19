@@ -232,7 +232,7 @@ export default function Settings() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Appearance</h2>
-          
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="theme">
               Theme
@@ -273,7 +273,7 @@ export default function Settings() {
 
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-          
+
           <div className="mb-4">
             <label className="flex items-center">
               <input
@@ -316,7 +316,7 @@ export default function Settings() {
 
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Security</h2>
-          
+
           <div className="mb-4">
             <label className="flex items-center">
               <input
@@ -344,7 +344,7 @@ export default function Settings() {
           </div>
 
           <div className="mt-6">
-            <Button 
+            <Button
               onClick={() => setShowPasswordModal(true)}
               aria-label="change password"
             >
@@ -355,7 +355,7 @@ export default function Settings() {
 
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Privacy</h2>
-          
+
           <div className="mb-4">
             <label className="flex items-center">
               <input
@@ -391,14 +391,14 @@ export default function Settings() {
       </div>
 
       <div className="mt-8 flex justify-end space-x-4">
-        <Button 
-          variant="secondary" 
+        <Button
+          variant="secondary"
           onClick={handleCancel}
           aria-label="cancel"
         >
           Cancel
         </Button>
-        <Button 
+        <Button
           onClick={handleSave}
           aria-label="save"
         >
@@ -410,7 +410,7 @@ export default function Settings() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2" htmlFor="currentPassword">
                 Current Password
@@ -424,7 +424,7 @@ export default function Settings() {
                 onChange={handlePasswordChange}
               />
             </div>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2" htmlFor="newPassword">
                 New Password
@@ -438,7 +438,7 @@ export default function Settings() {
                 onChange={handlePasswordChange}
               />
             </div>
-            
+
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2" htmlFor="confirmPassword">
                 Confirm New Password
@@ -452,10 +452,10 @@ export default function Settings() {
                 onChange={handlePasswordChange}
               />
             </div>
-            
+
             <div className="flex justify-end space-x-4">
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={() => setShowPasswordModal(false)}
               >
                 Cancel

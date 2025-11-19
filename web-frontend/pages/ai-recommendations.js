@@ -223,8 +223,8 @@ export default function AIRecommendations({ darkMode, toggleDarkMode }) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{stock.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        stock.action === 'Buy' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                        stock.action === 'Buy'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : stock.action === 'Sell'
                             ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                             : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
@@ -257,8 +257,8 @@ export default function AIRecommendations({ darkMode, toggleDarkMode }) {
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">{trend.title}</h3>
                   <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                    trend.prediction.includes('Bullish') 
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                    trend.prediction.includes('Bullish')
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                       : trend.prediction.includes('Cautious') || trend.prediction.includes('Neutral')
                         ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'

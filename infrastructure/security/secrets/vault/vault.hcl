@@ -3,10 +3,10 @@
 storage "consul" {
   address = "127.0.0.1:8500"
   path    = "vault/"
-  
+
   # High availability configuration
   ha_enabled = true
-  
+
   # TLS configuration for Consul communication
   tls_ca_file   = "/opt/vault/tls/consul-ca.pem"
   tls_cert_file = "/opt/vault/tls/consul-cert.pem"
@@ -31,7 +31,7 @@ listener "tcp" {
   tls_key_file  = "/opt/vault/tls/vault-key.pem"
   tls_min_version = "tls12"
   tls_cipher_suites = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
-  
+
   # Security headers
   tls_disable_client_certs = false
   tls_require_and_verify_client_cert = true
@@ -56,7 +56,7 @@ ui = true
 telemetry {
   prometheus_retention_time = "30s"
   disable_hostname = true
-  
+
   # StatsD configuration
   statsd_address = "127.0.0.1:8125"
 }
@@ -86,4 +86,3 @@ cluster_name = "quantumnest-vault-cluster"
 
 # License path (for Vault Enterprise)
 # license_path = "/opt/vault/license/vault.hclic"
-

@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         setIsLoading(true);
         const response = await fetch('/api/auth/me');
-        
+
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -120,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       setIsLoading(true);
-      
+
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
       });
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
@@ -171,7 +171,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: {

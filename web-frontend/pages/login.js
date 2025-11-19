@@ -48,7 +48,7 @@ export default function Login({ darkMode, toggleDarkMode }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="absolute top-4 right-4">
-        <button 
+        <button
           onClick={toggleDarkMode}
           className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           aria-label="Toggle dark mode"
@@ -56,7 +56,7 @@ export default function Login({ darkMode, toggleDarkMode }) {
           {darkMode ? '☀️' : '🌙'}
         </button>
       </div>
-      
+
       <div className="max-w-md w-full space-y-8">
         <div>
           <Link href="/">
@@ -77,13 +77,13 @@ export default function Login({ darkMode, toggleDarkMode }) {
             </button>
           </p>
         </div>
-        
+
         {error && (
           <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative" role="alert">
             <span className="block sm:inline">{error}</span>
           </div>
         )}
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             {!isLogin && (
@@ -186,7 +186,7 @@ export default function Login({ darkMode, toggleDarkMode }) {
             </button>
           </div>
         </form>
-        
+
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

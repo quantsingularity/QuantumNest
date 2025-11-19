@@ -230,4 +230,3 @@ storage:
     retention.time: 30d
     retention.size: 100GB
     wal-compression: true
-

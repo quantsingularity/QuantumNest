@@ -52,16 +52,16 @@ export const WalletProvider = ({ children }) => {
       const library = new ethers.providers.Web3Provider(provider);
       const accounts = await library.listAccounts();
       const network = await library.getNetwork();
-      
+
       setProvider(provider);
       setLibrary(library);
-      
+
       if (accounts.length > 0) {
         setAccount(accounts[0]);
         const balance = await library.getBalance(accounts[0]);
         setBalance(ethers.utils.formatEther(balance));
       }
-      
+
       setNetwork(network.name);
       setChainId(network.chainId);
       setConnected(true);
@@ -93,7 +93,7 @@ export const WalletProvider = ({ children }) => {
   const switchNetwork = async (chainId) => {
     try {
       if (!provider) return;
-      
+
       await provider.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: ethers.utils.hexValue(chainId) }]
@@ -119,7 +119,7 @@ export const WalletProvider = ({ children }) => {
   const handleChainChanged = (chainId) => {
     const newChainId = parseInt(chainId, 16);
     setChainId(newChainId);
-    
+
     // Get network name
     if (newChainId === 1) {
       setNetwork('mainnet');
@@ -130,7 +130,7 @@ export const WalletProvider = ({ children }) => {
     } else {
       setNetwork(`chain-${newChainId}`);
     }
-    
+
     // Update balance for new chain
     if (account) {
       updateBalance(account);

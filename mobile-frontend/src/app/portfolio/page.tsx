@@ -67,7 +67,7 @@ export default function Portfolio() {
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Portfolio Management</h1>
         <Button size="sm">Create New Portfolio</Button>
       </div>
-      
+
       {/* Tabs - Scrollable on mobile */}
       <div className="overflow-x-auto pb-2">
         <div className="flex border-b border-gray-200 dark:border-gray-700 min-w-max">
@@ -103,7 +103,7 @@ export default function Portfolio() {
           </button>
         </div>
       </div>
-      
+
       {activeTab === 'portfolios' && (
         <div className="space-y-6">
           {/* Portfolios Grid */}
@@ -120,7 +120,7 @@ export default function Portfolio() {
               />
             ))}
           </div>
-          
+
           {/* Selected Portfolio Details */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
@@ -162,14 +162,14 @@ export default function Portfolio() {
               </Card>
             </div>
             <div>
-              <DoughnutChart 
-                data={allocationData} 
-                title="Asset Allocation" 
+              <DoughnutChart
+                data={allocationData}
+                title="Asset Allocation"
                 height={300} // Adjusted height
               />
             </div>
           </div>
-          
+
           {/* Portfolio Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
@@ -202,7 +202,7 @@ export default function Portfolio() {
           </div>
         </div>
       )}
-      
+
       {activeTab === 'performance' && (
         <div className="text-center py-8">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Performance Analysis</h3>
@@ -211,7 +211,7 @@ export default function Portfolio() {
           </p>
         </div>
       )}
-      
+
       {activeTab === 'transactions' && (
         <div className="text-center py-8">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Transaction History</h3>

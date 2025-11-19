@@ -12,8 +12,11 @@ from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (accuracy_score, classification_report,
-                             precision_recall_fscore_support)
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    precision_recall_fscore_support,
+)
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline

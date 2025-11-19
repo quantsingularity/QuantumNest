@@ -38,11 +38,11 @@ export default function Home() {
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
             A futuristic fintech platform integrating AI, Blockchain, Data Science, and Automation.
           </p>
-          
+
           {!isConnected ? (
-            <Button 
-              size="lg" 
-              onClick={connectWallet} 
+            <Button
+              size="lg"
+              onClick={connectWallet}
               isLoading={isConnecting}
               className="mb-8"
             >
@@ -53,21 +53,21 @@ export default function Home() {
               <p className="text-green-600 dark:text-green-400 font-medium mb-2">
                 Wallet Connected: {account?.substring(0, 6)}...{account?.substring(account.length - 4)}
               </p>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 onClick={() => window.location.href = '/dashboard'}
               >
                 Go to Dashboard
               </Button>
             </div>
           )}
-          
+
           {walletError && (
             <div className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 p-4 rounded-md mb-8">
               {walletError}
             </div>
           )}
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-12">
             <Card>
               <CardHeader>
@@ -92,7 +92,7 @@ export default function Home() {
                 )}
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Blockchain Status</CardTitle>
@@ -110,7 +110,7 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
             <Card>
               <CardContent className="p-6 flex flex-col items-center">
@@ -125,7 +125,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6 flex flex-col items-center">
                 <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
@@ -139,7 +139,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6 flex flex-col items-center">
                 <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">

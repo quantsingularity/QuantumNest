@@ -14,12 +14,15 @@ import os
 # NLP imports
 import openai
 from app.ai.advanced_lstm_model import AdvancedLSTMModel
-from app.ai.portfolio_optimization import (AdvancedPortfolioOptimizer,
-                                           OptimizationConstraints)
+from app.ai.portfolio_optimization import (
+    AdvancedPortfolioOptimizer,
+    OptimizationConstraints,
+)
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
 from openai import OpenAI
 from sklearn.cluster import KMeans
+
 # Machine learning imports
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import cosine_similarity
@@ -793,17 +796,17 @@ class AIFinancialAdvisor:
         try:
             prompt = f"""
             Generate a clear, professional rationale for the following investment allocation for a {profile.age}-year-old investor:
-            
+
             Investor Profile:
             - Age: {profile.age}
             - Risk Tolerance: {profile.risk_tolerance.value}
             - Investment Horizon: {profile.investment_horizon.value}
             - Investment Experience: {profile.investment_experience}
             - Goals: {[goal.value for goal in profile.investment_goals]}
-            
+
             Recommended Allocation:
             {allocation}
-            
+
             Explain why this allocation is appropriate for this investor in 2-3 paragraphs.
             """
 
@@ -1054,11 +1057,11 @@ class AIFinancialAdvisor:
         try:
             prompt = f"""
             Based on the following market data, provide a brief market outlook (2-3 sentences):
-            
+
             Recent Performance:
             - Economic Indicators: {market_data.get('economic_indicators', {})}
             - Sector Performance: {market_data.get('sectors', [])}
-            
+
             Focus on key trends and implications for long-term investors.
             """
 
@@ -1135,7 +1138,7 @@ class AIFinancialAdvisor:
             - Risk Tolerance: {profile.risk_tolerance.value}
             - Investment Goals: {[goal.value for goal in profile.investment_goals]}
             - Investment Horizon: {profile.investment_horizon.value}
-            
+
             Based on current market conditions, what should this investor focus on? (2-3 sentences)
             """
 

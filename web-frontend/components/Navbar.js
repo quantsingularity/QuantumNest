@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function Navbar({ darkMode, toggleDarkMode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

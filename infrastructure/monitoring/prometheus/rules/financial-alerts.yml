@@ -231,4 +231,3 @@ groups:
           summary: "High CPU usage"
           description: "Container {{ $labels.name }} CPU usage is {{ $value | humanizePercentage }}"
           runbook_url: "https://runbooks.quantumnest.com/performance/high-cpu"
-

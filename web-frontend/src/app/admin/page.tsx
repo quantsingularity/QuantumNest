@@ -36,31 +36,31 @@ export default function Admin() {
     const fetchAdminData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch users
         const usersResponse = await fetch('/api/admin/users');
         if (!usersResponse.ok) throw new Error('Failed to fetch users');
         const usersData = await usersResponse.json();
         setUsers(usersData);
-        
+
         // Fetch transactions
         const transactionsResponse = await fetch('/api/admin/transactions');
         if (!transactionsResponse.ok) throw new Error('Failed to fetch transactions');
         const transactionsData = await transactionsResponse.json();
         setTransactions(transactionsData);
-        
+
         // Fetch system stats
         const statsResponse = await fetch('/api/admin/system-stats');
         if (!statsResponse.ok) throw new Error('Failed to fetch system stats');
         const statsData = await statsResponse.json();
         setSystemStats(statsData);
-        
+
         // Fetch logs
         const logsResponse = await fetch('/api/admin/logs');
         if (!logsResponse.ok) throw new Error('Failed to fetch logs');
         const logsData = await logsResponse.json();
         setLogs(logsData);
-        
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching admin data:', error);
@@ -70,10 +70,10 @@ export default function Admin() {
     };
 
     fetchAdminData();
-    
+
     // Set up polling for real-time updates
     const interval = setInterval(fetchAdminData, 60000); // Update every minute
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -95,14 +95,14 @@ export default function Admin() {
 
   const handleUserDelete = async (userId: string) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
-    
+
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) throw new Error('Failed to delete user');
-      
+
       // Update users list
       setUsers(users.filter((user: any) => user.id !== userId));
     } catch (error) {
@@ -121,13 +121,13 @@ export default function Admin() {
 
   const handleUserFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const method = selectedUser ? 'PUT' : 'POST';
-      const url = selectedUser 
-        ? `/api/admin/users/${userFormData.id}` 
+      const url = selectedUser
+        ? `/api/admin/users/${userFormData.id}`
         : '/api/admin/users';
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -135,20 +135,20 @@ export default function Admin() {
         },
         body: JSON.stringify(userFormData),
       });
-      
+
       if (!response.ok) throw new Error(`Failed to ${selectedUser ? 'update' : 'create'} user`);
-      
+
       const updatedUser = await response.json();
-      
+
       // Update users list
       if (selectedUser) {
-        setUsers(users.map((user: any) => 
+        setUsers(users.map((user: any) =>
           user.id === updatedUser.id ? updatedUser : user
         ));
       } else {
         setUsers([...users, updatedUser]);
       }
-      
+
       // Close modal
       setUserModalOpen(false);
       setSelectedUser(null);
@@ -184,7 +184,7 @@ export default function Admin() {
             Add New User
           </Button>
         </div>
-        
+
         <Table
           headers={['Username', 'Email', 'Role', 'Status', 'Actions']}
           data={users.map((user: any) => [
@@ -193,13 +193,13 @@ export default function Admin() {
             user.role,
             user.status,
             <div key={user.id} className="flex space-x-2">
-              <button 
+              <button
                 className="text-blue-500 hover:text-blue-700"
                 onClick={() => handleUserEdit(user)}
               >
                 Edit
               </button>
-              <button 
+              <button
                 className="text-red-500 hover:text-red-700"
                 onClick={() => handleUserDelete(user.id)}
               >
@@ -235,53 +235,53 @@ export default function Admin() {
     return (
       <div>
         <h2 className="text-xl font-semibold mb-4">System Statistics</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">CPU Usage</h3>
             <div className="text-3xl font-bold">{systemStats.cpuUsage}%</div>
             <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
+              <div
+                className="bg-blue-600 h-2.5 rounded-full"
                 style={{ width: `${systemStats.cpuUsage}%` }}
               ></div>
             </div>
           </Card>
-          
+
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">Memory Usage</h3>
             <div className="text-3xl font-bold">{systemStats.memoryUsage}%</div>
             <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-              <div 
-                className="bg-green-600 h-2.5 rounded-full" 
+              <div
+                className="bg-green-600 h-2.5 rounded-full"
                 style={{ width: `${systemStats.memoryUsage}%` }}
               ></div>
             </div>
           </Card>
-          
+
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">Disk Usage</h3>
             <div className="text-3xl font-bold">{systemStats.diskUsage}%</div>
             <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-              <div 
-                className="bg-yellow-600 h-2.5 rounded-full" 
+              <div
+                className="bg-yellow-600 h-2.5 rounded-full"
                 style={{ width: `${systemStats.diskUsage}%` }}
               ></div>
             </div>
           </Card>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">Active Users</h3>
             <div className="text-3xl font-bold">{systemStats.activeUsers}</div>
           </Card>
-          
+
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">Total Transactions</h3>
             <div className="text-3xl font-bold">{systemStats.totalTransactions}</div>
           </Card>
-          
+
           <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">API Requests (24h)</h3>
             <div className="text-3xl font-bold">{systemStats.apiRequests}</div>
@@ -307,14 +307,14 @@ export default function Admin() {
             <Button>Download Logs</Button>
           </div>
         </div>
-        
+
         <div className="bg-gray-100 p-4 rounded font-mono text-sm h-96 overflow-y-auto">
           {logs.map((log: any, index: number) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`mb-1 ${
-                log.level === 'error' ? 'text-red-600' : 
-                log.level === 'warning' ? 'text-yellow-600' : 
+                log.level === 'error' ? 'text-red-600' :
+                log.level === 'warning' ? 'text-yellow-600' :
                 log.level === 'info' ? 'text-blue-600' : ''
               }`}
             >
@@ -397,7 +397,7 @@ export default function Admin() {
             <h2 className="text-xl font-semibold mb-4">
               {selectedUser ? 'Edit User' : 'Add New User'}
             </h2>
-            
+
             <form onSubmit={handleUserFormSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2" htmlFor="username">
@@ -413,7 +413,7 @@ export default function Admin() {
                   required
                 />
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2" htmlFor="email">
                   Email
@@ -428,7 +428,7 @@ export default function Admin() {
                   required
                 />
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2" htmlFor="role">
                   Role
@@ -445,7 +445,7 @@ export default function Admin() {
                   <option value="moderator">Moderator</option>
                 </select>
               </div>
-              
+
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2" htmlFor="status">
                   Status
@@ -462,10 +462,10 @@ export default function Admin() {
                   <option value="suspended">Suspended</option>
                 </select>
               </div>
-              
+
               <div className="flex justify-end space-x-4">
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   onClick={() => setUserModalOpen(false)}
                   type="button"
                 >

@@ -150,4 +150,3 @@ APScheduler==3.10.4
 
 # Monitoring
 prometheus-client==0.17.1
-

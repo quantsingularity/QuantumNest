@@ -185,7 +185,7 @@ export default function MarketAnalysis({ darkMode, toggleDarkMode }) {
               ))}
             </div>
           </div>
-          
+
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Market Sentiment</h2>
             <div className="h-64">
@@ -249,7 +249,7 @@ export default function MarketAnalysis({ darkMode, toggleDarkMode }) {
             <div className="p-4 bg-white dark:bg-gray-800 rounded-lg">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Market Trend Analysis</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-2">
-                Our AI models indicate a continued bullish trend in technology and healthcare sectors over the next 30 days, with a 78% confidence level. 
+                Our AI models indicate a continued bullish trend in technology and healthcare sectors over the next 30 days, with a 78% confidence level.
                 Recent economic data supports this projection, particularly the strong consumer confidence numbers and easing inflation pressures.
               </p>
               <button className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">View Detailed Analysis</button>
@@ -257,7 +257,7 @@ export default function MarketAnalysis({ darkMode, toggleDarkMode }) {
             <div className="p-4 bg-white dark:bg-gray-800 rounded-lg">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Volatility Forecast</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-2">
-                Market volatility is projected to decrease by 15% in the coming weeks based on our predictive models. 
+                Market volatility is projected to decrease by 15% in the coming weeks based on our predictive models.
                 This suggests a stabilizing market environment, potentially favorable for long-term investment strategies.
               </p>
               <button className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">View Volatility Models</button>
@@ -265,7 +265,7 @@ export default function MarketAnalysis({ darkMode, toggleDarkMode }) {
             <div className="p-4 bg-white dark:bg-gray-800 rounded-lg">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Sector Rotation Prediction</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-2">
-                Our AI predicts a potential sector rotation from technology to healthcare and consumer staples within the next 45-60 days. 
+                Our AI predicts a potential sector rotation from technology to healthcare and consumer staples within the next 45-60 days.
                 This projection is based on historical patterns, current economic indicators, and sentiment analysis.
               </p>
               <button className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">View Sector Analysis</button>

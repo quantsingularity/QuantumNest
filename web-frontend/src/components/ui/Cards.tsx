@@ -31,7 +31,7 @@ export function StatCard({ title, value, change, icon, description, isLoading }:
           </div>
           {icon && <div className="text-indigo-600 dark:text-indigo-400">{icon}</div>}
         </div>
-        
+
         {(isPositiveChange || isNegativeChange) && (
           <div className="mt-2 flex items-center">
             <div
@@ -77,7 +77,7 @@ export function AssetCard({
   const isPositive = change24h > 0;
 
   return (
-    <Card 
+    <Card
       className={`overflow-hidden transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
       onClick={onClick}
     >
@@ -105,7 +105,7 @@ export function AssetCard({
             </p>
           </div>
         </div>
-        
+
         {(marketCap || volume24h) && (
           <div className="mt-4 grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
             {marketCap && (
@@ -148,7 +148,7 @@ export function PortfolioCard({
   const isNegative = typeof change === 'number' && change < 0;
 
   return (
-    <Card 
+    <Card
       className={`overflow-hidden transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
       onClick={onClick}
     >

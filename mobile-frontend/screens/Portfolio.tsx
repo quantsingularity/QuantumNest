@@ -37,19 +37,19 @@ const Portfolio = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch portfolio assets
       const portfolioData = await fetchPortfolio();
       setPortfolio(portfolioData);
-      
+
       // Calculate total portfolio value
       const total = portfolioData.reduce((sum, asset) => sum + asset.value, 0);
       setTotalValue(total);
-      
+
       // Fetch portfolio history based on selected time range
       const historyData = await fetchPortfolioHistory(timeRange);
       setPortfolioHistory(historyData);
-      
+
       setLoading(false);
     } catch (err) {
       console.error('Error loading portfolio data:', err);
@@ -94,7 +94,7 @@ const Portfolio = () => {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Portfolio</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.addButton}
             onPress={handleAddAsset}
           >
@@ -163,9 +163,9 @@ const Portfolio = () => {
               </TouchableOpacity>
             </View>
 
-            <AssetList 
-              assets={portfolio.slice(0, 5)} 
-              onAssetPress={handleAssetPress} 
+            <AssetList
+              assets={portfolio.slice(0, 5)}
+              onAssetPress={handleAssetPress}
             />
           </>
         )}

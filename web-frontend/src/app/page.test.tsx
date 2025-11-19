@@ -17,4 +17,4 @@ test('interacts with a button', () => {
   const button = screen.getByRole('button', { name: /click me/i });
   fireEvent.click(button);
   expect(screen.getByText(/button clicked/i)).toBeInTheDocument();
-}); 
+});

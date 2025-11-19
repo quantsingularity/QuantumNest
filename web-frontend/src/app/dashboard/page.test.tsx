@@ -135,7 +135,7 @@ describe('Dashboard Page', () => {
     const mockError = new Error('Failed to load chart data');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/charts'), 'getPortfolioChartData').mockRejectedValueOnce(mockError);
-    
+
     render(<Dashboard />);
     await waitFor(() => {
       expect(screen.getByText(/error loading chart data/i)).toBeInTheDocument();
@@ -146,10 +146,10 @@ describe('Dashboard Page', () => {
     const mockError = new Error('Failed to load market data');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/charts'), 'getMarketChartData').mockRejectedValueOnce(mockError);
-    
+
     render(<Dashboard />);
     await waitFor(() => {
       expect(screen.getByText(/error loading market data/i)).toBeInTheDocument();
     });
   });
-}); 
+});

@@ -262,7 +262,7 @@ export default function Dashboard({ darkMode, toggleDarkMode }) {
                   </ResponsiveContainer>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Recent Activity</h2>
                 <div className="space-y-4 max-h-64 overflow-y-auto">
@@ -296,8 +296,8 @@ export default function Dashboard({ darkMode, toggleDarkMode }) {
                     <div key={index} className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
                       <div className="flex items-start">
                         <div className={`flex-shrink-0 rounded-full w-2 h-2 mt-2 mr-3 ${
-                          notification.priority === 'high' 
-                            ? 'bg-red-500' 
+                          notification.priority === 'high'
+                            ? 'bg-red-500'
                             : notification.priority === 'medium'
                               ? 'bg-yellow-500'
                               : 'bg-green-500'
@@ -317,7 +317,7 @@ export default function Dashboard({ darkMode, toggleDarkMode }) {
                   </button>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Upcoming Events</h2>
                 <div className="space-y-4">

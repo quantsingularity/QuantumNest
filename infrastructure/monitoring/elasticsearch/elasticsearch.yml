@@ -11,7 +11,7 @@ http.port: 9200
 transport.port: 9300
 
 # Discovery settings for cluster
-discovery.seed_hosts: 
+discovery.seed_hosts:
   - elasticsearch-master-0.elasticsearch-master.elastic-system.svc.cluster.local
   - elasticsearch-master-1.elasticsearch-master.elastic-system.svc.cluster.local
   - elasticsearch-master-2.elasticsearch-master.elastic-system.svc.cluster.local
@@ -127,4 +127,3 @@ cluster.blocks.read_only_allow_delete: false
 
 # Custom index templates for financial data
 # These will be applied via API calls during setup
-

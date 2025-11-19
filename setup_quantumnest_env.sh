@@ -51,7 +51,7 @@ else
     else
         source venv/bin/activate
         echo "Backend Python virtual environment 'venv' created and activated."
-        
+
         if [ -f "requirements.txt" ]; then
             echo "Installing backend Python dependencies from requirements.txt..."
             pip3 install -r requirements.txt
@@ -59,7 +59,7 @@ else
         else
             echo "Skipping pip install for backend as requirements.txt was not found."
         fi
-        
+
         echo "To activate the backend virtual environment later, run: source ${BACKEND_DIR_QN}/venv/bin/activate"
         echo "To start the backend server (from project root after activating venv): npm run backend:dev (as per README)"
         deactivate
@@ -117,18 +117,18 @@ else
         echo "Error: package.json not found in ${MOBILE_FRONTEND_DIR_QN}. Cannot install Mobile Frontend dependencies."
     else
         echo "Installing Mobile Frontend Node.js dependencies using pnpm (as indicated by packageManager in package.json)..."
-        if ! command -v pnpm &> /dev/null; then 
+        if ! command -v pnpm &> /dev/null; then
             echo "pnpm command not found. Attempting to install pnpm globally using npm..."
-            if command -v npm &> /dev/null; then 
+            if command -v npm &> /dev/null; then
                 sudo npm install -g pnpm
-                if ! command -v pnpm &> /dev/null; then 
+                if ! command -v pnpm &> /dev/null; then
                     echo "Failed to install pnpm. Please install pnpm manually and re-run or install dependencies manually."
                 else
                     echo "pnpm installed successfully. Proceeding with dependency installation."
                     pnpm install
                     echo "Mobile Frontend dependencies installed using pnpm."
                 fi
-            else 
+            else
                 echo "npm command not found. Cannot install pnpm. Please install pnpm manually and re-run or install dependencies manually."
             fi
         else

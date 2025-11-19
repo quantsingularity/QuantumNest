@@ -44,7 +44,7 @@ function show_help {
 # Function to check status of CI/CD configuration
 function check_status {
   echo -e "${BLUE}Checking status of CI/CD configuration...${NC}"
-  
+
   # Check if workflow directory exists
   if [ ! -d "$WORKFLOW_DIR" ]; then
     echo -e "${RED}GitHub workflow directory not found: ${WORKFLOW_DIR}${NC}"
@@ -60,11 +60,11 @@ function check_status {
   else
     echo -e "${GREEN}GitHub workflow directory exists: ${WORKFLOW_DIR}${NC}"
   fi
-  
+
   # Count workflow files
   local workflow_count=$(find "$WORKFLOW_DIR" -name "*.yml" -o -name "*.yaml" | wc -l)
   echo "Found ${workflow_count} workflow file(s)."
-  
+
   # List workflow files
   if [ $workflow_count -gt 0 ]; then
     echo "Workflow files:"
@@ -74,11 +74,11 @@ function check_status {
       echo "  - ${name} (Triggers: ${triggers}...)"
     done
   fi
-  
+
   # Check for common CI tools configuration
   echo ""
   echo "Checking for CI tool configurations:"
-  
+
   # ESLint
   if [ -f "${PROJECT_DIR}/.eslintrc.js" ] || [ -f "${PROJECT_DIR}/.eslintrc.json" ] || [ -f "${PROJECT_DIR}/.eslintrc.yml" ]; then
     echo -e "${GREEN}✓ ESLint configuration found${NC}"
@@ -89,7 +89,7 @@ function check_status {
       echo -e "${GREEN}  ✓ ESLint configuration found in frontend directories${NC}"
     fi
   fi
-  
+
   # Prettier
   if [ -f "${PROJECT_DIR}/.prettierrc" ] || [ -f "${PROJECT_DIR}/.prettierrc.js" ] || [ -f "${PROJECT_DIR}/.prettierrc.json" ]; then
     echo -e "${GREEN}✓ Prettier configuration found${NC}"
@@ -100,7 +100,7 @@ function check_status {
       echo -e "${GREEN}  ✓ Prettier configuration found in frontend directories${NC}"
     fi
   fi
-  
+
   # Jest
   if [ -f "${PROJECT_DIR}/jest.config.js" ]; then
     echo -e "${GREEN}✓ Jest configuration found${NC}"
@@ -111,14 +111,14 @@ function check_status {
       echo -e "${GREEN}  ✓ Jest configuration found in frontend directories${NC}"
     fi
   fi
-  
+
   # Python testing
   if [ -f "${PROJECT_DIR}/pytest.ini" ] || [ -d "${PROJECT_DIR}/backend/tests" ]; then
     echo -e "${GREEN}✓ Python test configuration found${NC}"
   else
     echo -e "${YELLOW}! Python test configuration not found${NC}"
   fi
-  
+
   # Docker
   if [ -f "${PROJECT_DIR}/Dockerfile" ] || [ -f "${PROJECT_DIR}/docker-compose.yml" ]; then
     echo -e "${GREEN}✓ Docker configuration found${NC}"
@@ -129,7 +129,7 @@ function check_status {
       echo -e "${GREEN}  ✓ Docker configuration found in component directories${NC}"
     fi
   fi
-  
+
   echo ""
   echo -e "${GREEN}CI/CD status check complete.${NC}"
 }
@@ -137,23 +137,23 @@ function check_status {
 # Function to validate CI/CD workflow files
 function validate_workflows {
   echo -e "${BLUE}Validating CI/CD workflow files...${NC}"
-  
+
   # Check if workflow directory exists
   if [ ! -d "$WORKFLOW_DIR" ]; then
     echo -e "${RED}GitHub workflow directory not found: ${WORKFLOW_DIR}${NC}"
     return 1
   fi
-  
+
   # Count workflow files
   local workflow_count=$(find "$WORKFLOW_DIR" -name "*.yml" -o -name "*.yaml" | wc -l)
-  
+
   if [ $workflow_count -eq 0 ]; then
     echo -e "${YELLOW}No workflow files found in ${WORKFLOW_DIR}${NC}"
     return 1
   fi
-  
+
   echo "Found ${workflow_count} workflow file(s) to validate."
-  
+
   # Check if yamllint is installed
   local yamllint_available=false
   if command -v yamllint &> /dev/null; then
@@ -163,14 +163,14 @@ function validate_workflows {
     echo "Consider installing yamllint for more thorough validation:"
     echo "  pip install yamllint"
   fi
-  
+
   # Validate each workflow file
   local errors=0
-  
+
   find "$WORKFLOW_DIR" -name "*.yml" -o -name "*.yaml" | while read -r file; do
     local name=$(basename "$file")
     echo "Validating ${name}..."
-    
+
     # Basic YAML syntax validation using Python
     python3 -c "import yaml; yaml.safe_load(open('$file', 'r'))" 2>/dev/null
     if [ $? -ne 0 ]; then
@@ -181,7 +181,7 @@ function validate_workflows {
     else
       echo -e "${GREEN}  ✓ YAML syntax is valid${NC}"
     fi
-    
+
     # Additional validation with yamllint if available
     if [ "$yamllint_available" = true ]; then
       yamllint -d "{extends: relaxed, rules: {line-length: {max: 120}}}" "$file" > /dev/null 2>&1
@@ -192,25 +192,25 @@ function validate_workflows {
         echo -e "${GREEN}  ✓ yamllint validation passed${NC}"
       fi
     fi
-    
+
     # Check for common GitHub Actions workflow issues
     if ! grep -q "runs-on:" "$file"; then
       echo -e "${RED}  ✗ Missing 'runs-on' directive in ${name}${NC}"
       errors=$((errors+1))
     fi
-    
+
     if ! grep -q "steps:" "$file"; then
       echo -e "${RED}  ✗ Missing 'steps' directive in ${name}${NC}"
       errors=$((errors+1))
     fi
-    
+
     if ! grep -q "actions/checkout@" "$file"; then
       echo -e "${YELLOW}  ! Warning: Workflow might be missing checkout action in ${name}${NC}"
     fi
-    
+
     echo ""
   done
-  
+
   if [ $errors -eq 0 ]; then
     echo -e "${GREEN}All workflow files validated successfully.${NC}"
   else
@@ -222,18 +222,18 @@ function validate_workflows {
 # Function to run CI tests locally before pushing
 function run_local_tests {
   echo -e "${BLUE}Running CI tests locally...${NC}"
-  
+
   # Create a temporary directory for test results
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local results_dir="${PROJECT_DIR}/ci_test_results_${timestamp}"
   mkdir -p "$results_dir"
-  
+
   echo "Test results will be saved to: ${results_dir}"
-  
+
   # Run linting
   echo ""
   echo -e "${BLUE}Running linting checks...${NC}"
-  
+
   # Check if lint-all.sh exists and is executable
   if [ -f "${PROJECT_DIR}/lint-all.sh" ] && [ -x "${PROJECT_DIR}/lint-all.sh" ]; then
     echo "Running lint-all.sh script..."
@@ -249,11 +249,11 @@ function run_local_tests {
     echo -e "${YELLOW}! lint-all.sh not found or not executable${NC}"
     echo "Skipping linting checks."
   fi
-  
+
   # Run frontend tests
   echo ""
   echo -e "${BLUE}Running frontend tests...${NC}"
-  
+
   # Web Frontend tests
   if [ -d "${PROJECT_DIR}/web-frontend" ]; then
     echo "Running Web Frontend tests..."
@@ -280,7 +280,7 @@ function run_local_tests {
     echo -e "${YELLOW}! Web Frontend directory not found${NC}"
     echo "Skipping Web Frontend tests."
   fi
-  
+
   # Mobile Frontend tests
   if [ -d "${PROJECT_DIR}/mobile-frontend" ]; then
     echo "Running Mobile Frontend tests..."
@@ -307,11 +307,11 @@ function run_local_tests {
     echo -e "${YELLOW}! Mobile Frontend directory not found${NC}"
     echo "Skipping Mobile Frontend tests."
   fi
-  
+
   # Run backend tests
   echo ""
   echo -e "${BLUE}Running backend tests...${NC}"
-  
+
   if [ -d "${PROJECT_DIR}/backend" ]; then
     echo "Running Backend tests..."
     if [ -d "${PROJECT_DIR}/backend/tests" ]; then
@@ -337,11 +337,11 @@ function run_local_tests {
     echo -e "${YELLOW}! Backend directory not found${NC}"
     echo "Skipping Backend tests."
   fi
-  
+
   # Run blockchain tests
   echo ""
   echo -e "${BLUE}Running blockchain tests...${NC}"
-  
+
   if [ -d "${PROJECT_DIR}/blockchain" ]; then
     echo "Running Blockchain tests..."
     if [ -f "${PROJECT_DIR}/blockchain/package.json" ]; then
@@ -367,17 +367,17 @@ function run_local_tests {
     echo -e "${YELLOW}! Blockchain directory not found${NC}"
     echo "Skipping Blockchain tests."
   fi
-  
+
   # Generate summary report
   echo ""
   echo -e "${BLUE}Generating test summary...${NC}"
-  
+
   {
     echo "QuantumNest Local CI Test Summary"
     echo "Timestamp: $(date)"
     echo "----------------------------------------"
     echo ""
-    
+
     # Linting summary
     echo "## Linting Results"
     if [ -f "${results_dir}/lint_results.log" ]; then
@@ -393,7 +393,7 @@ function run_local_tests {
       echo "Linting was not performed."
     fi
     echo ""
-    
+
     # Web Frontend summary
     echo "## Web Frontend Test Results"
     if [ -f "${results_dir}/web_frontend_test_results.log" ]; then
@@ -409,7 +409,7 @@ function run_local_tests {
       echo "Web Frontend tests were not performed."
     fi
     echo ""
-    
+
     # Mobile Frontend summary
     echo "## Mobile Frontend Test Results"
     if [ -f "${results_dir}/mobile_frontend_test_results.log" ]; then
@@ -425,7 +425,7 @@ function run_local_tests {
       echo "Mobile Frontend tests were not performed."
     fi
     echo ""
-    
+
     # Backend summary
     echo "## Backend Test Results"
     if [ -f "${results_dir}/backend_test_results.log" ]; then
@@ -441,7 +441,7 @@ function run_local_tests {
       echo "Backend tests were not performed."
     fi
     echo ""
-    
+
     # Blockchain summary
     echo "## Blockchain Test Results"
     if [ -f "${results_dir}/blockchain_test_results.log" ]; then
@@ -457,7 +457,7 @@ function run_local_tests {
       echo "Blockchain tests were not performed."
     fi
     echo ""
-    
+
     # Overall summary
     echo "## Overall Summary"
     echo "Test run completed at: $(date)"
@@ -470,10 +470,10 @@ function run_local_tests {
       echo "READY TO PUSH. All performed tests have passed."
     fi
   } > "${results_dir}/summary.txt"
-  
+
   echo -e "${GREEN}Local CI tests completed.${NC}"
   echo "Summary report saved to: ${results_dir}/summary.txt"
-  
+
   # Display summary
   cat "${results_dir}/summary.txt"
 }
@@ -481,31 +481,31 @@ function run_local_tests {
 # Function to create a preview deployment
 function preview_deploy {
   echo -e "${BLUE}Creating preview deployment...${NC}"
-  
+
   # Check for required tools
   if ! command -v docker &> /dev/null; then
     echo -e "${RED}Error: docker is required for preview deployment.${NC}"
     echo "Please install docker and try again."
     return 1
   fi
-  
+
   if ! command -v docker-compose &> /dev/null; then
     echo -e "${RED}Error: docker-compose is required for preview deployment.${NC}"
     echo "Please install docker-compose and try again."
     return 1
   fi
-  
+
   # Create a temporary directory for preview deployment
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local preview_dir="${PROJECT_DIR}/preview_deployment_${timestamp}"
   mkdir -p "$preview_dir"
-  
+
   echo "Preview deployment will be created in: ${preview_dir}"
-  
+
   # Create docker-compose.yml if it doesn't exist
   if [ ! -f "${PROJECT_DIR}/docker-compose.yml" ]; then
     echo "Creating docker-compose.yml for preview deployment..."
-    
+
     cat > "${preview_dir}/docker-compose.yml" << EOF
 version: '3'
 
@@ -572,17 +572,17 @@ networks:
 volumes:
   postgres-data:
 EOF
-    
+
     echo -e "${GREEN}Created docker-compose.yml for preview deployment.${NC}"
   else
     echo "Using existing docker-compose.yml for preview deployment."
     cp "${PROJECT_DIR}/docker-compose.yml" "${preview_dir}/docker-compose.yml"
   fi
-  
+
   # Create Dockerfile.preview for backend if it doesn't exist
   if [ ! -f "${PROJECT_DIR}/backend/Dockerfile" ] && [ ! -f "${PROJECT_DIR}/backend/Dockerfile.preview" ]; then
     echo "Creating Dockerfile.preview for backend..."
-    
+
     mkdir -p "${preview_dir}/backend"
     cat > "${preview_dir}/backend/Dockerfile.preview" << EOF
 FROM python:3.9-slim
@@ -598,7 +598,7 @@ EXPOSE 8000
 
 CMD ["python", "app.py"]
 EOF
-    
+
     echo -e "${GREEN}Created Dockerfile.preview for backend.${NC}"
   elif [ -f "${PROJECT_DIR}/backend/Dockerfile" ]; then
     echo "Using existing Dockerfile for backend."
@@ -609,11 +609,11 @@ EOF
     mkdir -p "${preview_dir}/backend"
     cp "${PROJECT_DIR}/backend/Dockerfile.preview" "${preview_dir}/backend/Dockerfile.preview"
   fi
-  
+
   # Create Dockerfile.preview for web-frontend if it doesn't exist
   if [ ! -f "${PROJECT_DIR}/web-frontend/Dockerfile" ] && [ ! -f "${PROJECT_DIR}/web-frontend/Dockerfile.preview" ]; then
     echo "Creating Dockerfile.preview for web-frontend..."
-    
+
     mkdir -p "${preview_dir}/web-frontend"
     cat > "${preview_dir}/web-frontend/Dockerfile.preview" << EOF
 FROM node:16-alpine
@@ -629,7 +629,7 @@ EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
 EOF
-    
+
     echo -e "${GREEN}Created Dockerfile.preview for web-frontend.${NC}"
   elif [ -f "${PROJECT_DIR}/web-frontend/Dockerfile" ]; then
     echo "Using existing Dockerfile for web-frontend."
@@ -640,7 +640,7 @@ EOF
     mkdir -p "${preview_dir}/web-frontend"
     cp "${PROJECT_DIR}/web-frontend/Dockerfile.preview" "${preview_dir}/web-frontend/Dockerfile.preview"
   fi
-  
+
   # Create preview deployment script
   cat > "${preview_dir}/start-preview.sh" << EOF
 #!/bin/bash
@@ -685,9 +685,9 @@ else
   echo "  docker-compose logs"
 fi
 EOF
-  
+
   chmod +x "${preview_dir}/start-preview.sh"
-  
+
   echo -e "${GREEN}Preview deployment setup complete.${NC}"
   echo "To start the preview deployment, run:"
   echo "  cd ${preview_dir} && ./start-preview.sh"
@@ -696,19 +696,19 @@ EOF
 # Function to generate new workflow file from template
 function generate_workflow {
   local workflow_name=$1
-  
+
   if [ -z "$workflow_name" ]; then
     echo -e "${RED}Error: Workflow name required.${NC}"
     echo "Usage: ./cicd_enhancer.sh generate workflow-name"
     return 1
   fi
-  
+
   # Create workflow directory if it doesn't exist
   if [ ! -d "$WORKFLOW_DIR" ]; then
     mkdir -p "$WORKFLOW_DIR"
     echo -e "${GREEN}Created workflow directory: ${WORKFLOW_DIR}${NC}"
   fi
-  
+
   # Check if workflow file already exists
   local workflow_file="${WORKFLOW_DIR}/${workflow_name}.yml"
   if [ -f "$workflow_file" ]; then
@@ -716,9 +716,9 @@ function generate_workflow {
     echo "Please choose a different name or delete the existing file."
     return 1
   fi
-  
+
   echo -e "${BLUE}Generating new workflow file: ${workflow_name}.yml${NC}"
-  
+
   # Prompt for workflow type
   echo "Select workflow type:"
   echo "1. CI workflow (lint and test)"
@@ -727,7 +727,7 @@ function generate_workflow {
   echo "4. Pull request validation"
   echo "5. Custom workflow"
   read -p "Enter your choice (1-5): " workflow_type
-  
+
   case $workflow_type in
     1)
       # CI workflow
@@ -747,44 +747,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Run linting
         run: |
           npm run lint
-  
+
   test:
     name: Test
     runs-on: ubuntu-latest
     needs: lint
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Run tests
         run: |
           npm test
 EOF
       ;;
-    
+
     2)
       # CD workflow
       cat > "$workflow_file" << EOF
@@ -801,47 +801,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Build
         run: |
           npm run build
-      
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: build/
-  
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: build
           path: build/
-      
+
       - name: Deploy to production
         run: |
           echo "Deploying to production..."
           # Add your deployment commands here
 EOF
       ;;
-    
+
     3)
       # Full CI/CD workflow
       cat > "$workflow_file" << EOF
@@ -860,42 +860,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Run linting
         run: |
           npm run lint
-  
+
   test:
     name: Test
     runs-on: ubuntu-latest
     needs: lint
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Run tests
         run: |
           npm test
-  
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -903,27 +903,27 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Build
         run: |
           npm run build
-      
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: build/
-  
+
   deploy-staging:
     name: Deploy to Staging
     runs-on: ubuntu-latest
@@ -931,18 +931,18 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: build
           path: build/
-      
+
       - name: Deploy to staging
         run: |
           echo "Deploying to staging..."
           # Add your staging deployment commands here
-  
+
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -950,20 +950,20 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: build
           path: build/
-      
+
       - name: Deploy to production
         run: |
           echo "Deploying to production..."
           # Add your production deployment commands here
 EOF
       ;;
-    
+
     4)
       # Pull request validation
       cat > "$workflow_file" << EOF
@@ -979,31 +979,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           npm ci
-      
+
       - name: Run linting
         run: |
           npm run lint
-      
+
       - name: Run tests
         run: |
           npm test
-      
+
       - name: Check build
         run: |
           npm run build
 EOF
       ;;
-    
+
     5)
       # Custom workflow (minimal template)
       cat > "$workflow_file" << EOF
@@ -1021,21 +1021,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       # Add your custom steps here
       - name: Custom Step
         run: |
           echo "Add your commands here"
 EOF
       ;;
-    
+
     *)
       echo -e "${RED}Invalid choice. Please select a number between 1 and 5.${NC}"
       rm -f "$workflow_file"
       return 1
       ;;
   esac
-  
+
   echo -e "${GREEN}Workflow file generated: ${workflow_file}${NC}"
   echo "Please review and customize the workflow file as needed."
 }

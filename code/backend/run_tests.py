@@ -94,30 +94,30 @@ try:
     from app.core.logging import get_logger
     from app.models.models import User, Account, Portfolio, Transaction
     print("✓ Core imports successful")
-    
+
     # Test auth imports
     from app.auth.authentication import AdvancedAuthenticationSystem
     from app.auth.authorization import RoleBasedAccessControl
     print("✓ Auth imports successful")
-    
+
     # Test service imports
     from app.services.trading_service import TradingService
     from app.services.market_data_service import MarketDataService
     from app.services.risk_management_service import RiskManagementService
     print("✓ Service imports successful")
-    
+
     # Test AI imports
     from app.ai.fraud_detection import AdvancedFraudDetectionSystem
     from app.ai.financial_advisor import AIFinancialAdvisor
     from app.ai.portfolio_optimization import PortfolioOptimizer
     print("✓ AI imports successful")
-    
+
     # Test utility imports
     from app.utils.encryption import encryption_manager
     print("✓ Utility imports successful")
-    
+
     print("\\n✓ All imports successful")
-    
+
 except ImportError as e:
     print(f"✗ Import error: {e}")
     sys.exit(1)

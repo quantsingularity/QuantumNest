@@ -149,7 +149,7 @@ describe('Settings Page', () => {
 
   test('handles settings validation', async () => {
     jest.spyOn(require('@/lib/settings'), 'validateSettings').mockResolvedValueOnce(false);
-    
+
     render(<Settings />);
     const saveButton = screen.getByRole('button', { name: /save/i });
     fireEvent.click(saveButton);
@@ -162,7 +162,7 @@ describe('Settings Page', () => {
     const mockError = new Error('Failed to load settings');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/settings'), 'getSettings').mockRejectedValueOnce(mockError);
-    
+
     render(<Settings />);
     await waitFor(() => {
       expect(screen.getByText(/error loading settings/i)).toBeInTheDocument();
@@ -173,7 +173,7 @@ describe('Settings Page', () => {
     const mockError = new Error('Failed to update settings');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/settings'), 'updateSettings').mockRejectedValueOnce(mockError);
-    
+
     render(<Settings />);
     const saveButton = screen.getByRole('button', { name: /save/i });
     fireEvent.click(saveButton);
@@ -181,4 +181,4 @@ describe('Settings Page', () => {
       expect(screen.getByText(/error saving settings/i)).toBeInTheDocument();
     });
   });
-}); 
+});

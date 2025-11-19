@@ -8,7 +8,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
     if (typeof window === 'undefined') {
       return initialValue;
     }
-    
+
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
@@ -23,10 +23,10 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
     try {
       // Allow value to be a function so we have the same API as useState
       const valueToStore = value instanceof Function ? value(storedValue) : value;
-      
+
       // Save to state
       setStoredValue(valueToStore);
-      
+
       // Save to local storage
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
@@ -44,15 +44,15 @@ export function useMediaQuery(query: string): boolean {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const media = window.matchMedia(query);
     if (media.matches !== matches) {
       setMatches(media.matches);
     }
-    
+
     const listener = () => setMatches(media.matches);
     media.addEventListener('change', listener);
-    
+
     return () => media.removeEventListener('change', listener);
   }, [matches, query]);
 
@@ -143,7 +143,7 @@ export function useTheme() {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    
+
     if (theme === 'system') {
       root.classList.remove('light', 'dark');
       root.classList.add(systemTheme);

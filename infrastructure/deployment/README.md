@@ -58,4 +58,3 @@ This directory contains comprehensive deployment and orchestration configuration
 - **PCI DSS**: Secure deployment of payment processing applications
 - **ISO 27001**: Information security management in deployment processes
 - **NIST Cybersecurity Framework**: Secure development and deployment practices
-

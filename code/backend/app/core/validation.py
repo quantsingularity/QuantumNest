@@ -194,7 +194,7 @@ class FinancialValidator:
 
     @staticmethod
     def validate_portfolio_allocation(
-        allocations: Dict[str, Decimal]
+        allocations: Dict[str, Decimal],
     ) -> ValidationResult:
         """Validate portfolio allocation percentages"""
         result = ValidationResult()

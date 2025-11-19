@@ -11,25 +11,34 @@ warnings.filterwarnings("ignore")
 
 import joblib
 import networkx as nx
+
 # Deep learning imports
 import tensorflow as tf
 from app.core.logging import get_logger
 from app.models.models import Transaction, User
+
 # Statistical imports
 from scipy import stats
 from sklearn.cluster import DBSCAN
+
 # Machine learning imports
-from sklearn.ensemble import (GradientBoostingClassifier, IsolationForest,
-                              RandomForestClassifier)
+from sklearn.ensemble import (
+    GradientBoostingClassifier,
+    IsolationForest,
+    RandomForestClassifier,
+)
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (classification_report, confusion_matrix,
-                             precision_recall_curve, roc_auc_score)
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    precision_recall_curve,
+    roc_auc_score,
+)
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.svm import OneClassSVM
 from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.layers import (LSTM, BatchNormalization, Dense, Dropout,
-                                     Input)
+from tensorflow.keras.layers import LSTM, BatchNormalization, Dense, Dropout, Input
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
 

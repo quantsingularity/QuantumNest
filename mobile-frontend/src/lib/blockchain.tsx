@@ -92,24 +92,24 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
     try {
       // Activate the injected connector
       await injected.activate();
-      
+
       // Get provider and signer
       const provider = new ethers.providers.Web3Provider((window as any).ethereum);
       setProvider(provider);
-      
+
       const signer = provider.getSigner();
       setSigner(signer);
-      
+
       // Get account and chain ID
       const accounts = await provider.listAccounts();
       setAccount(accounts[0]);
-      
+
       const { chainId } = await provider.getNetwork();
       setChainId(chainId);
-      
+
       // Initialize contracts
       initializeContracts(provider);
-      
+
       // Listen for account and chain changes
       (window as any).ethereum.on('accountsChanged', handleAccountsChanged);
       (window as any).ethereum.on('chainChanged', handleChainChanged);
@@ -126,7 +126,7 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
       (window as any).ethereum.removeListener('accountsChanged', handleAccountsChanged);
       (window as any).ethereum.removeListener('chainChanged', handleChainChanged);
     }
-    
+
     setAccount(null);
     setChainId(null);
     setProvider(null);
@@ -153,7 +153,7 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
     // Chain ID is provided as a hexadecimal string
     const newChainId = parseInt(chainIdHex, 16);
     setChainId(newChainId);
-    
+
     // Refresh the page to ensure all state is updated correctly
     window.location.reload();
   };
@@ -161,37 +161,37 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
   const initializeContracts = (provider: Web3Provider) => {
     try {
       const signer = provider.getSigner();
-      
+
       const tokenizedAsset = new ethers.Contract(
         CONTRACT_ADDRESSES.TokenizedAsset,
         TokenizedAssetABI,
         signer
       );
-      
+
       const portfolioManager = new ethers.Contract(
         CONTRACT_ADDRESSES.PortfolioManager,
         PortfolioManagerABI,
         signer
       );
-      
+
       const tradingPlatform = new ethers.Contract(
         CONTRACT_ADDRESSES.TradingPlatform,
         TradingPlatformABI,
         signer
       );
-      
+
       const defiIntegration = new ethers.Contract(
         CONTRACT_ADDRESSES.DeFiIntegration,
         DeFiIntegrationABI,
         signer
       );
-      
+
       const testToken = new ethers.Contract(
         CONTRACT_ADDRESSES.TestToken,
         TestTokenABI,
         signer
       );
-      
+
       setContracts({
         tokenizedAsset,
         portfolioManager,
@@ -212,9 +212,9 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
         connectWallet();
       }
     };
-    
+
     checkConnection();
-    
+
     return () => {
       // Clean up event listeners
       if ((window as any).ethereum) {
@@ -242,10 +242,10 @@ export function BlockchainProvider({ children }: BlockchainProviderProps) {
 
 export function useBlockchain() {
   const context = useContext(BlockchainContext);
-  
+
   if (context === undefined) {
     throw new Error('useBlockchain must be used within a BlockchainProvider');
   }
-  
+
   return context;
 }

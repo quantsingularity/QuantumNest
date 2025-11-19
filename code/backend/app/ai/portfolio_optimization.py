@@ -10,14 +10,17 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 import cvxpy as cp
+
 # Financial libraries
 import yfinance as yf
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
+
 # Optimization imports
 from scipy.optimize import differential_evolution, minimize
 from scipy.stats import norm
 from sklearn.cluster import KMeans
+
 # Machine learning imports
 from sklearn.covariance import EmpiricalCovariance, LedoitWolf
 from sklearn.decomposition import PCA

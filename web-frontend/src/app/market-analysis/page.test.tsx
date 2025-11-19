@@ -168,7 +168,7 @@ describe('Market Analysis Page', () => {
     const mockError = new Error('Failed to load market data');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/market'), 'getMarketData').mockRejectedValueOnce(mockError);
-    
+
     render(<MarketAnalysis />);
     await waitFor(() => {
       expect(screen.getByText(/error loading market data/i)).toBeInTheDocument();
@@ -182,10 +182,10 @@ describe('Market Analysis Page', () => {
       page: 1,
       pageSize: 10,
     });
-    
+
     render(<MarketAnalysis />);
     await waitFor(() => {
       expect(screen.getByText(/no market data available/i)).toBeInTheDocument();
     });
   });
-}); 
+});

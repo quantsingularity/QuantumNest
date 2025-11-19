@@ -13,67 +13,67 @@ export default function Recommendations() {
 
   // Mock data for recommended assets
   const recommendedAssets = [
-    { 
-      symbol: 'NVDA', 
-      name: 'NVIDIA Corporation', 
-      price: 950.25, 
-      change24h: 3.5, 
-      marketCap: 2350000000000, 
+    {
+      symbol: 'NVDA',
+      name: 'NVIDIA Corporation',
+      price: 950.25,
+      change24h: 3.5,
+      marketCap: 2350000000000,
       volume24h: 25600000000,
       recommendation: 'Strong Buy',
       aiConfidence: 92,
       reason: 'Leading position in AI hardware market with strong growth potential'
     },
-    { 
-      symbol: 'MSFT', 
-      name: 'Microsoft Corporation', 
-      price: 410.25, 
-      change24h: 0.9, 
-      marketCap: 3050000000000, 
+    {
+      symbol: 'MSFT',
+      name: 'Microsoft Corporation',
+      price: 410.25,
+      change24h: 0.9,
+      marketCap: 3050000000000,
       volume24h: 12800000000,
       recommendation: 'Buy',
       aiConfidence: 87,
       reason: 'Cloud business growth and AI integration across product lines'
     },
-    { 
-      symbol: 'ETH', 
-      name: 'Ethereum', 
-      price: 3240.50, 
-      change24h: 0.65, 
-      marketCap: 390000000000, 
+    {
+      symbol: 'ETH',
+      name: 'Ethereum',
+      price: 3240.50,
+      change24h: 0.65,
+      marketCap: 390000000000,
       volume24h: 21300000000,
       recommendation: 'Buy',
       aiConfidence: 85,
       reason: 'Network upgrades and growing DeFi ecosystem'
     },
-    { 
-      symbol: 'AMZN', 
-      name: 'Amazon.com Inc.', 
-      price: 3550.25, 
-      change24h: 1.15, 
-      marketCap: 3650000000000, 
+    {
+      symbol: 'AMZN',
+      name: 'Amazon.com Inc.',
+      price: 3550.25,
+      change24h: 1.15,
+      marketCap: 3650000000000,
       volume24h: 14500000000,
       recommendation: 'Buy',
       aiConfidence: 83,
       reason: 'E-commerce dominance and AWS cloud growth'
     },
-    { 
-      symbol: 'TSLA', 
-      name: 'Tesla, Inc.', 
-      price: 210.75, 
-      change24h: -1.8, 
-      marketCap: 670000000000, 
+    {
+      symbol: 'TSLA',
+      name: 'Tesla, Inc.',
+      price: 210.75,
+      change24h: -1.8,
+      marketCap: 670000000000,
       volume24h: 18900000000,
       recommendation: 'Hold',
       aiConfidence: 65,
       reason: 'EV market competition increasing but strong innovation pipeline'
     },
-    { 
-      symbol: 'GOOGL', 
-      name: 'Alphabet Inc.', 
-      price: 2450.75, 
-      change24h: 0.45, 
-      marketCap: 3150000000000, 
+    {
+      symbol: 'GOOGL',
+      name: 'Alphabet Inc.',
+      price: 2450.75,
+      change24h: 0.45,
+      marketCap: 3150000000000,
       volume24h: 11200000000,
       recommendation: 'Buy',
       aiConfidence: 80,
@@ -164,7 +164,7 @@ export default function Recommendations() {
             </select>
           </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
           <button
@@ -198,7 +198,7 @@ export default function Recommendations() {
             Market Insights
           </button>
         </div>
-        
+
         {activeTab === 'personalized' && (
           <>
             {/* AI Summary */}
@@ -226,7 +226,7 @@ export default function Recommendations() {
                 <Button>View Detailed Analysis</Button>
               </CardContent>
             </Card>
-            
+
             {/* Portfolio Recommendations */}
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Portfolio Recommendations</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -253,7 +253,7 @@ export default function Recommendations() {
             </div>
           </>
         )}
-        
+
         {activeTab === 'assets' && (
           <>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Top Recommended Assets</h2>
@@ -271,8 +271,8 @@ export default function Recommendations() {
                           <p className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</p>
                         </div>
                         <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          asset.recommendation === 'Strong Buy' 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                          asset.recommendation === 'Strong Buy'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                             : asset.recommendation === 'Buy'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                             : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
@@ -293,8 +293,8 @@ export default function Recommendations() {
                           <div className="inline-flex items-center">
                             <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">AI Confidence:</span>
                             <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                              <div 
-                                className="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full" 
+                              <div
+                                className="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full"
                                 style={{ width: `${asset.aiConfidence}%` }}
                               ></div>
                             </div>
@@ -313,7 +313,7 @@ export default function Recommendations() {
             </div>
           </>
         )}
-        
+
         {activeTab === 'insights' && (
           <>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">AI Market Insights</h2>
@@ -328,8 +328,8 @@ export default function Recommendations() {
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{insight.title}</h3>
                       <div className="flex space-x-2">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          insight.sentiment === 'Bullish' 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                          insight.sentiment === 'Bullish'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                             : insight.sentiment === 'Bearish'
                             ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                             : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'

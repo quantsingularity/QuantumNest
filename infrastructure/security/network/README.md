@@ -22,4 +22,3 @@ This directory contains comprehensive network security configurations including 
 - **SOC 2**: Network security monitoring and controls
 - **ISO 27001**: Information security network controls
 - **NIST Cybersecurity Framework**: Network security controls
-

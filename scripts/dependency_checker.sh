@@ -57,92 +57,92 @@ function command_exists {
 function check_dependencies {
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local report_file="${REPORTS_DIR}/dependency_check_${timestamp}.txt"
-  
+
   echo -e "${BLUE}Checking dependencies across all components...${NC}"
-  
+
   {
     echo "QuantumNest Dependency Check Report"
     echo "Timestamp: $(date)"
     echo "----------------------------------------"
     echo ""
   } > "$report_file"
-  
+
   # Check Node.js and npm versions
   echo "Checking Node.js environment..."
   {
     echo "## Node.js Environment"
     echo "----------------------------------------"
-    
+
     if command_exists node; then
       echo "Node.js: $(node --version)"
     else
       echo "Node.js: Not installed"
     fi
-    
+
     if command_exists npm; then
       echo "npm: $(npm --version)"
     else
       echo "npm: Not installed"
     fi
-    
+
     if command_exists pnpm; then
       echo "pnpm: $(pnpm --version)"
     else
       echo "pnpm: Not installed"
     fi
-    
+
     if command_exists yarn; then
       echo "yarn: $(yarn --version)"
     else
       echo "yarn: Not installed"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Python environment
   echo "Checking Python environment..."
   {
     echo "## Python Environment"
     echo "----------------------------------------"
-    
+
     if command_exists python3; then
       echo "Python: $(python3 --version)"
     else
       echo "Python: Not installed"
     fi
-    
+
     if command_exists pip3; then
       echo "pip: $(pip3 --version)"
     else
       echo "pip: Not installed"
     fi
-    
+
     if [ -d "${PROJECT_DIR}/venv" ]; then
       echo "Virtual environment: Present at ${PROJECT_DIR}/venv"
     else
       echo "Virtual environment: Not found"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Web Frontend dependencies
   echo "Checking Web Frontend dependencies..."
   {
     echo "## Web Frontend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
       echo "package.json: Present"
-      
+
       if [ -d "${WEB_FRONTEND_DIR}/node_modules" ]; then
         echo "node_modules: Present"
         echo "Installed packages: $(find "${WEB_FRONTEND_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
       else
         echo "node_modules: Not found (dependencies not installed)"
       fi
-      
+
       # Extract and display key dependencies
       echo ""
       echo "Key dependencies:"
@@ -150,26 +150,26 @@ function check_dependencies {
     else
       echo "package.json: Not found"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Mobile Frontend dependencies
   echo "Checking Mobile Frontend dependencies..."
   {
     echo "## Mobile Frontend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
       echo "package.json: Present"
-      
+
       if [ -d "${MOBILE_FRONTEND_DIR}/node_modules" ]; then
         echo "node_modules: Present"
         echo "Installed packages: $(find "${MOBILE_FRONTEND_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
       else
         echo "node_modules: Not found (dependencies not installed)"
       fi
-      
+
       # Extract and display key dependencies
       echo ""
       echo "Key dependencies:"
@@ -177,20 +177,20 @@ function check_dependencies {
     else
       echo "package.json: Not found"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Backend dependencies
   echo "Checking Backend dependencies..."
   {
     echo "## Backend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
       echo "requirements.txt: Present"
       echo "Required packages: $(wc -l < "${BACKEND_DIR}/requirements.txt")"
-      
+
       if [ -d "${PROJECT_DIR}/venv" ]; then
         echo ""
         echo "Installed packages (top 10):"
@@ -202,26 +202,26 @@ function check_dependencies {
     else
       echo "requirements.txt: Not found"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Blockchain dependencies
   echo "Checking Blockchain dependencies..."
   {
     echo "## Blockchain Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
       echo "package.json: Present"
-      
+
       if [ -d "${BLOCKCHAIN_DIR}/node_modules" ]; then
         echo "node_modules: Present"
         echo "Installed packages: $(find "${BLOCKCHAIN_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
       else
         echo "node_modules: Not found (dependencies not installed)"
       fi
-      
+
       # Extract and display key dependencies
       echo ""
       echo "Key dependencies:"
@@ -229,10 +229,10 @@ function check_dependencies {
     else
       echo "package.json: Not found"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   echo -e "${GREEN}Dependency check complete.${NC}"
   echo "Report saved to: $report_file"
 }
@@ -241,22 +241,22 @@ function check_dependencies {
 function check_outdated_dependencies {
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local report_file="${REPORTS_DIR}/outdated_dependencies_${timestamp}.txt"
-  
+
   echo -e "${BLUE}Checking for outdated dependencies...${NC}"
-  
+
   {
     echo "QuantumNest Outdated Dependencies Report"
     echo "Timestamp: $(date)"
     echo "----------------------------------------"
     echo ""
   } > "$report_file"
-  
+
   # Check Web Frontend outdated dependencies
   echo "Checking Web Frontend outdated dependencies..."
   {
     echo "## Web Frontend Outdated Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
       if [ -d "${WEB_FRONTEND_DIR}/node_modules" ]; then
         echo "Running npm outdated in ${WEB_FRONTEND_DIR}..."
@@ -268,16 +268,16 @@ function check_outdated_dependencies {
     else
       echo "package.json not found in ${WEB_FRONTEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Mobile Frontend outdated dependencies
   echo "Checking Mobile Frontend outdated dependencies..."
   {
     echo "## Mobile Frontend Outdated Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
       if [ -d "${MOBILE_FRONTEND_DIR}/node_modules" ]; then
         echo "Running pnpm outdated in ${MOBILE_FRONTEND_DIR}..."
@@ -293,16 +293,16 @@ function check_outdated_dependencies {
     else
       echo "package.json not found in ${MOBILE_FRONTEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Backend outdated dependencies
   echo "Checking Backend outdated dependencies..."
   {
     echo "## Backend Outdated Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
       if [ -d "${PROJECT_DIR}/venv" ]; then
         echo "Checking outdated Python packages..."
@@ -315,16 +315,16 @@ function check_outdated_dependencies {
     else
       echo "requirements.txt not found in ${BACKEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Check Blockchain outdated dependencies
   echo "Checking Blockchain outdated dependencies..."
   {
     echo "## Blockchain Outdated Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
       if [ -d "${BLOCKCHAIN_DIR}/node_modules" ]; then
         echo "Running npm outdated in ${BLOCKCHAIN_DIR}..."
@@ -336,10 +336,10 @@ function check_outdated_dependencies {
     else
       echo "package.json not found in ${BLOCKCHAIN_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   echo -e "${GREEN}Outdated dependency check complete.${NC}"
   echo "Report saved to: $report_file"
 }
@@ -348,22 +348,22 @@ function check_outdated_dependencies {
 function security_audit {
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local report_file="${REPORTS_DIR}/security_audit_${timestamp}.txt"
-  
+
   echo -e "${BLUE}Running security audit on dependencies...${NC}"
-  
+
   {
     echo "QuantumNest Security Audit Report"
     echo "Timestamp: $(date)"
     echo "----------------------------------------"
     echo ""
   } > "$report_file"
-  
+
   # Audit Web Frontend dependencies
   echo "Auditing Web Frontend dependencies..."
   {
     echo "## Web Frontend Security Audit"
     echo "----------------------------------------"
-    
+
     if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
       if [ -d "${WEB_FRONTEND_DIR}/node_modules" ]; then
         echo "Running npm audit in ${WEB_FRONTEND_DIR}..."
@@ -375,16 +375,16 @@ function security_audit {
     else
       echo "package.json not found in ${WEB_FRONTEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Audit Mobile Frontend dependencies
   echo "Auditing Mobile Frontend dependencies..."
   {
     echo "## Mobile Frontend Security Audit"
     echo "----------------------------------------"
-    
+
     if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
       if [ -d "${MOBILE_FRONTEND_DIR}/node_modules" ]; then
         echo "Running pnpm audit in ${MOBILE_FRONTEND_DIR}..."
@@ -400,16 +400,16 @@ function security_audit {
     else
       echo "package.json not found in ${MOBILE_FRONTEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Audit Backend dependencies
   echo "Auditing Backend dependencies..."
   {
     echo "## Backend Security Audit"
     echo "----------------------------------------"
-    
+
     if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
       if [ -d "${PROJECT_DIR}/venv" ]; then
         echo "Checking Python packages with safety..."
@@ -428,16 +428,16 @@ function security_audit {
     else
       echo "requirements.txt not found in ${BACKEND_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Audit Blockchain dependencies
   echo "Auditing Blockchain dependencies..."
   {
     echo "## Blockchain Security Audit"
     echo "----------------------------------------"
-    
+
     if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
       if [ -d "${BLOCKCHAIN_DIR}/node_modules" ]; then
         echo "Running npm audit in ${BLOCKCHAIN_DIR}..."
@@ -449,10 +449,10 @@ function security_audit {
     else
       echo "package.json not found in ${BLOCKCHAIN_DIR}"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   echo -e "${GREEN}Security audit complete.${NC}"
   echo "Report saved to: $report_file"
 }
@@ -461,9 +461,9 @@ function security_audit {
 function generate_report {
   local timestamp=$(date +%Y%m%d_%H%M%S)
   local report_file="${REPORTS_DIR}/comprehensive_report_${timestamp}.txt"
-  
+
   echo -e "${BLUE}Generating comprehensive dependency report...${NC}"
-  
+
   {
     echo "QuantumNest Comprehensive Dependency Report"
     echo "Timestamp: $(date)"
@@ -473,7 +473,7 @@ function generate_report {
     echo "across the QuantumNest project components."
     echo ""
   } > "$report_file"
-  
+
   # System information
   {
     echo "## System Information"
@@ -481,63 +481,63 @@ function generate_report {
     echo "Operating System: $(uname -s) $(uname -r)"
     echo "Architecture: $(uname -m)"
     echo ""
-    
+
     if command_exists node; then
       echo "Node.js: $(node --version)"
     else
       echo "Node.js: Not installed"
     fi
-    
+
     if command_exists npm; then
       echo "npm: $(npm --version)"
     else
       echo "npm: Not installed"
     fi
-    
+
     if command_exists pnpm; then
       echo "pnpm: $(pnpm --version)"
     else
       echo "pnpm: Not installed"
     fi
-    
+
     if command_exists yarn; then
       echo "yarn: $(yarn --version)"
     else
       echo "yarn: Not installed"
     fi
-    
+
     if command_exists python3; then
       echo "Python: $(python3 --version)"
     else
       echo "Python: Not installed"
     fi
-    
+
     if command_exists pip3; then
       echo "pip: $(pip3 --version)"
     else
       echo "pip: Not installed"
     fi
-    
+
     echo ""
   } >> "$report_file"
-  
+
   # Web Frontend dependencies
   {
     echo "## Web Frontend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
       echo "### package.json"
       echo "```json"
       cat "${WEB_FRONTEND_DIR}/package.json"
       echo "```"
       echo ""
-      
+
       if [ -d "${WEB_FRONTEND_DIR}/node_modules" ]; then
         echo "### Installed Dependencies"
         echo "Total packages: $(find "${WEB_FRONTEND_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
         echo ""
-        
+
         echo "### Top-level Dependencies"
         (cd "${WEB_FRONTEND_DIR}" && npm list --depth=0) || echo "Failed to list dependencies"
         echo ""
@@ -550,24 +550,24 @@ function generate_report {
       echo ""
     fi
   } >> "$report_file"
-  
+
   # Mobile Frontend dependencies
   {
     echo "## Mobile Frontend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
       echo "### package.json"
       echo "```json"
       cat "${MOBILE_FRONTEND_DIR}/package.json"
       echo "```"
       echo ""
-      
+
       if [ -d "${MOBILE_FRONTEND_DIR}/node_modules" ]; then
         echo "### Installed Dependencies"
         echo "Total packages: $(find "${MOBILE_FRONTEND_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
         echo ""
-        
+
         echo "### Top-level Dependencies"
         if command_exists pnpm; then
           (cd "${MOBILE_FRONTEND_DIR}" && pnpm list) || echo "Failed to list dependencies"
@@ -584,19 +584,19 @@ function generate_report {
       echo ""
     fi
   } >> "$report_file"
-  
+
   # Backend dependencies
   {
     echo "## Backend Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
       echo "### requirements.txt"
       echo "```"
       cat "${BACKEND_DIR}/requirements.txt"
       echo "```"
       echo ""
-      
+
       if [ -d "${PROJECT_DIR}/venv" ]; then
         echo "### Installed Packages"
         source "${PROJECT_DIR}/venv/bin/activate" 2>/dev/null && pip list || echo "Could not activate virtual environment"
@@ -611,24 +611,24 @@ function generate_report {
       echo ""
     fi
   } >> "$report_file"
-  
+
   # Blockchain dependencies
   {
     echo "## Blockchain Dependencies"
     echo "----------------------------------------"
-    
+
     if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
       echo "### package.json"
       echo "```json"
       cat "${BLOCKCHAIN_DIR}/package.json"
       echo "```"
       echo ""
-      
+
       if [ -d "${BLOCKCHAIN_DIR}/node_modules" ]; then
         echo "### Installed Dependencies"
         echo "Total packages: $(find "${BLOCKCHAIN_DIR}/node_modules" -maxdepth 1 -type d | wc -l) (including node_modules itself)"
         echo ""
-        
+
         echo "### Top-level Dependencies"
         (cd "${BLOCKCHAIN_DIR}" && npm list --depth=0) || echo "Failed to list dependencies"
         echo ""
@@ -641,7 +641,7 @@ function generate_report {
       echo ""
     fi
   } >> "$report_file"
-  
+
   # Dependency visualization
   {
     echo "## Dependency Visualization"
@@ -662,7 +662,7 @@ function generate_report {
     echo "```"
     echo ""
   } >> "$report_file"
-  
+
   # Recommendations
   {
     echo "## Recommendations"
@@ -674,7 +674,7 @@ function generate_report {
     echo "5. Implement a dependency update policy (e.g., weekly, monthly)"
     echo ""
   } >> "$report_file"
-  
+
   echo -e "${GREEN}Comprehensive report generated.${NC}"
   echo "Report saved to: $report_file"
 }
@@ -682,7 +682,7 @@ function generate_report {
 # Function to attempt to fix dependency issues
 function fix_dependencies {
   local component=$1
-  
+
   if [ -z "$component" ]; then
     echo -e "${YELLOW}No component specified, will attempt to fix all components.${NC}"
     read -p "Continue? (y/n): " confirm
@@ -690,9 +690,9 @@ function fix_dependencies {
       echo "Operation cancelled."
       return 0
     fi
-    
+
     echo -e "${BLUE}Attempting to fix dependencies for all components...${NC}"
-    
+
     # Fix Web Frontend
     echo "Fixing Web Frontend dependencies..."
     if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
@@ -700,7 +700,7 @@ function fix_dependencies {
     else
       echo "package.json not found in ${WEB_FRONTEND_DIR}"
     fi
-    
+
     # Fix Mobile Frontend
     echo "Fixing Mobile Frontend dependencies..."
     if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
@@ -712,7 +712,7 @@ function fix_dependencies {
     else
       echo "package.json not found in ${MOBILE_FRONTEND_DIR}"
     fi
-    
+
     # Fix Backend
     echo "Fixing Backend dependencies..."
     if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
@@ -725,7 +725,7 @@ function fix_dependencies {
     else
       echo "requirements.txt not found in ${BACKEND_DIR}"
     fi
-    
+
     # Fix Blockchain
     echo "Fixing Blockchain dependencies..."
     if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
@@ -733,10 +733,10 @@ function fix_dependencies {
     else
       echo "package.json not found in ${BLOCKCHAIN_DIR}"
     fi
-    
+
     echo -e "${GREEN}Dependency fixing attempts completed.${NC}"
     echo "Run './dependency_checker.sh check' to verify the results."
-    
+
   else
     # Fix specific component
     case "$component" in
@@ -748,7 +748,7 @@ function fix_dependencies {
           echo "package.json not found in ${WEB_FRONTEND_DIR}"
         fi
         ;;
-      
+
       mobile-frontend|mobile)
         echo -e "${BLUE}Attempting to fix Mobile Frontend dependencies...${NC}"
         if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
@@ -761,7 +761,7 @@ function fix_dependencies {
           echo "package.json not found in ${MOBILE_FRONTEND_DIR}"
         fi
         ;;
-      
+
       backend|api)
         echo -e "${BLUE}Attempting to fix Backend dependencies...${NC}"
         if [ -f "${BACKEND_DIR}/requirements.txt" ]; then
@@ -775,7 +775,7 @@ function fix_dependencies {
           echo "requirements.txt not found in ${BACKEND_DIR}"
         fi
         ;;
-      
+
       blockchain|contracts)
         echo -e "${BLUE}Attempting to fix Blockchain dependencies...${NC}"
         if [ -f "${BLOCKCHAIN_DIR}/package.json" ]; then
@@ -784,14 +784,14 @@ function fix_dependencies {
           echo "package.json not found in ${BLOCKCHAIN_DIR}"
         fi
         ;;
-      
+
       *)
         echo -e "${RED}Unknown component: ${component}${NC}"
         echo "Available components: web-frontend, mobile-frontend, backend, blockchain"
         return 1
         ;;
     esac
-    
+
     echo -e "${GREEN}Dependency fixing attempt completed.${NC}"
     echo "Run './dependency_checker.sh check' to verify the results."
   fi

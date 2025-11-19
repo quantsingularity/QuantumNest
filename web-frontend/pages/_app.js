@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 
 function MyApp({ Component, pageProps }) {
   const [darkMode, setDarkMode] = useState(false);
-  
+
   useEffect(() => {
     // Check user preference for dark mode
     if (typeof window !== 'undefined') {
-      const isDarkMode = localStorage.getItem('darkMode') === 'true' || 
+      const isDarkMode = localStorage.getItem('darkMode') === 'true' ||
                          window.matchMedia('(prefers-color-scheme: dark)').matches;
       setDarkMode(isDarkMode);
     }

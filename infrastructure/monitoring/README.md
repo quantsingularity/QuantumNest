@@ -55,4 +55,3 @@ This directory contains comprehensive monitoring, logging, and observability con
 - **GDPR**: Data privacy and protection monitoring
 - **ISO 27001**: Information security monitoring framework
 - **FINRA**: Financial industry regulatory compliance
-

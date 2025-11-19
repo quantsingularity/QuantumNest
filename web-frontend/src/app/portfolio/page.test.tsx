@@ -177,7 +177,7 @@ describe('Portfolio Page', () => {
     const mockError = new Error('Failed to load portfolio data');
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(require('@/lib/portfolio'), 'getPortfolioData').mockRejectedValueOnce(mockError);
-    
+
     render(<Portfolio />);
     await waitFor(() => {
       expect(screen.getByText(/error loading portfolio data/i)).toBeInTheDocument();
@@ -191,10 +191,10 @@ describe('Portfolio Page', () => {
       transactions: [],
       history: [],
     });
-    
+
     render(<Portfolio />);
     await waitFor(() => {
       expect(screen.getByText(/no assets in portfolio/i)).toBeInTheDocument();
     });
   });
-}); 
+});

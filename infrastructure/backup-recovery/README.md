@@ -76,4 +76,3 @@ This directory contains comprehensive data protection, backup, and disaster reco
 - **GDPR**: Personal data protection and right to be forgotten
 - **FINRA**: Financial industry regulatory compliance
 - **ISO 27001**: Information security management backup controls
-

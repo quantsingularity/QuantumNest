@@ -21,7 +21,7 @@ path "pki/*" {
 path "secret/data/financial/*" {
   capabilities = ["read", "list"]
   required_parameters = ["version"]
-  
+
   # Require MFA for access
   control_group = {
     factor "mfa" {
@@ -37,12 +37,12 @@ path "secret/metadata/financial/*" {
 # Database Credentials Policy - For database access
 path "database/creds/quantumnest-db-*" {
   capabilities = ["read"]
-  
+
   # Time-based access control
   allowed_parameters = {
     "ttl" = ["1h", "2h", "4h"]
   }
-  
+
   # IP restriction
   bound_cidrs = ["10.0.0.0/8", "172.16.0.0/12"]
 }
@@ -54,7 +54,7 @@ path "database/config/*" {
 # PKI Policy - For certificate management
 path "pki/issue/quantumnest-server" {
   capabilities = ["create", "update"]
-  
+
   allowed_parameters = {
     "common_name" = ["*.quantumnest.internal", "*.quantumnest.com"]
     "alt_names" = ["*.quantumnest.internal", "*.quantumnest.com"]
@@ -69,7 +69,7 @@ path "pki/cert/ca" {
 # Application Policy - For QuantumNest applications
 path "secret/data/app/quantumnest/*" {
   capabilities = ["read"]
-  
+
   # Require specific entity metadata
   required_parameters = ["entity_id"]
 }
@@ -121,7 +121,7 @@ path "identity/group/id/*" {
 # KV Version 2 Specific Policies
 path "secret/data/prod/*" {
   capabilities = ["read"]
-  
+
   # Production access requires approval
   control_group = {
     factor "approvers" {
@@ -133,7 +133,7 @@ path "secret/data/prod/*" {
 
 path "secret/data/staging/*" {
   capabilities = ["read", "create", "update"]
-  
+
   # Staging environment access
   allowed_parameters = {
     "version" = []
@@ -142,22 +142,21 @@ path "secret/data/staging/*" {
 
 path "secret/data/dev/*" {
   capabilities = ["read", "create", "update", "delete"]
-  
+
   # Development environment - more permissive
 }
 
 # Compliance and Audit Paths
 path "secret/data/compliance/*" {
   capabilities = ["read", "list"]
-  
+
   # Only compliance officers can access
   required_parameters = ["compliance_officer_id"]
 }
 
 path "secret/data/audit/*" {
   capabilities = ["read", "list"]
-  
+
   # Audit trail access
   bound_cidrs = ["10.0.100.0/24"]  # Audit network only
 }
-

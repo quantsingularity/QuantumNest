@@ -144,7 +144,7 @@ export default function Portfolio({ darkMode, toggleDarkMode }) {
               </ResponsiveContainer>
             </div>
           </div>
-          
+
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Sector Breakdown</h2>
             <div className="h-64">
@@ -182,7 +182,7 @@ export default function Portfolio({ darkMode, toggleDarkMode }) {
               ))}
             </div>
           </div>
-          
+
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Top Holdings</h2>
             <div className="space-y-4">

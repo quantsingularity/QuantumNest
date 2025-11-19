@@ -11,8 +11,12 @@ from typing import Any, Callable, Dict, List, Optional
 import jwt
 import redis
 from app.auth.authentication import AdvancedAuthenticationSystem
-from app.auth.authorization import (AccessRequest, Action, ResourceType,
-                                    RoleBasedAccessControl)
+from app.auth.authorization import (
+    AccessRequest,
+    Action,
+    ResourceType,
+    RoleBasedAccessControl,
+)
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from cryptography.fernet import Fernet

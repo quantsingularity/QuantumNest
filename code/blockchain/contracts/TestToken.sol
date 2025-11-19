@@ -13,7 +13,7 @@ contract TestToken is ERC20, Ownable {
         // Mint 1,000,000 tokens to the contract creator
         _mint(msg.sender, 1000000 * 10**decimals());
     }
-    
+
     /**
      * @dev Mint new tokens
      * @param to Recipient address
@@ -22,7 +22,7 @@ contract TestToken is ERC20, Ownable {
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
-    
+
     /**
      * @dev Burn tokens
      * @param amount Amount to burn

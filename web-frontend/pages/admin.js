@@ -303,7 +303,7 @@ export default function AdminPanel({ darkMode, toggleDarkMode }) {
                   </ResponsiveContainer>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">User Tiers</h2>
                 <div className="h-64">
@@ -355,8 +355,8 @@ export default function AdminPanel({ darkMode, toggleDarkMode }) {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{user.tier}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              user.status === 'Active' 
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                              user.status === 'Active'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                 : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                             }`}>
                               {user.status}
@@ -373,7 +373,7 @@ export default function AdminPanel({ darkMode, toggleDarkMode }) {
                   </button>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">System Alerts</h2>
                 <div className="space-y-4">
@@ -381,8 +381,8 @@ export default function AdminPanel({ darkMode, toggleDarkMode }) {
                     <div key={index} className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
                       <div className="flex items-start">
                         <div className={`flex-shrink-0 rounded-full w-2 h-2 mt-2 mr-3 ${
-                          alert.severity === 'critical' 
-                            ? 'bg-red-500' 
+                          alert.severity === 'critical'
+                            ? 'bg-red-500'
                             : alert.severity === 'warning'
                               ? 'bg-yellow-500'
                               : 'bg-blue-500'
@@ -429,8 +429,8 @@ export default function AdminPanel({ darkMode, toggleDarkMode }) {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{transaction.date}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            transaction.status === 'Completed' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                            transaction.status === 'Completed'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                               : transaction.status === 'Pending'
                                 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                                 : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
