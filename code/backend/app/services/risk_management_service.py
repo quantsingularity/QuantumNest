@@ -6,8 +6,14 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from app.core.logging import get_logger
-from app.models.models import (Asset, AssetType, Portfolio, PortfolioAsset,
-                               RiskLevel, User)
+from app.models.models import (
+    Asset,
+    AssetType,
+    Portfolio,
+    PortfolioAsset,
+    RiskLevel,
+    User,
+)
 from app.services.market_data_service import MarketDataService
 from sqlalchemy.orm import Session
 

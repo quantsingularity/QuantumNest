@@ -5,8 +5,15 @@ from enum import Enum
 from typing import Dict, List, Optional
 
 from app.core.logging import get_logger
-from app.models.models import (Asset, Portfolio, PortfolioAsset, Transaction,
-                               TransactionStatus, TransactionType, User)
+from app.models.models import (
+    Asset,
+    Portfolio,
+    PortfolioAsset,
+    Transaction,
+    TransactionStatus,
+    TransactionType,
+    User,
+)
 from app.services.market_data_service import MarketDataService
 from app.services.risk_management_service import RiskManagementService
 from sqlalchemy.orm import Session

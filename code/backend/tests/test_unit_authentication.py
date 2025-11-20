@@ -5,8 +5,11 @@ import bcrypt
 import jwt
 import pyotp
 import pytest
-from app.auth.authentication import (AdvancedAuthenticationSystem, SessionInfo,
-                                     SessionStatus)
+from app.auth.authentication import (
+    AdvancedAuthenticationSystem,
+    SessionInfo,
+    SessionStatus,
+)
 from app.models.models import LoginAttempt, UserSession
 
 

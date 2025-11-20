@@ -8,6 +8,7 @@ import redis
 from app.ai.fraud_detection import AdvancedFraudDetectionSystem
 from app.auth.authentication import AdvancedAuthenticationSystem
 from app.auth.authorization import RoleBasedAccessControl
+
 # Import application modules
 from app.models.models import Account, Base, Portfolio, Transaction, User
 from app.services.market_data_service import MarketDataService

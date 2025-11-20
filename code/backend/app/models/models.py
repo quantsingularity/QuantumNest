@@ -2,9 +2,22 @@ import enum
 import uuid
 
 from app.db.database import Base
-from sqlalchemy import (DECIMAL, JSON, BigInteger, Boolean, CheckConstraint,
-                        Column, DateTime, Enum, ForeignKey, Index, Integer,
-                        String, Text, UniqueConstraint)
+from sqlalchemy import (
+    DECIMAL,
+    JSON,
+    BigInteger,
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 

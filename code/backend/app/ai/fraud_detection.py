@@ -11,12 +11,17 @@ warnings.filterwarnings("ignore")
 
 import joblib
 import networkx as nx
+
 # Deep learning imports
 import tensorflow as tf
 from app.core.logging import get_logger
+
 # Machine learning imports
-from sklearn.ensemble import (GradientBoostingClassifier, IsolationForest,
-                              RandomForestClassifier)
+from sklearn.ensemble import (
+    GradientBoostingClassifier,
+    IsolationForest,
+    RandomForestClassifier,
+)
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler

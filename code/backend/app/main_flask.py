@@ -8,11 +8,11 @@ from app.ai.fraud_detection import AdvancedFraudDetectionSystem
 from app.ai.portfolio_optimization import PortfolioOptimizer
 from app.auth.authentication import AdvancedAuthenticationSystem
 from app.auth.authorization import RoleBasedAccessControl
+
 # Import our custom modules
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
-from app.middleware.security_middleware import (SecurityConfig,
-                                                SecurityMiddleware)
+from app.middleware.security_middleware import SecurityConfig, SecurityMiddleware
 from app.models.models import db
 from app.services.market_data_service import MarketDataService
 from app.services.risk_management_service import RiskManagementService

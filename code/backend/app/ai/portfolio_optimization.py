@@ -10,11 +10,14 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 import cvxpy as cp
+
 # Financial libraries
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
+
 # Optimization imports
 from scipy.optimize import minimize
+
 # Machine learning imports
 from sklearn.covariance import LedoitWolf
 

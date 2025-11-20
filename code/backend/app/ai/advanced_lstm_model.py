@@ -11,9 +11,16 @@ import tensorflow as tf
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.layers import (LSTM, BatchNormalization, Dense, Dropout,
-                                     GlobalAveragePooling1D, Input,
-                                     LayerNormalization, MultiHeadAttention)
+from tensorflow.keras.layers import (
+    LSTM,
+    BatchNormalization,
+    Dense,
+    Dropout,
+    GlobalAveragePooling1D,
+    Input,
+    LayerNormalization,
+    MultiHeadAttention,
+)
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l1_l2
