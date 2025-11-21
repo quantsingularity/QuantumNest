@@ -31,10 +31,7 @@
             "Statement": [
               {
                 "Effect": "Allow",
-                "Action": [
-                  "s3:GetObject",
-                  "s3:ListBucket"
-                ],
+                "Action": ["s3:GetObject", "s3:ListBucket"],
                 "Resource": [
                   "arn:aws:s3:::quantumnest-financial-reports/*",
                   "arn:aws:s3:::quantumnest-analytics-data/*"
@@ -50,10 +47,7 @@
               },
               {
                 "Effect": "Allow",
-                "Action": [
-                  "rds:DescribeDBInstances",
-                  "rds:DescribeDBClusters"
-                ],
+                "Action": ["rds:DescribeDBInstances", "rds:DescribeDBClusters"],
                 "Resource": "*"
               }
             ]
@@ -81,10 +75,7 @@
                 "aws:MultiFactorAuthPresent": "true"
               },
               "IpAddress": {
-                "aws:SourceIp": [
-                  "10.0.0.0/8",
-                  "172.16.0.0/12"
-                ]
+                "aws:SourceIp": ["10.0.0.0/8", "172.16.0.0/12"]
               }
             }
           }
@@ -114,10 +105,7 @@
               },
               {
                 "Effect": "Allow",
-                "Action": [
-                  "s3:GetObject",
-                  "s3:ListBucket"
-                ],
+                "Action": ["s3:GetObject", "s3:ListBucket"],
                 "Resource": [
                   "arn:aws:s3:::quantumnest-audit-logs/*",
                   "arn:aws:s3:::quantumnest-compliance-reports/*"
@@ -148,9 +136,7 @@
                 "aws:MultiFactorAuthPresent": "true"
               },
               "IpAddress": {
-                "aws:SourceIp": [
-                  "10.0.0.0/8"
-                ]
+                "aws:SourceIp": ["10.0.0.0/8"]
               },
               "DateGreaterThan": {
                 "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -228,10 +214,7 @@
             "Statement": [
               {
                 "Effect": "Allow",
-                "Action": [
-                  "rds:*",
-                  "rds-db:connect"
-                ],
+                "Action": ["rds:*", "rds-db:connect"],
                 "Resource": "*",
                 "Condition": {
                   "StringNotEquals": {
@@ -241,10 +224,7 @@
               },
               {
                 "Effect": "Deny",
-                "Action": [
-                  "rds:DeleteDBInstance",
-                  "rds:DeleteDBCluster"
-                ],
+                "Action": ["rds:DeleteDBInstance", "rds:DeleteDBCluster"],
                 "Resource": "*",
                 "Condition": {
                   "StringEquals": {

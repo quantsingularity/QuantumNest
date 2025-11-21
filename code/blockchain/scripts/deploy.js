@@ -1,12 +1,12 @@
 const { ethers } = require("ethers");
-require('dotenv').config();
+require("dotenv").config();
 
 // Import contract artifacts
-const TestToken = require('../artifacts/contracts/TestToken.sol/TestToken.json');
-const TokenizedAsset = require('../artifacts/contracts/TokenizedAsset.sol/TokenizedAsset.json');
-const PortfolioManager = require('../artifacts/contracts/PortfolioManager.sol/PortfolioManager.json');
-const TradingPlatform = require('../artifacts/contracts/TradingPlatform.sol/TradingPlatform.json');
-const DeFiIntegration = require('../artifacts/contracts/DeFiIntegration.sol/DeFiIntegration.json');
+const TestToken = require("../artifacts/contracts/TestToken.sol/TestToken.json");
+const TokenizedAsset = require("../artifacts/contracts/TokenizedAsset.sol/TokenizedAsset.json");
+const PortfolioManager = require("../artifacts/contracts/PortfolioManager.sol/PortfolioManager.json");
+const TradingPlatform = require("../artifacts/contracts/TradingPlatform.sol/TradingPlatform.json");
+const DeFiIntegration = require("../artifacts/contracts/DeFiIntegration.sol/DeFiIntegration.json");
 
 async function main() {
   // Get private key from environment variables
@@ -29,7 +29,10 @@ async function main() {
   const deployer = wallet.address;
 
   console.log("Deploying contracts with the account:", deployer);
-  console.log("Account balance:", (await provider.getBalance(deployer)).toString());
+  console.log(
+    "Account balance:",
+    (await provider.getBalance(deployer)).toString(),
+  );
 
   try {
     // Deploy TestToken
@@ -37,7 +40,7 @@ async function main() {
     const testTokenFactory = new ethers.ContractFactory(
       TestToken.abi,
       TestToken.bytecode,
-      wallet
+      wallet,
     );
     const testToken = await testTokenFactory.deploy();
     await testToken.deployed();
@@ -48,7 +51,7 @@ async function main() {
     const tokenizedAssetFactory = new ethers.ContractFactory(
       TokenizedAsset.abi,
       TokenizedAsset.bytecode,
-      wallet
+      wallet,
     );
     const tokenizedAsset = await tokenizedAssetFactory.deploy(
       "QuantumNest Apple Stock Token",
@@ -59,7 +62,7 @@ async function main() {
       1000000,
       17500, // $175.00
       "Tokenized representation of Apple Inc. stock",
-      "QuantumNest Capital"
+      "QuantumNest Capital",
     );
     await tokenizedAsset.deployed();
     console.log("TokenizedAsset deployed to:", tokenizedAsset.address);
@@ -69,7 +72,7 @@ async function main() {
     const portfolioManagerFactory = new ethers.ContractFactory(
       PortfolioManager.abi,
       PortfolioManager.bytecode,
-      wallet
+      wallet,
     );
     const portfolioManager = await portfolioManagerFactory.deploy();
     await portfolioManager.deployed();
@@ -80,11 +83,11 @@ async function main() {
     const tradingPlatformFactory = new ethers.ContractFactory(
       TradingPlatform.abi,
       TradingPlatform.bytecode,
-      wallet
+      wallet,
     );
     const tradingPlatform = await tradingPlatformFactory.deploy(
       25, // 0.25% trading fee
-      deployer // Fee collector
+      deployer, // Fee collector
     );
     await tradingPlatform.deployed();
     console.log("TradingPlatform deployed to:", tradingPlatform.address);
@@ -94,11 +97,11 @@ async function main() {
     const defiIntegrationFactory = new ethers.ContractFactory(
       DeFiIntegration.abi,
       DeFiIntegration.bytecode,
-      wallet
+      wallet,
     );
     const defiIntegration = await defiIntegrationFactory.deploy(
       20, // 0.20% platform fee
-      deployer // Fee collector
+      deployer, // Fee collector
     );
     await defiIntegration.deployed();
     console.log("DeFiIntegration deployed to:", defiIntegration.address);
@@ -120,12 +123,12 @@ async function main() {
     console.log("Creating portfolio...");
     const createPortfolioTx = await portfolioManager.createPortfolio(
       "Growth Portfolio",
-      "High-growth technology stocks"
+      "High-growth technology stocks",
     );
     const createPortfolioReceipt = await createPortfolioTx.wait();
     // Get portfolio ID from event logs
     const portfolioCreatedEvent = createPortfolioReceipt.events.find(
-      event => event.event === "PortfolioCreated"
+      (event) => event.event === "PortfolioCreated",
     );
     const portfolioId = portfolioCreatedEvent.args.portfolioId;
     console.log(`Portfolio created with ID: ${portfolioId}`);
@@ -135,7 +138,7 @@ async function main() {
       portfolioId,
       tokenizedAsset.address,
       "qAAPL",
-      5000 // 50% allocation
+      5000, // 50% allocation
     );
 
     // Test TradingPlatform
@@ -158,8 +161,8 @@ async function main() {
       500, // 5% APY
       2, // Risk level 2 (low-moderate)
       2592000, // 30-day lock period
-      100 * 10**18, // 100 tokens minimum
-      0 // No maximum
+      100 * 10 ** 18, // 100 tokens minimum
+      0, // No maximum
     );
     console.log("Enabling investments...");
     await defiIntegration.setInvestmentsEnabled(true);
@@ -167,7 +170,7 @@ async function main() {
     console.log("\nAll contracts deployed and tested successfully!");
 
     // Save deployment addresses to a file
-    const fs = require('fs');
+    const fs = require("fs");
     const deploymentInfo = {
       network: "goerli",
       testToken: testToken.address,
@@ -176,15 +179,14 @@ async function main() {
       tradingPlatform: tradingPlatform.address,
       defiIntegration: defiIntegration.address,
       deployer: deployer,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     fs.writeFileSync(
-      'deployment.json',
-      JSON.stringify(deploymentInfo, null, 2)
+      "deployment.json",
+      JSON.stringify(deploymentInfo, null, 2),
     );
     console.log("\nDeployment information saved to deployment.json");
-
   } catch (error) {
     console.error("Deployment failed:", error);
   }

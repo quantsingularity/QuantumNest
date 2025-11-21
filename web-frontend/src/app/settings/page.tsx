@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { getSettings, updateSettings, validateSettings } from '@/lib/settings';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { getSettings, updateSettings, validateSettings } from "@/lib/settings";
 
 interface SettingsState {
   theme: string;
@@ -30,8 +30,8 @@ interface SettingsState {
 export default function Settings() {
   const router = useRouter();
   const [settings, setSettings] = useState<SettingsState>({
-    theme: 'dark',
-    language: 'en',
+    theme: "dark",
+    language: "en",
     notifications: {
       email: true,
       push: true,
@@ -52,26 +52,26 @@ export default function Settings() {
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const userSettings = await getSettings();
-        setSettings(prevSettings => ({
+        setSettings((prevSettings) => ({
           ...prevSettings,
           ...userSettings,
           loading: false,
         }));
       } catch (error) {
-        console.error('Error fetching settings:', error);
-        setSettings(prevSettings => ({
+        console.error("Error fetching settings:", error);
+        setSettings((prevSettings) => ({
           ...prevSettings,
           loading: false,
-          error: 'Error loading settings. Please try again later.',
+          error: "Error loading settings. Please try again later.",
         }));
       }
     };
@@ -80,21 +80,21 @@ export default function Settings() {
   }, []);
 
   const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSettings(prevSettings => ({
+    setSettings((prevSettings) => ({
       ...prevSettings,
       theme: e.target.value,
     }));
   };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSettings(prevSettings => ({
+    setSettings((prevSettings) => ({
       ...prevSettings,
       language: e.target.value,
     }));
   };
 
-  const handleNotificationToggle = (type: 'email' | 'push' | 'sms') => {
-    setSettings(prevSettings => ({
+  const handleNotificationToggle = (type: "email" | "push" | "sms") => {
+    setSettings((prevSettings) => ({
       ...prevSettings,
       notifications: {
         ...prevSettings.notifications,
@@ -103,8 +103,8 @@ export default function Settings() {
     }));
   };
 
-  const handleSecurityToggle = (type: 'twoFactor' | 'biometrics') => {
-    setSettings(prevSettings => ({
+  const handleSecurityToggle = (type: "twoFactor" | "biometrics") => {
+    setSettings((prevSettings) => ({
       ...prevSettings,
       security: {
         ...prevSettings.security,
@@ -113,8 +113,8 @@ export default function Settings() {
     }));
   };
 
-  const handlePrivacyToggle = (type: 'dataSharing' | 'analytics') => {
-    setSettings(prevSettings => ({
+  const handlePrivacyToggle = (type: "dataSharing" | "analytics") => {
+    setSettings((prevSettings) => ({
       ...prevSettings,
       privacy: {
         ...prevSettings.privacy,
@@ -132,9 +132,9 @@ export default function Settings() {
 
   const handlePasswordSubmit = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setSettings(prevSettings => ({
+      setSettings((prevSettings) => ({
         ...prevSettings,
-        error: 'New passwords do not match',
+        error: "New passwords do not match",
         success: null,
       }));
       return;
@@ -144,27 +144,27 @@ export default function Settings() {
       await updateSettings({ password: passwordData.newPassword });
       setShowPasswordModal(false);
       setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       });
-      setSettings(prevSettings => ({
+      setSettings((prevSettings) => ({
         ...prevSettings,
-        success: 'Password updated successfully',
+        success: "Password updated successfully",
         error: null,
       }));
     } catch (error) {
-      console.error('Error updating password:', error);
-      setSettings(prevSettings => ({
+      console.error("Error updating password:", error);
+      setSettings((prevSettings) => ({
         ...prevSettings,
-        error: 'Error updating password. Please try again.',
+        error: "Error updating password. Please try again.",
         success: null,
       }));
     }
   };
 
   const handleSave = async () => {
-    setSettings(prevSettings => ({
+    setSettings((prevSettings) => ({
       ...prevSettings,
       loading: true,
       error: null,
@@ -174,32 +174,32 @@ export default function Settings() {
     try {
       const isValid = await validateSettings(settings);
       if (!isValid) {
-        setSettings(prevSettings => ({
+        setSettings((prevSettings) => ({
           ...prevSettings,
           loading: false,
-          error: 'Invalid settings. Please check your inputs.',
+          error: "Invalid settings. Please check your inputs.",
         }));
         return;
       }
 
       await updateSettings(settings);
-      setSettings(prevSettings => ({
+      setSettings((prevSettings) => ({
         ...prevSettings,
         loading: false,
-        success: 'Settings saved successfully',
+        success: "Settings saved successfully",
       }));
     } catch (error) {
-      console.error('Error saving settings:', error);
-      setSettings(prevSettings => ({
+      console.error("Error saving settings:", error);
+      setSettings((prevSettings) => ({
         ...prevSettings,
         loading: false,
-        error: 'Error saving settings. Please try again later.',
+        error: "Error saving settings. Please try again later.",
       }));
     }
   };
 
   const handleCancel = () => {
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   if (settings.loading) {
@@ -251,7 +251,10 @@ export default function Settings() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="language">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="language"
+            >
               Language
             </label>
             <select
@@ -280,7 +283,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.notifications.email}
-                onChange={() => handleNotificationToggle('email')}
+                onChange={() => handleNotificationToggle("email")}
                 aria-label="email"
               />
               <span>Email Notifications</span>
@@ -293,7 +296,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.notifications.push}
-                onChange={() => handleNotificationToggle('push')}
+                onChange={() => handleNotificationToggle("push")}
                 aria-label="push"
               />
               <span>Push Notifications</span>
@@ -306,7 +309,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.notifications.sms}
-                onChange={() => handleNotificationToggle('sms')}
+                onChange={() => handleNotificationToggle("sms")}
                 aria-label="sms"
               />
               <span>SMS Notifications</span>
@@ -323,7 +326,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.security.twoFactor}
-                onChange={() => handleSecurityToggle('twoFactor')}
+                onChange={() => handleSecurityToggle("twoFactor")}
                 aria-label="two-factor"
               />
               <span>Two-Factor Authentication</span>
@@ -336,7 +339,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.security.biometrics}
-                onChange={() => handleSecurityToggle('biometrics')}
+                onChange={() => handleSecurityToggle("biometrics")}
                 aria-label="biometrics"
               />
               <span>Biometric Authentication</span>
@@ -362,7 +365,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.privacy.dataSharing}
-                onChange={() => handlePrivacyToggle('dataSharing')}
+                onChange={() => handlePrivacyToggle("dataSharing")}
                 aria-label="data-sharing"
               />
               <span>Data Sharing</span>
@@ -378,7 +381,7 @@ export default function Settings() {
                 type="checkbox"
                 className="mr-2"
                 checked={settings.privacy.analytics}
-                onChange={() => handlePrivacyToggle('analytics')}
+                onChange={() => handlePrivacyToggle("analytics")}
                 aria-label="analytics"
               />
               <span>Usage Analytics</span>
@@ -391,17 +394,10 @@ export default function Settings() {
       </div>
 
       <div className="mt-8 flex justify-end space-x-4">
-        <Button
-          variant="secondary"
-          onClick={handleCancel}
-          aria-label="cancel"
-        >
+        <Button variant="secondary" onClick={handleCancel} aria-label="cancel">
           Cancel
         </Button>
-        <Button
-          onClick={handleSave}
-          aria-label="save"
-        >
+        <Button onClick={handleSave} aria-label="save">
           Save Settings
         </Button>
       </div>
@@ -412,7 +408,10 @@ export default function Settings() {
             <h2 className="text-xl font-semibold mb-4">Change Password</h2>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2" htmlFor="currentPassword">
+              <label
+                className="block text-sm font-medium mb-2"
+                htmlFor="currentPassword"
+              >
                 Current Password
               </label>
               <input
@@ -426,7 +425,10 @@ export default function Settings() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2" htmlFor="newPassword">
+              <label
+                className="block text-sm font-medium mb-2"
+                htmlFor="newPassword"
+              >
                 New Password
               </label>
               <input
@@ -440,7 +442,10 @@ export default function Settings() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2" htmlFor="confirmPassword">
+              <label
+                className="block text-sm font-medium mb-2"
+                htmlFor="confirmPassword"
+              >
                 Confirm New Password
               </label>
               <input
@@ -460,9 +465,7 @@ export default function Settings() {
               >
                 Cancel
               </Button>
-              <Button onClick={handlePasswordSubmit}>
-                Update Password
-              </Button>
+              <Button onClick={handlePasswordSubmit}>Update Password</Button>
             </div>
           </div>
         </div>

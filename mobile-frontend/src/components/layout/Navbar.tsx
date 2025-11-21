@@ -1,41 +1,47 @@
+"use client";
 
-'use client';
-
-import { Fragment, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Disclosure, Menu as HeadlessMenu, Transition } from '@headlessui/react'; // Renamed Menu to HeadlessMenu to avoid conflict
-import { Menu as MenuIcon, X, Bell, Wallet, UserCircle } from 'lucide-react'; // Use Lucide icons, import Menu as MenuIcon
-import { Button } from '@/components/ui/button'; // Import shadcn Button
-import { cn } from '@/lib/utils'; // Utility for class names
+import { Fragment, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Disclosure,
+  Menu as HeadlessMenu,
+  Transition,
+} from "@headlessui/react"; // Renamed Menu to HeadlessMenu to avoid conflict
+import { Menu as MenuIcon, X, Bell, Wallet, UserCircle } from "lucide-react"; // Use Lucide icons, import Menu as MenuIcon
+import { Button } from "@/components/ui/button"; // Import shadcn Button
+import { cn } from "@/lib/utils"; // Utility for class names
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'Market Analysis', href: '/market-analysis' },
-  { name: 'Recommendations', href: '/recommendations' },
-  { name: 'Blockchain Explorer', href: '/blockchain-explorer' },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Portfolio", href: "/portfolio" },
+  { name: "Market Analysis", href: "/market-analysis" },
+  { name: "Recommendations", href: "/recommendations" },
+  { name: "Blockchain Explorer", href: "/blockchain-explorer" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [walletConnected, setWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState("");
 
   const connectWallet = async () => {
     // Placeholder for actual wallet connection logic
     setWalletConnected(true);
-    setWalletAddress('0x1234...5678');
+    setWalletAddress("0x1234...5678");
   };
 
   const disconnectWallet = () => {
     setWalletConnected(false);
-    setWalletAddress('');
+    setWalletAddress("");
   };
 
   return (
     // Updated background and border color for consistency
-    <Disclosure as="nav" className="bg-zinc-950 border-b border-zinc-800 sticky top-0 z-40">
+    <Disclosure
+      as="nav"
+      className="bg-zinc-950 border-b border-zinc-800 sticky top-0 z-40"
+    >
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -56,7 +62,9 @@ export default function Navbar() {
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/" className="flex items-center">
                     {/* Consider adding a logo image here */}
-                    <span className="text-white font-bold text-xl">QuantumNest</span>
+                    <span className="text-white font-bold text-xl">
+                      QuantumNest
+                    </span>
                   </Link>
                 </div>
                 {/* Desktop Navigation Links (hidden on small screens) */}
@@ -67,11 +75,11 @@ export default function Navbar() {
                       href={item.href}
                       className={cn(
                         pathname === item.href
-                          ? 'border-indigo-500 text-white'
-                          : 'border-transparent text-zinc-400 hover:border-zinc-700 hover:text-white',
-                        'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
+                          ? "border-indigo-500 text-white"
+                          : "border-transparent text-zinc-400 hover:border-zinc-700 hover:text-white",
+                        "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
                       )}
-                      aria-current={pathname === item.href ? 'page' : undefined}
+                      aria-current={pathname === item.href ? "page" : undefined}
                     >
                       {item.name}
                     </Link>
@@ -83,20 +91,38 @@ export default function Navbar() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   {!walletConnected ? (
-                    <Button variant="outline" size="sm" onClick={connectWallet} className="text-white border-indigo-600 hover:bg-indigo-700 hover:text-white">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={connectWallet}
+                      className="text-white border-indigo-600 hover:bg-indigo-700 hover:text-white"
+                    >
                       <Wallet className="mr-2 h-4 w-4" /> Connect Wallet
                     </Button>
                   ) : (
                     <div className="flex items-center space-x-3">
-                      <span className="text-zinc-400 text-sm hidden sm:block">{walletAddress}</span>
-                      <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white hover:bg-zinc-800">
+                      <span className="text-zinc-400 text-sm hidden sm:block">
+                        {walletAddress}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+                      >
                         <span className="sr-only">View notifications</span>
                         <Bell className="h-5 w-5" />
                       </Button>
 
                       {/* Profile dropdown */}
-                      <HeadlessMenu as="div" className="relative"> {/* Use HeadlessMenu */}
-                        <HeadlessMenu.Button as={Button} variant="ghost" size="icon" className="rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800">
+                      <HeadlessMenu as="div" className="relative">
+                        {" "}
+                        {/* Use HeadlessMenu */}
+                        <HeadlessMenu.Button
+                          as={Button}
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800"
+                        >
                           <span className="sr-only">Open user menu</span>
                           <UserCircle className="h-6 w-6" />
                         </HeadlessMenu.Button>
@@ -114,7 +140,10 @@ export default function Navbar() {
                               {({ active }) => (
                                 <Link
                                   href="/profile"
-                                  className={cn(active ? 'bg-zinc-800' : '', 'block px-4 py-2 text-sm text-zinc-200')}
+                                  className={cn(
+                                    active ? "bg-zinc-800" : "",
+                                    "block px-4 py-2 text-sm text-zinc-200",
+                                  )}
                                 >
                                   Your Profile
                                 </Link>
@@ -124,7 +153,10 @@ export default function Navbar() {
                               {({ active }) => (
                                 <Link
                                   href="/settings"
-                                  className={cn(active ? 'bg-zinc-800' : '', 'block px-4 py-2 text-sm text-zinc-200')}
+                                  className={cn(
+                                    active ? "bg-zinc-800" : "",
+                                    "block px-4 py-2 text-sm text-zinc-200",
+                                  )}
                                 >
                                   Settings
                                 </Link>
@@ -134,7 +166,10 @@ export default function Navbar() {
                               {({ active }) => (
                                 <button
                                   onClick={disconnectWallet}
-                                  className={cn(active ? 'bg-zinc-800' : '', 'block w-full text-left px-4 py-2 text-sm text-red-400')}
+                                  className={cn(
+                                    active ? "bg-zinc-800" : "",
+                                    "block w-full text-left px-4 py-2 text-sm text-red-400",
+                                  )}
                                 >
                                   Disconnect
                                 </button>
@@ -160,11 +195,11 @@ export default function Navbar() {
                   href={item.href}
                   className={cn(
                     pathname === item.href
-                      ? 'bg-zinc-800 text-white'
-                      : 'text-zinc-400 hover:bg-zinc-700 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
+                      ? "bg-zinc-800 text-white"
+                      : "text-zinc-400 hover:bg-zinc-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium",
                   )}
-                  aria-current={pathname === item.href ? 'page' : undefined}
+                  aria-current={pathname === item.href ? "page" : undefined}
                 >
                   {item.name}
                 </Disclosure.Button>
@@ -179,9 +214,15 @@ export default function Navbar() {
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-white">User</div>
-                    <div className="text-sm font-medium text-zinc-400 truncate w-48">{walletAddress}</div>
+                    <div className="text-sm font-medium text-zinc-400 truncate w-48">
+                      {walletAddress}
+                    </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="ml-auto flex-shrink-0 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto flex-shrink-0 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800"
+                  >
                     <span className="sr-only">View notifications</span>
                     <Bell className="h-6 w-6" />
                   </Button>

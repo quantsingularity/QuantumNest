@@ -7,12 +7,14 @@ QuantumNest Capital is a comprehensive financial technology platform designed fo
 ## 🚀 Key Features
 
 ### Financial Services
+
 - **Advanced Trading Engine**: High-performance trading system with real-time market data
 - **Portfolio Management**: Sophisticated portfolio optimization and risk management
 - **Risk Assessment**: Multi-layered risk analysis and compliance monitoring
 - **Market Data Integration**: Real-time and historical market data from multiple sources
 
 ### AI & Machine Learning
+
 - **Fraud Detection**: Advanced ML-based fraud detection system
 - **Portfolio Optimization**: AI-powered portfolio optimization using modern portfolio theory
 - **Predictive Analytics**: LSTM-based price prediction and market forecasting
@@ -20,6 +22,7 @@ QuantumNest Capital is a comprehensive financial technology platform designed fo
 - **Risk Profiling**: AI-driven investor risk profiling and recommendations
 
 ### Security & Compliance
+
 - **Multi-Factor Authentication**: Advanced 2FA with TOTP support
 - **Role-Based Access Control**: Granular permission system
 - **Data Encryption**: End-to-end encryption for sensitive data
@@ -27,6 +30,7 @@ QuantumNest Capital is a comprehensive financial technology platform designed fo
 - **Audit Logging**: Complete audit trail for compliance
 
 ### Enterprise Features
+
 - **Scalable Architecture**: Microservices-ready design
 - **High Availability**: Redis caching and session management
 - **Monitoring & Logging**: Comprehensive logging and health checks
@@ -81,6 +85,7 @@ code/
 ## 🛠 Installation & Setup
 
 ### Prerequisites
+
 - Python 3.11+
 - PostgreSQL 13+
 - Redis 6+
@@ -89,23 +94,27 @@ code/
 ### Backend Setup
 
 1. **Clone and navigate to backend directory**:
+
    ```bash
    cd code/backend
    ```
 
 2. **Create virtual environment**:
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Environment Configuration**:
    Create a `.env` file in the backend directory:
+
    ```env
    # Database
    DATABASE_URL=postgresql://username:password@localhost:5432/quantumnest
@@ -135,6 +144,7 @@ code/
    ```
 
 5. **Database Setup**:
+
    ```bash
    # Create database
    createdb quantumnest
@@ -144,6 +154,7 @@ code/
    ```
 
 6. **Run the application**:
+
    ```bash
    # Using Flask (recommended for enhanced features)
    python app/main_flask.py

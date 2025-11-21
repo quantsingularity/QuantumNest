@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import React from "react";
+import { Line, Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,7 +14,7 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from 'chart.js';
+} from "chart.js";
 
 // Register ChartJS components
 ChartJS.register(
@@ -27,7 +27,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 interface ChartContainerProps {
@@ -36,10 +36,20 @@ interface ChartContainerProps {
   className?: string;
 }
 
-export function ChartContainer({ children, title, className = '' }: ChartContainerProps) {
+export function ChartContainer({
+  children,
+  title,
+  className = "",
+}: ChartContainerProps) {
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-4 ${className}`}>
-      {title && <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h3>}
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-4 ${className}`}
+    >
+      {title && (
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          {title}
+        </h3>
+      )}
       <div className="w-full">{children}</div>
     </div>
   );
@@ -61,15 +71,20 @@ interface LineChartProps {
   className?: string;
 }
 
-export function LineChart({ data, title, height = 300, className = '' }: LineChartProps) {
+export function LineChart({
+  data,
+  title,
+  height = 300,
+  className = "",
+}: LineChartProps) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: "top" as const,
         labels: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
       title: {
@@ -79,18 +94,18 @@ export function LineChart({ data, title, height = 300, className = '' }: LineCha
     scales: {
       x: {
         grid: {
-          color: 'rgba(156, 163, 175, 0.1)',
+          color: "rgba(156, 163, 175, 0.1)",
         },
         ticks: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
       y: {
         grid: {
-          color: 'rgba(156, 163, 175, 0.1)',
+          color: "rgba(156, 163, 175, 0.1)",
         },
         ticks: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
     },
@@ -121,15 +136,20 @@ interface BarChartProps {
   className?: string;
 }
 
-export function BarChart({ data, title, height = 300, className = '' }: BarChartProps) {
+export function BarChart({
+  data,
+  title,
+  height = 300,
+  className = "",
+}: BarChartProps) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: "top" as const,
         labels: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
       title: {
@@ -139,18 +159,18 @@ export function BarChart({ data, title, height = 300, className = '' }: BarChart
     scales: {
       x: {
         grid: {
-          color: 'rgba(156, 163, 175, 0.1)',
+          color: "rgba(156, 163, 175, 0.1)",
         },
         ticks: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
       y: {
         grid: {
-          color: 'rgba(156, 163, 175, 0.1)',
+          color: "rgba(156, 163, 175, 0.1)",
         },
         ticks: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
     },
@@ -180,15 +200,20 @@ interface DoughnutChartProps {
   className?: string;
 }
 
-export function DoughnutChart({ data, title, height = 300, className = '' }: DoughnutChartProps) {
+export function DoughnutChart({
+  data,
+  title,
+  height = 300,
+  className = "",
+}: DoughnutChartProps) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right' as const,
+        position: "right" as const,
         labels: {
-          color: 'rgb(156, 163, 175)',
+          color: "rgb(156, 163, 175)",
         },
       },
       title: {

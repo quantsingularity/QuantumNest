@@ -3,7 +3,7 @@
 
 cluster.name: quantumnest-logging-cluster
 node.name: ${HOSTNAME}
-node.roles: [ master, data, ingest, ml, remote_cluster_client ]
+node.roles: [master, data, ingest, ml, remote_cluster_client]
 
 # Network settings
 network.host: 0.0.0.0
@@ -124,6 +124,5 @@ logger.org.elasticsearch.cluster.service: info
 # Financial services specific settings
 action.destructive_requires_name: true
 cluster.blocks.read_only_allow_delete: false
-
 # Custom index templates for financial data
 # These will be applied via API calls during setup

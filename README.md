@@ -15,6 +15,7 @@ QuantumNest is an innovative investment platform that combines artificial intell
 > **Note**: This project is under active development. Features and functionalities are continuously being enhanced to improve investment capabilities and user experience.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
@@ -34,77 +35,86 @@ QuantumNest revolutionizes investment management by leveraging artificial intell
 ## Key Features
 
 ### AI-Powered Investment Strategies
-| Feature | Description |
-| :--- | :--- |
-| **Predictive Analytics** | Machine learning models for market prediction and trend analysis |
-| **Sentiment Analysis** | Natural language processing to analyze market sentiment from news and social media |
-| **Portfolio Optimization** | Advanced algorithms for risk-adjusted portfolio construction |
-| **Automated Rebalancing** | Smart rebalancing based on market conditions and risk parameters |
-| **Anomaly Detection** | Identification of unusual market patterns and potential opportunities |
+
+| Feature                    | Description                                                                        |
+| :------------------------- | :--------------------------------------------------------------------------------- |
+| **Predictive Analytics**   | Machine learning models for market prediction and trend analysis                   |
+| **Sentiment Analysis**     | Natural language processing to analyze market sentiment from news and social media |
+| **Portfolio Optimization** | Advanced algorithms for risk-adjusted portfolio construction                       |
+| **Automated Rebalancing**  | Smart rebalancing based on market conditions and risk parameters                   |
+| **Anomaly Detection**      | Identification of unusual market patterns and potential opportunities              |
 
 ### Tokenized Asset Management
-| Feature | Description |
-| :--- | :--- |
-| **Asset Tokenization** | Fractional ownership of traditional and alternative assets |
-| **Blockchain Transparency** | Immutable record of ownership and transactions |
-| **Smart Contract Automation** | Automated dividend distribution and governance |
-| **Cross-Chain Compatibility** | Support for multiple blockchain networks |
-| **Regulatory Compliance** | Built-in compliance with securities regulations |
+
+| Feature                       | Description                                                |
+| :---------------------------- | :--------------------------------------------------------- |
+| **Asset Tokenization**        | Fractional ownership of traditional and alternative assets |
+| **Blockchain Transparency**   | Immutable record of ownership and transactions             |
+| **Smart Contract Automation** | Automated dividend distribution and governance             |
+| **Cross-Chain Compatibility** | Support for multiple blockchain networks                   |
+| **Regulatory Compliance**     | Built-in compliance with securities regulations            |
 
 ### Quantitative Finance Tools
-| Feature | Description |
-| :--- | :--- |
-| **Risk Assessment** | Sophisticated risk metrics and stress testing |
-| **Performance Analytics** | Comprehensive performance measurement and attribution |
-| **Factor Analysis** | Multi-factor models for investment analysis |
-| **Volatility Forecasting** | GARCH models for volatility prediction |
-| **Scenario Simulation** | Monte Carlo simulations for portfolio outcomes |
+
+| Feature                    | Description                                           |
+| :------------------------- | :---------------------------------------------------- |
+| **Risk Assessment**        | Sophisticated risk metrics and stress testing         |
+| **Performance Analytics**  | Comprehensive performance measurement and attribution |
+| **Factor Analysis**        | Multi-factor models for investment analysis           |
+| **Volatility Forecasting** | GARCH models for volatility prediction                |
+| **Scenario Simulation**    | Monte Carlo simulations for portfolio outcomes        |
 
 ### User Experience
-| Feature | Description |
-| :--- | :--- |
-| **Intuitive Dashboard** | Clear visualization of portfolio performance and analytics |
-| **Personalized Recommendations** | AI-tailored investment suggestions |
-| **Educational Resources** | Learning materials on investment strategies |
-| **Mobile Accessibility** | Full-featured mobile application |
-| **Social Features** | Community insights and expert commentary |
+
+| Feature                          | Description                                                |
+| :------------------------------- | :--------------------------------------------------------- |
+| **Intuitive Dashboard**          | Clear visualization of portfolio performance and analytics |
+| **Personalized Recommendations** | AI-tailored investment suggestions                         |
+| **Educational Resources**        | Learning materials on investment strategies                |
+| **Mobile Accessibility**         | Full-featured mobile application                           |
+| **Social Features**              | Community insights and expert commentary                   |
 
 ## Technology Stack
 
 ### Frontend
-* **Framework**: Next.js with TypeScript
-* **State Management**: Redux Toolkit
-* **Styling**: TailwindCSS, Styled Components
-* **Data Visualization**: D3.js, Recharts, TradingView
-* **Web3 Integration**: ethers.js, web3.js
+
+- **Framework**: Next.js with TypeScript
+- **State Management**: Redux Toolkit
+- **Styling**: TailwindCSS, Styled Components
+- **Data Visualization**: D3.js, Recharts, TradingView
+- **Web3 Integration**: ethers.js, web3.js
 
 ### Backend
-* **Language**: Python, Node.js
-* **Framework**: FastAPI, Express
-* **Database**: PostgreSQL, MongoDB
-* **Cache**: Redis
-* **Task Queue**: Celery
+
+- **Language**: Python, Node.js
+- **Framework**: FastAPI, Express
+- **Database**: PostgreSQL, MongoDB
+- **Cache**: Redis
+- **Task Queue**: Celery
 
 ### AI & Machine Learning
-* **Frameworks**: TensorFlow, PyTorch, scikit-learn
-* **Time Series Analysis**: Prophet, statsmodels
-* **NLP**: Transformers, spaCy
-* **Feature Engineering**: Feature-tools, tsfresh
-* **Model Serving**: MLflow, TensorFlow Serving
+
+- **Frameworks**: TensorFlow, PyTorch, scikit-learn
+- **Time Series Analysis**: Prophet, statsmodels
+- **NLP**: Transformers, spaCy
+- **Feature Engineering**: Feature-tools, tsfresh
+- **Model Serving**: MLflow, TensorFlow Serving
 
 ### Blockchain
-* **Networks**: Ethereum, Polygon, Binance Smart Chain
-* **Smart Contracts**: Solidity
-* **Development Framework**: Hardhat, Truffle
-* **Testing**: Waffle, Chai
-* **Libraries**: OpenZeppelin
+
+- **Networks**: Ethereum, Polygon, Binance Smart Chain
+- **Smart Contracts**: Solidity
+- **Development Framework**: Hardhat, Truffle
+- **Testing**: Waffle, Chai
+- **Libraries**: OpenZeppelin
 
 ### DevOps
-* **Containerization**: Docker
-* **Orchestration**: Kubernetes
-* **CI/CD**: GitHub Actions
-* **Monitoring**: Prometheus, Grafana
-* **Infrastructure as Code**: Terraform
+
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus, Grafana
+- **Infrastructure as Code**: Terraform
 
 ## Architecture
 
@@ -143,10 +153,11 @@ QuantumNest/
 ## Installation and Setup
 
 ### Prerequisites
-* Node.js (v14+)
-* Python (v3.8+)
-* Docker and Docker Compose
-* MetaMask or compatible Ethereum wallet
+
+- Node.js (v14+)
+- Python (v3.8+)
+- Docker and Docker Compose
+- MetaMask or compatible Ethereum wallet
 
 ### Quick Start with Setup Script
 
@@ -165,18 +176,21 @@ cd QuantumNest
 ### Manual Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/abrar2030/QuantumNest.git
 cd QuantumNest
 ```
 
 2. Install frontend dependencies:
+
 ```bash
 cd web-frontend
 npm install
 ```
 
 3. Install backend dependencies:
+
 ```bash
 cd backend
 python -m venv venv
@@ -185,32 +199,37 @@ pip install -r requirements.txt
 ```
 
 4. Install blockchain dependencies:
+
 ```bash
 cd blockchain
 npm install
 ```
 
 5. Set up environment variables:
-   * Create `.env` files in both frontend and blockchain directories based on the provided `.env.example` files
+   - Create `.env` files in both frontend and blockchain directories based on the provided `.env.example` files
 
 ### Running the Application
 
 1. Start the frontend development server:
+
 ```bash
 npm run frontend:dev
 ```
 
 2. Start the backend server:
+
 ```bash
 npm run backend:dev
 ```
 
 3. Compile smart contracts:
+
 ```bash
 npm run blockchain:compile
 ```
 
 4. Deploy smart contracts to Goerli testnet:
+
 ```bash
 npm run blockchain:deploy:goerli
 ```
@@ -218,34 +237,37 @@ npm run blockchain:deploy:goerli
 ## Features
 
 ### Web Frontend
-| Feature | Description |
-| :--- | :--- |
-| **Home Page** | Platform overview with key features and benefits |
+
+| Feature                 | Description                                               |
+| :---------------------- | :-------------------------------------------------------- |
+| **Home Page**           | Platform overview with key features and benefits          |
 | **Portfolio Dashboard** | Comprehensive view of investment holdings and performance |
-| **Market Analysis** | Interactive charts and visualizations of market trends |
-| **AI Recommendations** | Personalized investment suggestions based on user profile |
-| **Blockchain Explorer** | Transparent view of on-chain transactions and assets |
-| **User Dashboard** | Performance metrics, settings, and account management |
-| **Admin Panel** | Platform management tools for administrators |
+| **Market Analysis**     | Interactive charts and visualizations of market trends    |
+| **AI Recommendations**  | Personalized investment suggestions based on user profile |
+| **Blockchain Explorer** | Transparent view of on-chain transactions and assets      |
+| **User Dashboard**      | Performance metrics, settings, and account management     |
+| **Admin Panel**         | Platform management tools for administrators              |
 
 ### Backend APIs
-| Feature | Description |
-| :--- | :--- |
-| **User Authentication** | Secure JWT-based authentication system |
-| **Portfolio Management** | APIs for creating and managing investment portfolios |
-| **Market Data Integration** | Real-time and historical market data processing |
-| **AI Model Endpoints** | API access to machine learning predictions |
-| **Blockchain Interaction** | Services for interacting with smart contracts |
-| **Admin Controls** | Administrative functions and platform management |
+
+| Feature                     | Description                                          |
+| :-------------------------- | :--------------------------------------------------- |
+| **User Authentication**     | Secure JWT-based authentication system               |
+| **Portfolio Management**    | APIs for creating and managing investment portfolios |
+| **Market Data Integration** | Real-time and historical market data processing      |
+| **AI Model Endpoints**      | API access to machine learning predictions           |
+| **Blockchain Interaction**  | Services for interacting with smart contracts        |
+| **Admin Controls**          | Administrative functions and platform management     |
 
 ### AI Models
-| Model Type | Purpose |
-| :--- | :--- |
-| **LSTM Models** | Long Short-Term Memory networks for financial time series prediction |
-| **GARCH Models** | Generalized Autoregressive Conditional Heteroskedasticity for volatility forecasting |
-| **Sentiment Analysis** | NLP models for market sentiment analysis |
-| **Portfolio Optimization** | Multi-objective optimization algorithms |
-| **Anomaly Detection** | Isolation forests and autoencoders for unusual pattern detection |
+
+| Model Type                 | Purpose                                                                              |
+| :------------------------- | :----------------------------------------------------------------------------------- |
+| **LSTM Models**            | Long Short-Term Memory networks for financial time series prediction                 |
+| **GARCH Models**           | Generalized Autoregressive Conditional Heteroskedasticity for volatility forecasting |
+| **Sentiment Analysis**     | NLP models for market sentiment analysis                                             |
+| **Portfolio Optimization** | Multi-objective optimization algorithms                                              |
+| **Anomaly Detection**      | Isolation forests and autoencoders for unusual pattern detection                     |
 
 ## Testing
 
@@ -253,39 +275,42 @@ The project maintains comprehensive test coverage across all components to ensur
 
 ### Test Coverage
 
-| Component | Coverage | Status |
-|-----------|----------|--------|
-| Frontend Components | 82% | ✅ |
-| Backend Services | 88% | ✅ |
-| AI Models | 85% | ✅ |
-| Blockchain Integration | 86% | ✅ |
-| Smart Contracts | 90% | ✅ |
-| API Layer | 80% | ✅ |
-| Overall | 84% | ✅ |
+| Component              | Coverage | Status |
+| ---------------------- | -------- | ------ |
+| Frontend Components    | 82%      | ✅     |
+| Backend Services       | 88%      | ✅     |
+| AI Models              | 85%      | ✅     |
+| Blockchain Integration | 86%      | ✅     |
+| Smart Contracts        | 90%      | ✅     |
+| API Layer              | 80%      | ✅     |
+| Overall                | 84%      | ✅     |
 
 ### Unit Tests
-| Component | Description |
-| :--- | :--- |
-| Frontend | Component tests with Jest and React Testing Library |
-| Backend | Service and controller tests |
-| Smart Contract | Function tests |
-| AI Model | Validation tests |
+
+| Component      | Description                                         |
+| :------------- | :-------------------------------------------------- |
+| Frontend       | Component tests with Jest and React Testing Library |
+| Backend        | Service and controller tests                        |
+| Smart Contract | Function tests                                      |
+| AI Model       | Validation tests                                    |
 
 ### Integration Tests
-| Test Type | Description |
-| :--- | :--- |
-| API endpoint tests | To verify correct routing and response |
-| Service interaction tests | To ensure seamless communication between services |
+
+| Test Type                    | Description                                               |
+| :--------------------------- | :-------------------------------------------------------- |
+| API endpoint tests           | To verify correct routing and response                    |
+| Service interaction tests    | To ensure seamless communication between services         |
 | Blockchain integration tests | To validate interaction with smart contracts and networks |
-| Data pipeline tests | To verify data flow and transformation |
+| Data pipeline tests          | To verify data flow and transformation                    |
 
 ### End-to-End Tests
-| Test Type | Description |
-| :--- | :--- |
-| User journey tests | With Cypress to cover complete user flows |
-| Portfolio management workflows | To validate core investment functionality |
-| Trading simulations | To test strategy execution in a simulated environment |
-| Authentication flows | To ensure secure and correct login/logout processes |
+
+| Test Type                      | Description                                           |
+| :----------------------------- | :---------------------------------------------------- |
+| User journey tests             | With Cypress to cover complete user flows             |
+| Portfolio management workflows | To validate core investment functionality             |
+| Trading simulations            | To test strategy execution in a simulated environment |
+| Authentication flows           | To ensure secure and correct login/logout processes   |
 
 ### Running Tests
 
@@ -307,15 +332,16 @@ npx hardhat test
 ```
 
 ### CI/CD Pipeline
+
 QuantumNest uses GitHub Actions for continuous integration and deployment:
 
-| Stage | Description |
-| :--- | :--- |
-| Automated testing | On each pull request |
-| Code quality checks | With ESLint, Prettier, and Pylint |
-| Security scanning | For vulnerabilities |
-| Docker image building | And publishing |
-| Automated deployment | To staging and production environments |s
+| Stage                 | Description                            |
+| :-------------------- | :------------------------------------- | --- |
+| Automated testing     | On each pull request                   |
+| Code quality checks   | With ESLint, Prettier, and Pylint      |
+| Security scanning     | For vulnerabilities                    |
+| Docker image building | And publishing                         |
+| Automated deployment  | To staging and production environments | s   |
 
 ## Contributing
 

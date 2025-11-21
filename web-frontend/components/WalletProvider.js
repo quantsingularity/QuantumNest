@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import Web3Modal from 'web3modal';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
+import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 
 // Create a context for the wallet
 export const WalletContext = React.createContext();
@@ -13,25 +13,25 @@ const providerOptions = {
     package: WalletConnectProvider,
     options: {
       infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
-    }
+    },
   },
   coinbasewallet: {
     package: CoinbaseWalletSDK,
     options: {
       appName: "QuantumNest Capital",
       infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
-    }
-  }
+    },
+  },
 };
 
 // Web3Modal instance
 let web3Modal;
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   web3Modal = new Web3Modal({
     network: "mainnet", // optional
     cacheProvider: true, // optional
     providerOptions, // required
-    theme: "dark"
+    theme: "dark",
   });
 }
 
@@ -96,7 +96,7 @@ export const WalletProvider = ({ children }) => {
 
       await provider.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: ethers.utils.hexValue(chainId) }]
+        params: [{ chainId: ethers.utils.hexValue(chainId) }],
       });
     } catch (error) {
       setError(error);
@@ -122,11 +122,11 @@ export const WalletProvider = ({ children }) => {
 
     // Get network name
     if (newChainId === 1) {
-      setNetwork('mainnet');
+      setNetwork("mainnet");
     } else if (newChainId === 5) {
-      setNetwork('goerli');
+      setNetwork("goerli");
     } else if (newChainId === 11155111) {
-      setNetwork('sepolia');
+      setNetwork("sepolia");
     } else {
       setNetwork(`chain-${newChainId}`);
     }
@@ -213,7 +213,7 @@ export const WalletProvider = ({ children }) => {
         chainId,
         connected,
         error,
-        balance
+        balance,
       }}
     >
       {children}
@@ -225,7 +225,7 @@ export const WalletProvider = ({ children }) => {
 export const useWallet = () => {
   const context = React.useContext(WalletContext);
   if (context === undefined) {
-    throw new Error('useWallet must be used within a WalletProvider');
+    throw new Error("useWallet must be used within a WalletProvider");
   }
   return context;
 };

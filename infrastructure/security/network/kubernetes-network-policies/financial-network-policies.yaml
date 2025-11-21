@@ -13,60 +13,60 @@ spec:
       app: quantumnest-backend
       tier: backend
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: quantumnest-frontend
-    - podSelector:
-        matchLabels:
-          app: quantumnest-api-gateway
-    ports:
-    - protocol: TCP
-      port: 8080
-    - protocol: TCP
-      port: 8443  # HTTPS
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: quantumnest-frontend
+        - podSelector:
+            matchLabels:
+              app: quantumnest-api-gateway
+      ports:
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 8443 # HTTPS
   egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: quantumnest-database
-    ports:
-    - protocol: TCP
-      port: 5432  # PostgreSQL
-    - protocol: TCP
-      port: 3306  # MySQL
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: redis
-    ports:
-    - protocol: TCP
-      port: 6379
-  - to: []  # Allow DNS
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: vault-system
-    ports:
-    - protocol: TCP
-      port: 8200  # Vault API
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: quantumnest-database
+      ports:
+        - protocol: TCP
+          port: 5432 # PostgreSQL
+        - protocol: TCP
+          port: 3306 # MySQL
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    - to: [] # Allow DNS
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: vault-system
+      ports:
+        - protocol: TCP
+          port: 8200 # Vault API
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -84,43 +84,43 @@ spec:
       app: quantumnest-database
       tier: database
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: quantumnest-backend
-    ports:
-    - protocol: TCP
-      port: 5432
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-monitoring
-    - podSelector:
-        matchLabels:
-          app: prometheus
-    ports:
-    - protocol: TCP
-      port: 9187  # PostgreSQL Exporter
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: quantumnest-backend
+      ports:
+        - protocol: TCP
+          port: 5432
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-monitoring
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 9187 # PostgreSQL Exporter
   egress:
-  - to: []  # Allow DNS
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: vault-system
-    ports:
-    - protocol: TCP
-      port: 8200  # Vault for secrets
+    - to: [] # Allow DNS
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: vault-system
+      ports:
+        - protocol: TCP
+          port: 8200 # Vault for secrets
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -137,46 +137,46 @@ spec:
       app: quantumnest-frontend
       tier: frontend
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: ingress-nginx
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: ingress-nginx
-    ports:
-    - protocol: TCP
-      port: 80
-    - protocol: TCP
-      port: 443
-  - from: []  # Allow external traffic through ingress
-    ports:
-    - protocol: TCP
-      port: 3000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+    - from: [] # Allow external traffic through ingress
+      ports:
+        - protocol: TCP
+          port: 3000
   egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: quantumnest-backend
-    ports:
-    - protocol: TCP
-      port: 8080
-    - protocol: TCP
-      port: 8443
-  - to: []  # Allow DNS and external APIs
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-    - protocol: TCP
-      port: 443
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: quantumnest-backend
+      ports:
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 8443
+    - to: [] # Allow DNS and external APIs
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+        - protocol: TCP
+          port: 443
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -192,47 +192,47 @@ spec:
     matchLabels:
       app: prometheus
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-monitoring
-    - podSelector:
-        matchLabels:
-          app: grafana
-    ports:
-    - protocol: TCP
-      port: 9090
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    - podSelector:
-        matchLabels:
-          app: quantumnest-backend
-    ports:
-    - protocol: TCP
-      port: 9090
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-monitoring
+        - podSelector:
+            matchLabels:
+              app: grafana
+      ports:
+        - protocol: TCP
+          port: 9090
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+        - podSelector:
+            matchLabels:
+              app: quantumnest-backend
+      ports:
+        - protocol: TCP
+          port: 9090
   egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-prod
-    ports:
-    - protocol: TCP
-      port: 8080  # Application metrics
-    - protocol: TCP
-      port: 9187  # Database metrics
-    - protocol: TCP
-      port: 6379  # Redis metrics
-  - to: []  # Allow DNS
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-prod
+      ports:
+        - protocol: TCP
+          port: 8080 # Application metrics
+        - protocol: TCP
+          port: 9187 # Database metrics
+        - protocol: TCP
+          port: 6379 # Redis metrics
+    - to: [] # Allow DNS
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -248,21 +248,21 @@ spec:
     matchLabels:
       app: falco
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: quantumnest-monitoring
-    - podSelector:
-        matchLabels:
-          app: prometheus
-    ports:
-    - protocol: TCP
-      port: 8765  # Falco metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: quantumnest-monitoring
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 8765 # Falco metrics
   egress:
-  - to: []  # Allow all egress for security monitoring
+    - to: [] # Allow all egress for security monitoring
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -274,8 +274,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -287,11 +287,11 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Egress
+    - Egress
   egress:
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

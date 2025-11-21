@@ -1,20 +1,19 @@
+"use client";
 
-'use client';
-
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { LayoutDashboard, Briefcase, LineChart, Sparkles } from 'lucide-react'; // Import Lucide icons
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { LayoutDashboard, Briefcase, LineChart, Sparkles } from "lucide-react"; // Import Lucide icons
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
   // Updated navigation with Lucide icons
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Portfolio', href: '/portfolio', icon: Briefcase },
-    { name: 'Market', href: '/market-analysis', icon: LineChart },
-    { name: 'Recommend', href: '/recommendations', icon: Sparkles },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Portfolio", href: "/portfolio", icon: Briefcase },
+    { name: "Market", href: "/market-analysis", icon: LineChart },
+    { name: "Recommend", href: "/recommendations", icon: Sparkles },
   ];
 
   return (
@@ -29,7 +28,9 @@ export default function MobileBottomNav() {
               key={item.name}
               href={item.href}
               className={`inline-flex flex-col items-center justify-center px-2 sm:px-5 group ${
-                isActive ? 'text-indigo-400' : 'text-zinc-400 hover:text-zinc-50'
+                isActive
+                  ? "text-indigo-400"
+                  : "text-zinc-400 hover:text-zinc-50"
               }`}
             >
               <Icon className="w-5 h-5 mb-1" />

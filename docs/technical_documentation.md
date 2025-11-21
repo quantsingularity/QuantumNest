@@ -59,17 +59,20 @@ Styling is implemented using Tailwind CSS with a custom configuration:
 The backend follows a RESTful API design with these main endpoints:
 
 #### Authentication
+
 - `POST /api/auth/register`: Register a new user
 - `POST /api/auth/login`: Authenticate a user
 - `GET /api/auth/me`: Get current user information
 
 #### Users
+
 - `GET /api/users`: List users (admin only)
 - `GET /api/users/{id}`: Get user details
 - `PUT /api/users/{id}`: Update user
 - `DELETE /api/users/{id}`: Delete user
 
 #### Portfolio
+
 - `GET /api/portfolio`: Get user portfolios
 - `POST /api/portfolio`: Create new portfolio
 - `GET /api/portfolio/{id}`: Get portfolio details
@@ -79,23 +82,27 @@ The backend follows a RESTful API design with these main endpoints:
 - `DELETE /api/portfolio/{id}/assets/{asset_id}`: Remove asset from portfolio
 
 #### Market
+
 - `GET /api/market/assets`: List available assets
 - `GET /api/market/assets/{symbol}`: Get asset details
 - `GET /api/market/prices`: Get current market prices
 - `GET /api/market/historical/{symbol}`: Get historical prices
 
 #### AI
+
 - `GET /api/ai/recommendations`: Get AI recommendations
 - `POST /api/ai/analyze`: Analyze portfolio
 - `GET /api/ai/sentiment`: Get market sentiment analysis
 - `GET /api/ai/risk-profile`: Get risk profile
 
 #### Blockchain
+
 - `GET /api/blockchain/assets`: Get tokenized assets
 - `GET /api/blockchain/transactions`: Get user transactions
 - `POST /api/blockchain/trade`: Execute trade
 
 #### Admin
+
 - `GET /api/admin/dashboard`: Get admin dashboard data
 - `GET /api/admin/users`: Manage users
 - `GET /api/admin/transactions`: View all transactions
@@ -306,6 +313,7 @@ The platform integrates with Ethereum wallets through:
 ### Frontend Deployment
 
 1. Build the Next.js application:
+
    ```
    cd frontend
    npm run build

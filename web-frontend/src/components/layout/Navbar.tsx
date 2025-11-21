@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
-import { Fragment, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon, BellIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
+import { Fragment, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon, BellIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'Market Analysis', href: '/market-analysis' },
-  { name: 'Recommendations', href: '/recommendations' },
-  { name: 'Blockchain Explorer', href: '/blockchain-explorer' },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Portfolio", href: "/portfolio" },
+  { name: "Market Analysis", href: "/market-analysis" },
+  { name: "Recommendations", href: "/recommendations" },
+  { name: "Blockchain Explorer", href: "/blockchain-explorer" },
 ];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar() {
   const pathname = usePathname();
   const [walletConnected, setWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState("");
 
   const connectWallet = async () => {
     // This would be replaced with actual wallet connection logic
     setWalletConnected(true);
-    setWalletAddress('0x1234...5678');
+    setWalletAddress("0x1234...5678");
   };
 
   return (
@@ -39,7 +39,9 @@ export default function Navbar() {
               <div className="flex">
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/" className="flex items-center">
-                    <span className="text-white font-bold text-xl">QuantumNest</span>
+                    <span className="text-white font-bold text-xl">
+                      QuantumNest
+                    </span>
                   </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -49,9 +51,9 @@ export default function Navbar() {
                       href={item.href}
                       className={classNames(
                         pathname === item.href
-                          ? 'border-indigo-500 text-white'
-                          : 'border-transparent text-gray-300 hover:border-gray-300 hover:text-white',
-                        'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
+                          ? "border-indigo-500 text-white"
+                          : "border-transparent text-gray-300 hover:border-gray-300 hover:text-white",
+                        "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
                       )}
                     >
                       {item.name}
@@ -69,7 +71,9 @@ export default function Navbar() {
                   </button>
                 ) : (
                   <div className="flex items-center space-x-4">
-                    <span className="text-gray-300 text-sm">{walletAddress}</span>
+                    <span className="text-gray-300 text-sm">
+                      {walletAddress}
+                    </span>
                     <button
                       type="button"
                       className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -103,8 +107,8 @@ export default function Navbar() {
                               <Link
                                 href="/profile"
                                 className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700",
                                 )}
                               >
                                 Your Profile
@@ -116,8 +120,8 @@ export default function Navbar() {
                               <Link
                                 href="/settings"
                                 className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700",
                                 )}
                               >
                                 Settings
@@ -130,8 +134,8 @@ export default function Navbar() {
                                 href="#"
                                 onClick={() => setWalletConnected(false)}
                                 className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700",
                                 )}
                               >
                                 Disconnect
@@ -167,9 +171,9 @@ export default function Navbar() {
                   href={item.href}
                   className={classNames(
                     pathname === item.href
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium",
                   )}
                 >
                   {item.name}
@@ -194,7 +198,9 @@ export default function Navbar() {
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-white">User</div>
-                    <div className="text-sm font-medium text-gray-400">{walletAddress}</div>
+                    <div className="text-sm font-medium text-gray-400">
+                      {walletAddress}
+                    </div>
                   </div>
                   <button
                     type="button"

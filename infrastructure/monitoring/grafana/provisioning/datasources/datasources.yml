@@ -63,9 +63,9 @@ datasources:
 
 # Dashboard providers
 providers:
-  - name: 'financial-dashboards'
+  - name: "financial-dashboards"
     orgId: 1
-    folder: 'Financial Services'
+    folder: "Financial Services"
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10
@@ -73,9 +73,9 @@ providers:
     options:
       path: /var/lib/grafana/dashboards/financial
 
-  - name: 'infrastructure-dashboards'
+  - name: "infrastructure-dashboards"
     orgId: 1
-    folder: 'Infrastructure'
+    folder: "Infrastructure"
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10
@@ -83,9 +83,9 @@ providers:
     options:
       path: /var/lib/grafana/dashboards/infrastructure
 
-  - name: 'security-dashboards'
+  - name: "security-dashboards"
     orgId: 1
-    folder: 'Security & Compliance'
+    folder: "Security & Compliance"
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10
@@ -93,9 +93,9 @@ providers:
     options:
       path: /var/lib/grafana/dashboards/security
 
-  - name: 'compliance-dashboards'
+  - name: "compliance-dashboards"
     orgId: 1
-    folder: 'Compliance Reports'
+    folder: "Compliance Reports"
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10

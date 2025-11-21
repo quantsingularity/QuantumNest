@@ -17,7 +17,7 @@ groups:
 
       - alert: SuspiciousTransactionPattern
         expr: increase(financial_suspicious_transactions_total[1m]) > 10
-        for: 0s  # Immediate alert for security
+        for: 0s # Immediate alert for security
         labels:
           severity: critical
           category: security
@@ -158,7 +158,7 @@ groups:
           runbook_url: "https://runbooks.quantumnest.com/compliance/audit-logs"
 
       - alert: DataRetentionViolation
-        expr: data_retention_days > 2555  # 7 years for financial data
+        expr: data_retention_days > 2555 # 7 years for financial data
         for: 1h
         labels:
           severity: warning

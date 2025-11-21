@@ -1,33 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
-import { Card } from '../components/Card';
-import { PortfolioAsset } from '../types/portfolio';
-import { fetchPortfolio, fetchPortfolioHistory } from '../services/api';
-import { formatCurrency } from '../utils/formatters';
-import { colors } from '../styles/colors';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { PortfolioSummary } from '../components/PortfolioSummary';
-import { AssetList } from '../components/AssetList';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { LineChart } from "react-native-chart-kit";
+import { Dimensions } from "react-native";
+import { Card } from "../components/Card";
+import { PortfolioAsset } from "../types/portfolio";
+import { fetchPortfolio, fetchPortfolioHistory } from "../services/api";
+import { formatCurrency } from "../utils/formatters";
+import { colors } from "../styles/colors";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { PortfolioSummary } from "../components/PortfolioSummary";
+import { AssetList } from "../components/AssetList";
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
 const Portfolio = () => {
   const navigation = useNavigation();
   const [portfolio, setPortfolio] = useState<PortfolioAsset[]>([]);
   const [portfolioHistory, setPortfolioHistory] = useState({
-    labels: ['', '', '', '', '', ''],
-    datasets: [{ data: [0, 0, 0, 0, 0, 0] }]
+    labels: ["", "", "", "", "", ""],
+    datasets: [{ data: [0, 0, 0, 0, 0, 0] }],
   });
   const [totalValue, setTotalValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState('1W'); // '1D', '1W', '1M', '3M', '1Y', 'ALL'
+  const [timeRange, setTimeRange] = useState("1W"); // '1D', '1W', '1M', '3M', '1Y', 'ALL'
 
   useEffect(() => {
     loadPortfolioData();
@@ -52,8 +60,8 @@ const Portfolio = () => {
 
       setLoading(false);
     } catch (err) {
-      console.error('Error loading portfolio data:', err);
-      setError('Failed to load portfolio data. Please try again.');
+      console.error("Error loading portfolio data:", err);
+      setError("Failed to load portfolio data. Please try again.");
       setLoading(false);
     }
   };
@@ -65,11 +73,11 @@ const Portfolio = () => {
   };
 
   const handleAssetPress = (asset: PortfolioAsset) => {
-    navigation.navigate('AssetDetails', { asset });
+    navigation.navigate("AssetDetails", { asset });
   };
 
   const handleAddAsset = () => {
-    navigation.navigate('AddAsset');
+    navigation.navigate("AddAsset");
   };
 
   const handleTimeRangeChange = (range: string) => {
@@ -94,10 +102,7 @@ const Portfolio = () => {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Portfolio</Text>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddAsset}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={handleAddAsset}>
             <Text style={styles.addButtonText}>+ Add Asset</Text>
           </TouchableOpacity>
         </View>
@@ -110,19 +115,19 @@ const Portfolio = () => {
 
             <Card style={styles.chartCard}>
               <View style={styles.timeRangeSelector}>
-                {['1D', '1W', '1M', '3M', '1Y', 'ALL'].map((range) => (
+                {["1D", "1W", "1M", "3M", "1Y", "ALL"].map((range) => (
                   <TouchableOpacity
                     key={range}
                     style={[
                       styles.timeRangeButton,
-                      timeRange === range && styles.timeRangeButtonActive
+                      timeRange === range && styles.timeRangeButtonActive,
                     ]}
                     onPress={() => handleTimeRangeChange(range)}
                   >
                     <Text
                       style={[
                         styles.timeRangeText,
-                        timeRange === range && styles.timeRangeTextActive
+                        timeRange === range && styles.timeRangeTextActive,
                       ]}
                     >
                       {range}
@@ -143,13 +148,13 @@ const Portfolio = () => {
                   color: (opacity = 1) => `rgba(46, 125, 50, ${opacity})`,
                   labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                   style: {
-                    borderRadius: 16
+                    borderRadius: 16,
                   },
                   propsForDots: {
-                    r: '6',
-                    strokeWidth: '2',
-                    stroke: colors.primary
-                  }
+                    r: "6",
+                    strokeWidth: "2",
+                    stroke: colors.primary,
+                  },
                 }}
                 bezier
                 style={styles.chart}
@@ -158,7 +163,9 @@ const Portfolio = () => {
 
             <View style={styles.assetsHeader}>
               <Text style={styles.assetsTitle}>Your Assets</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('AllAssets')}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllAssets")}
+              >
                 <Text style={styles.viewAllText}>View All</Text>
               </TouchableOpacity>
             </View>
@@ -181,14 +188,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   addButton: {
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: colors.white,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   chartCard: {
     marginVertical: 16,
@@ -210,8 +217,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   timeRangeSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   timeRangeButton: {
@@ -228,23 +235,23 @@ const styles = StyleSheet.create({
   },
   timeRangeTextActive: {
     color: colors.primary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   assetsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 8,
     marginBottom: 12,
   },
   assetsTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   viewAllText: {
     color: colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

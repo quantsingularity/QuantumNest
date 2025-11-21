@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export function Table({ className, children, ...props }: TableProps) {
   return (
     <div className="w-full overflow-auto">
       <table
-        className={cn('w-full caption-bottom text-sm', className)}
+        className={cn("w-full caption-bottom text-sm", className)}
         {...props}
       >
         {children}
@@ -20,13 +20,18 @@ export function Table({ className, children, ...props }: TableProps) {
   );
 }
 
-interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+interface TableHeaderProps
+  extends React.HTMLAttributes<HTMLTableSectionElement> {
   children: React.ReactNode;
 }
 
-export function TableHeader({ className, children, ...props }: TableHeaderProps) {
+export function TableHeader({
+  className,
+  children,
+  ...props
+}: TableHeaderProps) {
   return (
-    <thead className={cn('bg-gray-50 dark:bg-gray-800', className)} {...props}>
+    <thead className={cn("bg-gray-50 dark:bg-gray-800", className)} {...props}>
       {children}
     </thead>
   );
@@ -38,20 +43,31 @@ interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
 
 export function TableBody({ className, children, ...props }: TableBodyProps) {
   return (
-    <tbody className={cn('divide-y divide-gray-200 dark:divide-gray-700', className)} {...props}>
+    <tbody
+      className={cn("divide-y divide-gray-200 dark:divide-gray-700", className)}
+      {...props}
+    >
       {children}
     </tbody>
   );
 }
 
-interface TableFooterProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+interface TableFooterProps
+  extends React.HTMLAttributes<HTMLTableSectionElement> {
   children: React.ReactNode;
 }
 
-export function TableFooter({ className, children, ...props }: TableFooterProps) {
+export function TableFooter({
+  className,
+  children,
+  ...props
+}: TableFooterProps) {
   return (
     <tfoot
-      className={cn('bg-gray-50 dark:bg-gray-800 font-medium text-gray-900 dark:text-gray-100', className)}
+      className={cn(
+        "bg-gray-50 dark:bg-gray-800 font-medium text-gray-900 dark:text-gray-100",
+        className,
+      )}
       {...props}
     >
       {children}
@@ -67,8 +83,8 @@ export function TableRow({ className, children, ...props }: TableRowProps) {
   return (
     <tr
       className={cn(
-        'hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors',
-        className
+        "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
+        className,
       )}
       {...props}
     >
@@ -85,8 +101,8 @@ export function TableHead({ className, children, ...props }: TableHeadProps) {
   return (
     <th
       className={cn(
-        'h-12 px-4 text-left align-middle font-medium text-gray-500 dark:text-gray-400',
-        className
+        "h-12 px-4 text-left align-middle font-medium text-gray-500 dark:text-gray-400",
+        className,
       )}
       {...props}
     >
@@ -102,7 +118,10 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
 export function TableCell({ className, children, ...props }: TableCellProps) {
   return (
     <td
-      className={cn('p-4 align-middle text-gray-900 dark:text-gray-100', className)}
+      className={cn(
+        "p-4 align-middle text-gray-900 dark:text-gray-100",
+        className,
+      )}
       {...props}
     >
       {children}
@@ -110,14 +129,19 @@ export function TableCell({ className, children, ...props }: TableCellProps) {
   );
 }
 
-interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {
+interface TableCaptionProps
+  extends React.HTMLAttributes<HTMLTableCaptionElement> {
   children: React.ReactNode;
 }
 
-export function TableCaption({ className, children, ...props }: TableCaptionProps) {
+export function TableCaption({
+  className,
+  children,
+  ...props
+}: TableCaptionProps) {
   return (
     <caption
-      className={cn('mt-4 text-sm text-gray-500 dark:text-gray-400', className)}
+      className={cn("mt-4 text-sm text-gray-500 dark:text-gray-400", className)}
       {...props}
     >
       {children}

@@ -7,6 +7,7 @@ This deployment guide provides comprehensive instructions for deploying the enha
 ## Prerequisites
 
 ### Required Tools and Versions
+
 - **Terraform**: >= 1.5.0
 - **Ansible**: >= 2.14.0
 - **kubectl**: >= 1.28.0
@@ -16,12 +17,14 @@ This deployment guide provides comprehensive instructions for deploying the enha
 - **Git**: >= 2.40.0
 
 ### Required Permissions
+
 - AWS Administrator access or equivalent IAM permissions
 - Kubernetes cluster admin access
 - HashiCorp Vault admin access (if using Vault)
 - Container registry push/pull permissions
 
 ### Environment Setup
+
 ```bash
 # Install required tools
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
@@ -47,6 +50,7 @@ unzip awscliv2.zip && sudo ./aws/install
 ### Phase 1: Infrastructure Provisioning
 
 #### Step 1: Configure AWS Credentials
+
 ```bash
 # Configure AWS CLI
 aws configure
@@ -57,6 +61,7 @@ aws sts get-caller-identity
 ```
 
 #### Step 2: Initialize Terraform Backend
+
 ```bash
 cd infrastructure/terraform
 
@@ -78,6 +83,7 @@ aws dynamodb create-table \
 ```
 
 #### Step 3: Configure Terraform Variables
+
 ```bash
 # Copy example variables file
 cp terraform.tfvars.example terraform.tfvars
@@ -87,6 +93,7 @@ nano terraform.tfvars
 ```
 
 Example terraform.tfvars:
+
 ```hcl
 # Environment Configuration
 environment = "prod"
@@ -113,6 +120,7 @@ backup_retention_days = 35
 ```
 
 #### Step 4: Deploy Infrastructure
+
 ```bash
 # Initialize Terraform
 terraform init
@@ -130,6 +138,7 @@ terraform output > ../outputs.txt
 ### Phase 2: Kubernetes Configuration
 
 #### Step 1: Configure kubectl
+
 ```bash
 # Update kubeconfig
 aws eks update-kubeconfig --region us-west-2 --name quantumnest-prod-cluster
@@ -140,6 +149,7 @@ kubectl get nodes
 ```
 
 #### Step 2: Deploy Security Components
+
 ```bash
 cd ../security
 
@@ -154,6 +164,7 @@ kubectl apply -f secrets/external-secrets-operator/
 ```
 
 #### Step 3: Deploy Monitoring Stack
+
 ```bash
 cd ../monitoring
 
@@ -180,6 +191,7 @@ kubectl apply -f kibana/
 ### Phase 3: Application Deployment
 
 #### Step 1: Deploy Backend Services
+
 ```bash
 cd ../kubernetes
 
@@ -195,6 +207,7 @@ kubectl get services -n quantumnest-prod
 ```
 
 #### Step 2: Configure Load Balancers
+
 ```bash
 # Deploy ingress controller
 helm install nginx-ingress ingress-nginx/ingress-nginx \
@@ -209,6 +222,7 @@ kubectl apply -f ingress/
 ### Phase 4: Backup and Recovery Setup
 
 #### Step 1: Deploy Velero
+
 ```bash
 cd ../backup-recovery/kubernetes-backup
 
@@ -226,6 +240,7 @@ velero backup-location get
 ```
 
 #### Step 2: Configure Database Backups
+
 ```bash
 cd ../database-backup
 
@@ -248,6 +263,7 @@ sudo crontab -e
 ### Phase 5: CI/CD Pipeline Setup
 
 #### Step 1: Configure Jenkins
+
 ```bash
 cd ../deployment/jenkins
 
@@ -263,6 +279,7 @@ kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin
 ```
 
 #### Step 2: Configure ArgoCD
+
 ```bash
 cd ../argocd
 
@@ -282,6 +299,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Ansible Playbooks
 
 #### Step 1: Configure Inventory
+
 ```bash
 cd ../ansible
 
@@ -291,6 +309,7 @@ nano inventory
 ```
 
 Example inventory:
+
 ```ini
 [quantumnest_servers]
 web-01 ansible_host=10.0.1.10
@@ -303,6 +322,7 @@ ansible_ssh_private_key_file=~/.ssh/quantumnest-key.pem
 ```
 
 #### Step 2: Run Playbooks
+
 ```bash
 # Test connectivity
 ansible all -m ping
@@ -320,6 +340,7 @@ ansible-playbook -i inventory playbooks/monitoring.yml
 ## Security Configuration
 
 ### SSL/TLS Certificates
+
 ```bash
 # Generate certificates using cert-manager
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
@@ -344,6 +365,7 @@ EOF
 ```
 
 ### Secrets Management
+
 ```bash
 # Configure HashiCorp Vault (if using)
 helm repo add hashicorp https://helm.releases.hashicorp.com
@@ -360,6 +382,7 @@ kubectl exec -ti vault-0 -- vault operator unseal
 ## Monitoring and Alerting
 
 ### Configure Alerts
+
 ```bash
 # Apply Prometheus alert rules
 kubectl apply -f monitoring/prometheus/rules/
@@ -373,6 +396,7 @@ kubectl port-forward svc/prometheus-server 9090:80 -n monitoring
 ```
 
 ### Log Aggregation
+
 ```bash
 # Configure Fluentd for log collection
 kubectl apply -f monitoring/fluentd/
@@ -384,6 +408,7 @@ kubectl logs -f daemonset/fluentd -n kube-system
 ## Compliance Verification
 
 ### Run Compliance Checks
+
 ```bash
 # Run CIS Kubernetes Benchmark
 kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-bench/main/job.yaml
@@ -398,6 +423,7 @@ kubectl apply -f security/compliance/compliance-report-job.yaml
 ```
 
 ### Audit Configuration
+
 ```bash
 # Verify audit logging is enabled
 kubectl get pods -n kube-system | grep audit
@@ -411,6 +437,7 @@ kubectl logs -f deployment/audit-webhook -n kube-system
 ### Common Issues
 
 #### Terraform Issues
+
 ```bash
 # State lock issues
 terraform force-unlock LOCK_ID
@@ -423,6 +450,7 @@ terraform import aws_instance.example i-1234567890abcdef0
 ```
 
 #### Kubernetes Issues
+
 ```bash
 # Pod startup issues
 kubectl describe pod POD_NAME -n NAMESPACE
@@ -438,6 +466,7 @@ kubectl describe pvc PVC_NAME -n NAMESPACE
 ```
 
 #### Network Issues
+
 ```bash
 # Test network connectivity
 kubectl run test-pod --image=busybox --rm -it -- /bin/sh
@@ -449,6 +478,7 @@ kubectl describe networkpolicy POLICY_NAME -n NAMESPACE
 ```
 
 ### Log Locations
+
 - **Application logs**: `/var/log/quantumnest/`
 - **Audit logs**: `/var/log/audit/`
 - **System logs**: `/var/log/syslog`
@@ -456,6 +486,7 @@ kubectl describe networkpolicy POLICY_NAME -n NAMESPACE
 - **Database logs**: `/var/log/postgresql/`
 
 ### Support Contacts
+
 - **Platform Team**: platform-team@quantumnest.com
 - **Security Team**: security@quantumnest.com
 - **On-call**: +1-555-SUPPORT
@@ -465,24 +496,28 @@ kubectl describe networkpolicy POLICY_NAME -n NAMESPACE
 ### Regular Maintenance Tasks
 
 #### Daily
+
 - Monitor system health dashboards
 - Review security alerts
 - Check backup completion status
 - Verify compliance metrics
 
 #### Weekly
+
 - Update system packages
 - Review access logs
 - Validate backup integrity
 - Run security scans
 
 #### Monthly
+
 - Disaster recovery testing
 - Security assessment
 - Compliance audit
 - Performance optimization review
 
 #### Quarterly
+
 - Full security audit
 - Disaster recovery drill
 - Compliance certification review
@@ -491,6 +526,7 @@ kubectl describe networkpolicy POLICY_NAME -n NAMESPACE
 ### Update Procedures
 
 #### Security Updates
+
 ```bash
 # Update Kubernetes cluster
 eksctl update cluster --name quantumnest-prod-cluster --region us-west-2
@@ -503,6 +539,7 @@ kubectl set image deployment/quantumnest-backend backend=quantumnest/backend:v1.
 ```
 
 #### Infrastructure Updates
+
 ```bash
 # Update Terraform modules
 terraform get -update

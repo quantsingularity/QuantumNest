@@ -30,10 +30,12 @@ Tokens expire after 24 hours and need to be refreshed using the `/auth/refresh` 
 ## Rate Limiting
 
 API requests are limited to:
+
 - 100 requests per minute for authenticated users
 - 20 requests per minute for unauthenticated users
 
 Rate limit headers are included in all responses:
+
 - `X-RateLimit-Limit`: Maximum requests allowed in the current period
 - `X-RateLimit-Remaining`: Remaining requests in the current period
 - `X-RateLimit-Reset`: Time when the rate limit resets (Unix timestamp)
@@ -47,6 +49,7 @@ Rate limit headers are included in all responses:
 Register a new user account.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -57,6 +60,7 @@ Register a new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "user_id": "12345",
@@ -72,6 +76,7 @@ Register a new user account.
 Authenticate a user and receive a JWT token.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -80,6 +85,7 @@ Authenticate a user and receive a JWT token.
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -99,11 +105,13 @@ Authenticate a user and receive a JWT token.
 Refresh an expired JWT token.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <expired_token>
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -117,11 +125,13 @@ Authorization: Bearer <expired_token>
 Get current authenticated user information.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "user_id": "12345",
@@ -144,15 +154,18 @@ Authorization: Bearer <token>
 Get all portfolios for the authenticated user.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Query Parameters:**
+
 - `limit` (optional): Maximum number of results (default: 20)
 - `offset` (optional): Pagination offset (default: 0)
 
 **Response:**
+
 ```json
 {
   "count": 2,
@@ -164,7 +177,7 @@ Authorization: Bearer <token>
       "name": "Growth Portfolio",
       "description": "High-growth technology stocks",
       "created_at": "2025-03-15T10:30:00Z",
-      "total_value": 15000.50,
+      "total_value": 15000.5,
       "performance": {
         "daily": 1.2,
         "weekly": 3.5,
@@ -196,11 +209,13 @@ Authorization: Bearer <token>
 Create a new portfolio.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "Tech Growth",
@@ -210,6 +225,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "id": "portfolio_789",
@@ -233,11 +249,13 @@ Authorization: Bearer <token>
 Get detailed information about a specific portfolio.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "id": "portfolio_123",
@@ -245,7 +263,7 @@ Authorization: Bearer <token>
   "description": "High-growth technology stocks",
   "created_at": "2025-03-15T10:30:00Z",
   "last_updated": "2025-04-08T16:20:00Z",
-  "total_value": 15000.50,
+  "total_value": 15000.5,
   "cash_balance": 1250.75,
   "performance": {
     "daily": 1.2,
@@ -261,11 +279,11 @@ Authorization: Bearer <token>
       "name": "Apple Inc.",
       "quantity": 10,
       "purchase_price": 150.25,
-      "current_price": 175.50,
-      "value": 1755.00,
+      "current_price": 175.5,
+      "value": 1755.0,
       "allocation": 12.5,
       "gain_loss": {
-        "amount": 252.50,
+        "amount": 252.5,
         "percentage": 16.8
       }
     },
@@ -275,11 +293,11 @@ Authorization: Bearer <token>
       "name": "Microsoft Corporation",
       "quantity": 8,
       "purchase_price": 220.75,
-      "current_price": 245.30,
-      "value": 1962.40,
+      "current_price": 245.3,
+      "value": 1962.4,
       "allocation": 14.0,
       "gain_loss": {
-        "amount": 196.40,
+        "amount": 196.4,
         "percentage": 11.1
       }
     }
@@ -292,11 +310,13 @@ Authorization: Bearer <token>
 Update a portfolio.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated Growth Portfolio",
@@ -306,6 +326,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "id": "portfolio_123",
@@ -321,11 +342,13 @@ Authorization: Bearer <token>
 Delete a portfolio.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```
 204 No Content
 ```
@@ -335,27 +358,30 @@ Authorization: Bearer <token>
 Add an asset to a portfolio.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "symbol": "GOOGL",
   "quantity": 5,
-  "purchase_price": 2750.50
+  "purchase_price": 2750.5
 }
 ```
 
 **Response:**
+
 ```json
 {
   "id": "asset_003",
   "symbol": "GOOGL",
   "name": "Alphabet Inc.",
   "quantity": 5,
-  "purchase_price": 2750.50,
+  "purchase_price": 2750.5,
   "current_price": 2780.25,
   "value": 13901.25,
   "allocation": 10.2,
@@ -373,6 +399,7 @@ Authorization: Bearer <token>
 Get a list of available assets.
 
 **Query Parameters:**
+
 - `type` (optional): Filter by asset type (stock, bond, crypto, etc.)
 - `sector` (optional): Filter by sector
 - `search` (optional): Search by name or symbol
@@ -380,6 +407,7 @@ Get a list of available assets.
 - `offset` (optional): Pagination offset (default: 0)
 
 **Response:**
+
 ```json
 {
   "count": 100,
@@ -391,7 +419,7 @@ Get a list of available assets.
       "name": "Apple Inc.",
       "type": "stock",
       "sector": "Technology",
-      "current_price": 175.50,
+      "current_price": 175.5,
       "change": 2.35,
       "change_percent": 1.36,
       "market_cap": 2850000000000
@@ -401,8 +429,8 @@ Get a list of available assets.
       "name": "Microsoft Corporation",
       "type": "stock",
       "sector": "Technology",
-      "current_price": 245.30,
-      "change": 1.20,
+      "current_price": 245.3,
+      "change": 1.2,
       "change_percent": 0.49,
       "market_cap": 1950000000000
     }
@@ -415,6 +443,7 @@ Get a list of available assets.
 Get detailed information about a specific asset.
 
 **Response:**
+
 ```json
 {
   "symbol": "AAPL",
@@ -422,12 +451,12 @@ Get detailed information about a specific asset.
   "type": "stock",
   "sector": "Technology",
   "industry": "Consumer Electronics",
-  "current_price": 175.50,
+  "current_price": 175.5,
   "change": 2.35,
   "change_percent": 1.36,
-  "open": 173.20,
-  "high": 176.40,
-  "low": 172.80,
+  "open": 173.2,
+  "high": 176.4,
+  "low": 172.8,
   "volume": 75000000,
   "avg_volume": 82000000,
   "market_cap": 2850000000000,
@@ -444,10 +473,12 @@ Get detailed information about a specific asset.
 Get historical price data for an asset.
 
 **Query Parameters:**
+
 - `period` (optional): Time period (1d, 5d, 1m, 3m, 6m, 1y, 5y)
 - `interval` (optional): Data interval (1m, 5m, 15m, 30m, 1h, 1d, 1wk, 1mo)
 
 **Response:**
+
 ```json
 {
   "symbol": "AAPL",
@@ -458,17 +489,17 @@ Get historical price data for an asset.
     {
       "date": "2025-03-10T00:00:00Z",
       "open": 170.25,
-      "high": 172.40,
-      "low": 169.80,
-      "close": 171.50,
+      "high": 172.4,
+      "low": 169.8,
+      "close": 171.5,
       "volume": 68000000
     },
     {
       "date": "2025-03-11T00:00:00Z",
       "open": 171.75,
-      "high": 173.20,
-      "low": 170.90,
-      "close": 172.80,
+      "high": 173.2,
+      "low": 170.9,
+      "close": 172.8,
       "volume": 72000000
     }
   ]
@@ -482,16 +513,19 @@ Get historical price data for an asset.
 Get AI-generated investment recommendations.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Query Parameters:**
+
 - `portfolio_id` (optional): Get recommendations for a specific portfolio
 - `risk_level` (optional): Filter by risk level (low, moderate, high)
 - `limit` (optional): Maximum number of results (default: 10)
 
 **Response:**
+
 ```json
 {
   "timestamp": "2025-04-09T16:45:00Z",
@@ -510,8 +544,8 @@ Authorization: Bearer <token>
       "name": "NVIDIA Corporation",
       "type": "buy",
       "confidence": 85.2,
-      "target_price": 950.00,
-      "current_price": 875.30,
+      "target_price": 950.0,
+      "current_price": 875.3,
       "potential_upside": 8.5,
       "time_horizon": "medium",
       "risk_level": "moderate",
@@ -522,7 +556,7 @@ Authorization: Bearer <token>
       "name": "Amazon.com Inc.",
       "type": "buy",
       "confidence": 82.7,
-      "target_price": 180.00,
+      "target_price": 180.0,
       "current_price": 160.25,
       "potential_upside": 12.3,
       "time_horizon": "long",
@@ -538,11 +572,13 @@ Authorization: Bearer <token>
 Analyze a portfolio or specific assets.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "portfolio_id": "portfolio_123",
@@ -552,6 +588,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "analysis_id": "analysis_456",
@@ -591,11 +628,13 @@ Authorization: Bearer <token>
 Get tokenized assets available on the blockchain.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "count": 10,
@@ -606,7 +645,7 @@ Authorization: Bearer <token>
       "name": "QuantumNest Apple Stock Token",
       "asset_type": "stock",
       "underlying_symbol": "AAPL",
-      "current_value": 175.50,
+      "current_value": 175.5,
       "total_supply": 1000000,
       "market_cap": 175500000,
       "trading_volume_24h": 2500000,
@@ -633,11 +672,13 @@ Authorization: Bearer <token>
 Get on-chain portfolio information.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "wallet_address": "0x9876543210fedcba9876543210fedcba98765432",
@@ -652,7 +693,7 @@ Authorization: Bearer <token>
           "symbol": "qAAPL",
           "name": "QuantumNest Apple Stock Token",
           "balance": 100,
-          "value": 17550.00,
+          "value": 17550.0,
           "allocation": 45.2
         },
         {
@@ -660,11 +701,11 @@ Authorization: Bearer <token>
           "symbol": "qGOLD",
           "name": "QuantumNest Gold Token",
           "balance": 10,
-          "value": 21507.50,
+          "value": 21507.5,
           "allocation": 54.8
         }
       ],
-      "total_value": 39057.50
+      "total_value": 39057.5
     }
   ]
 }
@@ -675,21 +716,24 @@ Authorization: Bearer <token>
 Execute a trade on the blockchain.
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Request Body:**
+
 ```json
 {
   "token_address": "0x1234567890abcdef1234567890abcdef12345678",
   "type": "buy",
   "amount": 10,
-  "price_limit": 180.00
+  "price_limit": 180.0
 }
 ```
 
 **Response:**
+
 ```json
 {
   "transaction_hash": "0xabc123def456789012345678901234567890123456789012345678901234567890",
@@ -698,8 +742,8 @@ Authorization: Bearer <token>
   "symbol": "qAAPL",
   "type": "buy",
   "amount": 10,
-  "price": 175.50,
-  "total_value": 1755.00,
+  "price": 175.5,
+  "total_value": 1755.0,
   "gas_fee": 0.005,
   "timestamp": "2025-04-09T17:15:00Z",
   "estimated_confirmation_time": "2025-04-09T17:20:00Z"
@@ -713,11 +757,13 @@ Authorization: Bearer <token>
 Get a list of all users (admin only).
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "count": 100,
@@ -743,11 +789,13 @@ Authorization: Bearer <token>
 Get admin dashboard data (admin only).
 
 **Request Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "user_stats": {
@@ -758,8 +806,8 @@ Authorization: Bearer <token>
   },
   "portfolio_stats": {
     "total_portfolios": 1850,
-    "average_portfolio_value": 25000.50,
-    "total_assets_under_management": 46250925.00
+    "average_portfolio_value": 25000.5,
+    "total_assets_under_management": 46250925.0
   },
   "transaction_stats": {
     "transactions_today": 350,

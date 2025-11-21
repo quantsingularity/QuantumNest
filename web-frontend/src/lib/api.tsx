@@ -1,6 +1,12 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface ApiContextType {
   apiUrl: string;
@@ -23,14 +29,15 @@ export function ApiProvider({ children }: ApiProviderProps) {
   const [error, setError] = useState<string | null>(null);
 
   // In production, this would be set based on environment variables
-  const apiUrl = 'http://localhost:8000';
+  const apiUrl = "http://localhost:8000";
 
   const handleResponse = async (response: Response) => {
     setIsLoading(false);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.detail || `Error: ${response.status} ${response.statusText}`;
+      const errorMessage =
+        errorData.detail || `Error: ${response.status} ${response.statusText}`;
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -44,9 +51,9 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // In a real app, we would include authentication headers here
         },
       });
@@ -54,7 +61,8 @@ export function ApiProvider({ children }: ApiProviderProps) {
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
       throw err;
     }
@@ -66,9 +74,9 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // In a real app, we would include authentication headers here
         },
         body: JSON.stringify(data),
@@ -77,7 +85,8 @@ export function ApiProvider({ children }: ApiProviderProps) {
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
       throw err;
     }
@@ -89,9 +98,9 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // In a real app, we would include authentication headers here
         },
         body: JSON.stringify(data),
@@ -100,7 +109,8 @@ export function ApiProvider({ children }: ApiProviderProps) {
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
       throw err;
     }
@@ -112,9 +122,9 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // In a real app, we would include authentication headers here
         },
       });
@@ -122,7 +132,8 @@ export function ApiProvider({ children }: ApiProviderProps) {
       return handleResponse(response);
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
       throw err;
     }
@@ -145,7 +156,7 @@ export function useApi() {
   const context = useContext(ApiContext);
 
   if (context === undefined) {
-    throw new Error('useApi must be used within an ApiProvider');
+    throw new Error("useApi must be used within an ApiProvider");
   }
 
   return context;

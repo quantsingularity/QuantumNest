@@ -3,16 +3,16 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    cluster: 'quantumnest-production'
-    environment: 'prod'
-    region: 'us-west-2'
+    cluster: "quantumnest-production"
+    environment: "prod"
+    region: "us-west-2"
 
 # Alertmanager configuration
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          - alertmanager:9093
+            - alertmanager:9093
       scheme: https
       tls_config:
         cert_file: /etc/prometheus/certs/prometheus-cert.pem
@@ -29,9 +29,9 @@ rule_files:
 # Scrape configuration
 scrape_configs:
   # Prometheus self-monitoring
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
     scrape_interval: 30s
     metrics_path: /metrics
     scheme: https
@@ -41,7 +41,7 @@ scrape_configs:
       ca_file: /etc/prometheus/certs/ca.pem
 
   # Kubernetes API Server
-  - job_name: 'kubernetes-apiservers'
+  - job_name: "kubernetes-apiservers"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -52,12 +52,17 @@ scrape_configs:
       ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
     relabel_configs:
-      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      - source_labels:
+          [
+            __meta_kubernetes_namespace,
+            __meta_kubernetes_service_name,
+            __meta_kubernetes_endpoint_port_name,
+          ]
         action: keep
         regex: default;kubernetes;https
 
   # Kubernetes nodes
-  - job_name: 'kubernetes-nodes'
+  - job_name: "kubernetes-nodes"
     kubernetes_sd_configs:
       - role: node
     scheme: https
@@ -75,7 +80,7 @@ scrape_configs:
         replacement: /api/v1/nodes/${1}/proxy/metrics
 
   # QuantumNest Backend Services
-  - job_name: 'quantumnest-backend'
+  - job_name: "quantumnest-backend"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -101,7 +106,7 @@ scrape_configs:
       key_file: /etc/prometheus/certs/client-key.pem
 
   # Database Monitoring (PostgreSQL)
-  - job_name: 'postgresql'
+  - job_name: "postgresql"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -118,7 +123,7 @@ scrape_configs:
     metrics_path: /metrics
 
   # Redis Monitoring
-  - job_name: 'redis'
+  - job_name: "redis"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -131,7 +136,7 @@ scrape_configs:
     scrape_interval: 30s
 
   # NGINX Ingress Controller
-  - job_name: 'nginx-ingress'
+  - job_name: "nginx-ingress"
     kubernetes_sd_configs:
       - role: pod
         namespaces:
@@ -148,7 +153,7 @@ scrape_configs:
     metrics_path: /metrics
 
   # Financial Transaction Metrics
-  - job_name: 'financial-metrics'
+  - job_name: "financial-metrics"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -161,12 +166,12 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_endpoint_port_name]
         action: keep
         regex: financial-metrics
-    scrape_interval: 5s  # High frequency for financial data
+    scrape_interval: 5s # High frequency for financial data
     metrics_path: /financial/metrics
     scheme: https
 
   # Security Monitoring (Falco)
-  - job_name: 'falco'
+  - job_name: "falco"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -180,12 +185,12 @@ scrape_configs:
     metrics_path: /metrics
 
   # Vault Monitoring
-  - job_name: 'vault'
+  - job_name: "vault"
     static_configs:
-      - targets: ['vault.quantumnest.internal:8200']
+      - targets: ["vault.quantumnest.internal:8200"]
     metrics_path: /v1/sys/metrics
     params:
-      format: ['prometheus']
+      format: ["prometheus"]
     scheme: https
     tls_config:
       cert_file: /etc/prometheus/certs/vault-client-cert.pem
@@ -195,7 +200,7 @@ scrape_configs:
     scrape_interval: 30s
 
   # Elasticsearch Monitoring
-  - job_name: 'elasticsearch'
+  - job_name: "elasticsearch"
     kubernetes_sd_configs:
       - role: endpoints
         namespaces:

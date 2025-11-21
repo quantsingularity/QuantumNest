@@ -1,14 +1,18 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateProfile: (userData: Partial<User>) => Promise<void>;
@@ -27,7 +31,9 @@ interface User {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const checkAuthStatus = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/api/auth/me');
+        const response = await fetch("/api/auth/me");
 
         if (response.ok) {
           const userData = await response.json();
@@ -48,8 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(null);
         }
       } catch (error) {
-        console.error('Authentication check failed:', error);
-        setError('Failed to verify authentication status');
+        console.error("Authentication check failed:", error);
+        setError("Failed to verify authentication status");
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -64,54 +70,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
 
       const userData = await response.json();
       setUser(userData);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
-      console.error('Login error:', error);
-      setError(error instanceof Error ? error.message : 'Login failed. Please try again.');
+      console.error("Login error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (
+    username: string,
+    email: string,
+    password: string,
+  ) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, email, password }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+        throw new Error(errorData.message || "Registration failed");
       }
 
       const userData = await response.json();
       setUser(userData);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
-      console.error('Registration error:', error);
-      setError(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+      console.error("Registration error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -121,20 +139,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
 
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Logout failed');
+        throw new Error(errorData.message || "Logout failed");
       }
 
       setUser(null);
-      router.push('/');
+      router.push("/");
     } catch (error) {
-      console.error('Logout error:', error);
-      setError(error instanceof Error ? error.message : 'Logout failed. Please try again.');
+      console.error("Logout error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Logout failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -145,23 +167,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Password reset failed');
+        throw new Error(errorData.message || "Password reset failed");
       }
 
       // Show success message or redirect
     } catch (error) {
-      console.error('Password reset error:', error);
-      setError(error instanceof Error ? error.message : 'Password reset failed. Please try again.');
+      console.error("Password reset error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Password reset failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -172,24 +198,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch('/api/auth/profile', {
-        method: 'PUT',
+      const response = await fetch("/api/auth/profile", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Profile update failed');
+        throw new Error(errorData.message || "Profile update failed");
       }
 
       const updatedUser = await response.json();
-      setUser(prevUser => prevUser ? { ...prevUser, ...updatedUser } : updatedUser);
+      setUser((prevUser) =>
+        prevUser ? { ...prevUser, ...updatedUser } : updatedUser,
+      );
     } catch (error) {
-      console.error('Profile update error:', error);
-      setError(error instanceof Error ? error.message : 'Profile update failed. Please try again.');
+      console.error("Profile update error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Profile update failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -213,7 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

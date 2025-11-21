@@ -9,6 +9,7 @@ This collection of automation scripts enhances the development workflow and proj
 Manages environment variables across all QuantumNest components, ensuring consistent configuration.
 
 **Features:**
+
 - Check status of environment files across components
 - Generate template .env files for all components
 - Synchronize common variables across components
@@ -16,11 +17,13 @@ Manages environment variables across all QuantumNest components, ensuring consis
 - Validate environment files for required variables
 
 **Usage:**
+
 ```bash
 ./env_manager.sh [COMMAND]
 ```
 
 **Commands:**
+
 - `status` - Check status of environment files across components
 - `template` - Generate template .env files for all components
 - `sync` - Synchronize common variables across components
@@ -34,6 +37,7 @@ Manages environment variables across all QuantumNest components, ensuring consis
 Collects and aggregates logs from all QuantumNest components for easier debugging and monitoring.
 
 **Features:**
+
 - Collect logs from all components
 - Watch logs in real-time
 - Clean old logs
@@ -41,11 +45,13 @@ Collects and aggregates logs from all QuantumNest components for easier debuggin
 - Analyze logs for errors and warnings
 
 **Usage:**
+
 ```bash
 ./log_aggregator.sh [COMMAND]
 ```
 
 **Commands:**
+
 - `collect` - Collect logs from all components
 - `watch` - Watch logs in real-time (requires tmux)
 - `clean [days]` - Clean logs older than specified days (default: 7)
@@ -58,6 +64,7 @@ Collects and aggregates logs from all QuantumNest components for easier debuggin
 Checks the health and versions of all dependencies across the QuantumNest project components.
 
 **Features:**
+
 - Check all dependencies across components
 - Check for outdated dependencies
 - Run security audit on dependencies
@@ -65,11 +72,13 @@ Checks the health and versions of all dependencies across the QuantumNest projec
 - Fix dependency issues
 
 **Usage:**
+
 ```bash
 ./dependency_checker.sh [COMMAND]
 ```
 
 **Commands:**
+
 - `check` - Check all dependencies across components
 - `outdated` - Check for outdated dependencies
 - `security` - Run security audit on dependencies
@@ -82,6 +91,7 @@ Checks the health and versions of all dependencies across the QuantumNest projec
 Provides additional CI/CD capabilities to complement the existing GitHub Actions workflow.
 
 **Features:**
+
 - Check status of CI/CD configuration
 - Validate CI/CD workflow files
 - Run CI tests locally before pushing
@@ -89,11 +99,13 @@ Provides additional CI/CD capabilities to complement the existing GitHub Actions
 - Generate new workflow files from templates
 
 **Usage:**
+
 ```bash
 ./cicd.sh [COMMAND]
 ```
 
 **Commands:**
+
 - `status` - Check status of CI/CD configuration
 - `validate` - Validate CI/CD workflow files
 - `local-test` - Run CI tests locally before pushing
@@ -104,11 +116,13 @@ Provides additional CI/CD capabilities to complement the existing GitHub Actions
 ## Installation
 
 1. Extract the zip file to your QuantumNest project directory:
+
    ```bash
    unzip quantumnest_automation_scripts.zip -d /path/to/QuantumNest/
    ```
 
 2. Make the scripts executable:
+
    ```bash
    chmod +x /path/to/QuantumNest/automation_scripts/*.sh
    ```
