@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*
  * ATTENTION: An "eval-source-map" devtool has been used.
  * This devtool is neither made for production nor for readable output files.
@@ -8,65 +8,64 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 (() => {
-  var exports = {};
-  exports.id = "pages/_document";
-  exports.ids = ["pages/_document"];
-  exports.modules = {
-    /***/ "next/dist/compiled/next-server/pages.runtime.dev.js":
-      /*!**********************************************************************!*\
+    var exports = {};
+    exports.id = 'pages/_document';
+    exports.ids = ['pages/_document'];
+    exports.modules = {
+        /***/ 'next/dist/compiled/next-server/pages.runtime.dev.js':
+            /*!**********************************************************************!*\
   !*** external "next/dist/compiled/next-server/pages.runtime.dev.js" ***!
   \**********************************************************************/
-      /***/ (module) => {
-        module.exports = require("next/dist/compiled/next-server/pages.runtime.dev.js");
+            /***/ (module) => {
+                module.exports = require('next/dist/compiled/next-server/pages.runtime.dev.js');
 
-        /***/
-      },
+                /***/
+            },
 
-    /***/ react:
-      /*!************************!*\
+        /***/ react:
+            /*!************************!*\
   !*** external "react" ***!
   \************************/
-      /***/ (module) => {
-        module.exports = require("react");
+            /***/ (module) => {
+                module.exports = require('react');
 
-        /***/
-      },
+                /***/
+            },
 
-    /***/ "react/jsx-runtime":
-      /*!************************************!*\
+        /***/ 'react/jsx-runtime':
+            /*!************************************!*\
   !*** external "react/jsx-runtime" ***!
   \************************************/
-      /***/ (module) => {
-        module.exports = require("react/jsx-runtime");
+            /***/ (module) => {
+                module.exports = require('react/jsx-runtime');
 
-        /***/
-      },
+                /***/
+            },
 
-    /***/ path:
-      /*!***********************!*\
+        /***/ path:
+            /*!***********************!*\
   !*** external "path" ***!
   \***********************/
-      /***/ (module) => {
-        module.exports = require("path");
+            /***/ (module) => {
+                module.exports = require('path');
 
-        /***/
-      },
-  };
-  // load runtime
-  var __webpack_require__ = require("../webpack-runtime.js");
-  __webpack_require__.C(exports);
-  var __webpack_exec__ = (moduleId) =>
-    __webpack_require__((__webpack_require__.s = moduleId));
-  var __webpack_exports__ = __webpack_require__.X(
-    0,
-    [
-      "vendor-chunks/next@15.1.4_react-dom@19.1.0_react@19.1.0__react@19.1.0",
-      "vendor-chunks/@swc+helpers@0.5.15",
-    ],
-    () =>
-      __webpack_exec__(
-        "./node_modules/.pnpm/next@15.1.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/pages/_document.js",
-      ),
-  );
-  module.exports = __webpack_exports__;
+                /***/
+            },
+    };
+    // load runtime
+    var __webpack_require__ = require('../webpack-runtime.js');
+    __webpack_require__.C(exports);
+    var __webpack_exec__ = (moduleId) => __webpack_require__((__webpack_require__.s = moduleId));
+    var __webpack_exports__ = __webpack_require__.X(
+        0,
+        [
+            'vendor-chunks/next@15.1.4_react-dom@19.1.0_react@19.1.0__react@19.1.0',
+            'vendor-chunks/@swc+helpers@0.5.15',
+        ],
+        () =>
+            __webpack_exec__(
+                './node_modules/.pnpm/next@15.1.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/pages/_document.js',
+            ),
+    );
+    module.exports = __webpack_exports__;
 })();
