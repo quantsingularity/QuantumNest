@@ -1,233 +1,233 @@
 groups:
-  - name: financial-transaction-alerts
-    interval: 10s
-    rules:
-      - alert: HighTransactionFailureRate
-        expr: (rate(financial_transactions_failed_total[5m]) / rate(financial_transactions_total[5m])) > 0.05
-        for: 1m
-        labels:
-          severity: critical
-          category: financial
-          compliance: pci-dss
-        annotations:
-          summary: "High transaction failure rate detected"
-          description: "Transaction failure rate is {{ $value | humanizePercentage }} over the last 5 minutes, which exceeds the 5% threshold."
-          runbook_url: "https://runbooks.quantumnest.com/financial/high-failure-rate"
-          impact: "Customer transactions may be failing, potential revenue loss"
+    - name: financial-transaction-alerts
+      interval: 10s
+      rules:
+          - alert: HighTransactionFailureRate
+            expr: (rate(financial_transactions_failed_total[5m]) / rate(financial_transactions_total[5m])) > 0.05
+            for: 1m
+            labels:
+                severity: critical
+                category: financial
+                compliance: pci-dss
+            annotations:
+                summary: 'High transaction failure rate detected'
+                description: 'Transaction failure rate is {{ $value | humanizePercentage }} over the last 5 minutes, which exceeds the 5% threshold.'
+                runbook_url: 'https://runbooks.quantumnest.com/financial/high-failure-rate'
+                impact: 'Customer transactions may be failing, potential revenue loss'
 
-      - alert: SuspiciousTransactionPattern
-        expr: increase(financial_suspicious_transactions_total[1m]) > 10
-        for: 0s # Immediate alert for security
-        labels:
-          severity: critical
-          category: security
-          compliance: aml
-        annotations:
-          summary: "Suspicious transaction pattern detected"
-          description: "{{ $value }} suspicious transactions detected in the last minute"
-          runbook_url: "https://runbooks.quantumnest.com/security/suspicious-transactions"
-          impact: "Potential fraud or money laundering activity"
+          - alert: SuspiciousTransactionPattern
+            expr: increase(financial_suspicious_transactions_total[1m]) > 10
+            for: 0s # Immediate alert for security
+            labels:
+                severity: critical
+                category: security
+                compliance: aml
+            annotations:
+                summary: 'Suspicious transaction pattern detected'
+                description: '{{ $value }} suspicious transactions detected in the last minute'
+                runbook_url: 'https://runbooks.quantumnest.com/security/suspicious-transactions'
+                impact: 'Potential fraud or money laundering activity'
 
-      - alert: TransactionVolumeAnomaly
-        expr: abs(rate(financial_transactions_total[5m]) - rate(financial_transactions_total[5m] offset 1w)) / rate(financial_transactions_total[5m] offset 1w) > 0.5
-        for: 5m
-        labels:
-          severity: warning
-          category: financial
-          compliance: operational
-        annotations:
-          summary: "Transaction volume anomaly detected"
-          description: "Current transaction rate differs by {{ $value | humanizePercentage }} from the same time last week"
-          runbook_url: "https://runbooks.quantumnest.com/financial/volume-anomaly"
+          - alert: TransactionVolumeAnomaly
+            expr: abs(rate(financial_transactions_total[5m]) - rate(financial_transactions_total[5m] offset 1w)) / rate(financial_transactions_total[5m] offset 1w) > 0.5
+            for: 5m
+            labels:
+                severity: warning
+                category: financial
+                compliance: operational
+            annotations:
+                summary: 'Transaction volume anomaly detected'
+                description: 'Current transaction rate differs by {{ $value | humanizePercentage }} from the same time last week'
+                runbook_url: 'https://runbooks.quantumnest.com/financial/volume-anomaly'
 
-      - alert: LargeTransactionAlert
-        expr: financial_transaction_amount > 100000
-        for: 0s
-        labels:
-          severity: warning
-          category: financial
-          compliance: aml
-        annotations:
-          summary: "Large transaction detected"
-          description: "Transaction amount of ${{ $value }} exceeds the $100,000 threshold"
-          runbook_url: "https://runbooks.quantumnest.com/financial/large-transactions"
+          - alert: LargeTransactionAlert
+            expr: financial_transaction_amount > 100000
+            for: 0s
+            labels:
+                severity: warning
+                category: financial
+                compliance: aml
+            annotations:
+                summary: 'Large transaction detected'
+                description: 'Transaction amount of ${{ $value }} exceeds the $100,000 threshold'
+                runbook_url: 'https://runbooks.quantumnest.com/financial/large-transactions'
 
-  - name: database-alerts
-    interval: 30s
-    rules:
-      - alert: DatabaseConnectionPoolExhausted
-        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.9
-        for: 2m
-        labels:
-          severity: critical
-          category: database
-          compliance: operational
-        annotations:
-          summary: "Database connection pool nearly exhausted"
-          description: "Database {{ $labels.datname }} is using {{ $value | humanizePercentage }} of available connections"
-          runbook_url: "https://runbooks.quantumnest.com/database/connection-pool"
+    - name: database-alerts
+      interval: 30s
+      rules:
+          - alert: DatabaseConnectionPoolExhausted
+            expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.9
+            for: 2m
+            labels:
+                severity: critical
+                category: database
+                compliance: operational
+            annotations:
+                summary: 'Database connection pool nearly exhausted'
+                description: 'Database {{ $labels.datname }} is using {{ $value | humanizePercentage }} of available connections'
+                runbook_url: 'https://runbooks.quantumnest.com/database/connection-pool'
 
-      - alert: DatabaseReplicationLag
-        expr: pg_stat_replication_replay_lag > 300
-        for: 1m
-        labels:
-          severity: warning
-          category: database
-          compliance: operational
-        annotations:
-          summary: "Database replication lag detected"
-          description: "Replication lag is {{ $value }} seconds for replica {{ $labels.application_name }}"
-          runbook_url: "https://runbooks.quantumnest.com/database/replication-lag"
+          - alert: DatabaseReplicationLag
+            expr: pg_stat_replication_replay_lag > 300
+            for: 1m
+            labels:
+                severity: warning
+                category: database
+                compliance: operational
+            annotations:
+                summary: 'Database replication lag detected'
+                description: 'Replication lag is {{ $value }} seconds for replica {{ $labels.application_name }}'
+                runbook_url: 'https://runbooks.quantumnest.com/database/replication-lag'
 
-      - alert: DatabaseDiskSpaceHigh
-        expr: (pg_database_size_bytes / (1024^3)) > 80
-        for: 5m
-        labels:
-          severity: warning
-          category: database
-          compliance: operational
-        annotations:
-          summary: "Database disk usage high"
-          description: "Database {{ $labels.datname }} is using {{ $value }}GB of disk space"
-          runbook_url: "https://runbooks.quantumnest.com/database/disk-space"
+          - alert: DatabaseDiskSpaceHigh
+            expr: (pg_database_size_bytes / (1024^3)) > 80
+            for: 5m
+            labels:
+                severity: warning
+                category: database
+                compliance: operational
+            annotations:
+                summary: 'Database disk usage high'
+                description: 'Database {{ $labels.datname }} is using {{ $value }}GB of disk space'
+                runbook_url: 'https://runbooks.quantumnest.com/database/disk-space'
 
-  - name: security-alerts
-    interval: 15s
-    rules:
-      - alert: UnauthorizedAPIAccess
-        expr: increase(http_requests_total{code=~"401|403"}[1m]) > 50
-        for: 1m
-        labels:
-          severity: critical
-          category: security
-          compliance: soc2
-        annotations:
-          summary: "High number of unauthorized API access attempts"
-          description: "{{ $value }} unauthorized access attempts in the last minute"
-          runbook_url: "https://runbooks.quantumnest.com/security/unauthorized-access"
+    - name: security-alerts
+      interval: 15s
+      rules:
+          - alert: UnauthorizedAPIAccess
+            expr: increase(http_requests_total{code=~"401|403"}[1m]) > 50
+            for: 1m
+            labels:
+                severity: critical
+                category: security
+                compliance: soc2
+            annotations:
+                summary: 'High number of unauthorized API access attempts'
+                description: '{{ $value }} unauthorized access attempts in the last minute'
+                runbook_url: 'https://runbooks.quantumnest.com/security/unauthorized-access'
 
-      - alert: SecurityScanDetected
-        expr: increase(nginx_ingress_controller_requests{status=~"4.."}[5m]) > 100
-        for: 2m
-        labels:
-          severity: warning
-          category: security
-          compliance: soc2
-        annotations:
-          summary: "Potential security scan detected"
-          description: "High number of 4xx responses: {{ $value }} in the last 5 minutes"
-          runbook_url: "https://runbooks.quantumnest.com/security/security-scan"
+          - alert: SecurityScanDetected
+            expr: increase(nginx_ingress_controller_requests{status=~"4.."}[5m]) > 100
+            for: 2m
+            labels:
+                severity: warning
+                category: security
+                compliance: soc2
+            annotations:
+                summary: 'Potential security scan detected'
+                description: 'High number of 4xx responses: {{ $value }} in the last 5 minutes'
+                runbook_url: 'https://runbooks.quantumnest.com/security/security-scan'
 
-      - alert: VaultSealedAlert
-        expr: vault_core_unsealed == 0
-        for: 0s
-        labels:
-          severity: critical
-          category: security
-          compliance: soc2
-        annotations:
-          summary: "Vault is sealed"
-          description: "HashiCorp Vault instance {{ $labels.instance }} is sealed"
-          runbook_url: "https://runbooks.quantumnest.com/security/vault-sealed"
+          - alert: VaultSealedAlert
+            expr: vault_core_unsealed == 0
+            for: 0s
+            labels:
+                severity: critical
+                category: security
+                compliance: soc2
+            annotations:
+                summary: 'Vault is sealed'
+                description: 'HashiCorp Vault instance {{ $labels.instance }} is sealed'
+                runbook_url: 'https://runbooks.quantumnest.com/security/vault-sealed'
 
-      - alert: CertificateExpiringSoon
-        expr: (ssl_certificate_expiry_seconds - time()) / 86400 < 30
-        for: 1h
-        labels:
-          severity: warning
-          category: security
-          compliance: operational
-        annotations:
-          summary: "SSL certificate expiring soon"
-          description: "Certificate {{ $labels.common_name }} expires in {{ $value }} days"
-          runbook_url: "https://runbooks.quantumnest.com/security/certificate-expiry"
+          - alert: CertificateExpiringSoon
+            expr: (ssl_certificate_expiry_seconds - time()) / 86400 < 30
+            for: 1h
+            labels:
+                severity: warning
+                category: security
+                compliance: operational
+            annotations:
+                summary: 'SSL certificate expiring soon'
+                description: 'Certificate {{ $labels.common_name }} expires in {{ $value }} days'
+                runbook_url: 'https://runbooks.quantumnest.com/security/certificate-expiry'
 
-  - name: compliance-alerts
-    interval: 60s
-    rules:
-      - alert: AuditLogMissing
-        expr: absent(increase(audit_log_entries_total[5m]))
-        for: 5m
-        labels:
-          severity: critical
-          category: compliance
-          compliance: soc2
-        annotations:
-          summary: "Audit logs are not being generated"
-          description: "No audit log entries have been recorded in the last 5 minutes"
-          runbook_url: "https://runbooks.quantumnest.com/compliance/audit-logs"
+    - name: compliance-alerts
+      interval: 60s
+      rules:
+          - alert: AuditLogMissing
+            expr: absent(increase(audit_log_entries_total[5m]))
+            for: 5m
+            labels:
+                severity: critical
+                category: compliance
+                compliance: soc2
+            annotations:
+                summary: 'Audit logs are not being generated'
+                description: 'No audit log entries have been recorded in the last 5 minutes'
+                runbook_url: 'https://runbooks.quantumnest.com/compliance/audit-logs'
 
-      - alert: DataRetentionViolation
-        expr: data_retention_days > 2555 # 7 years for financial data
-        for: 1h
-        labels:
-          severity: warning
-          category: compliance
-          compliance: finra
-        annotations:
-          summary: "Data retention policy violation"
-          description: "Data older than 7 years detected: {{ $value }} days old"
-          runbook_url: "https://runbooks.quantumnest.com/compliance/data-retention"
+          - alert: DataRetentionViolation
+            expr: data_retention_days > 2555 # 7 years for financial data
+            for: 1h
+            labels:
+                severity: warning
+                category: compliance
+                compliance: finra
+            annotations:
+                summary: 'Data retention policy violation'
+                description: 'Data older than 7 years detected: {{ $value }} days old'
+                runbook_url: 'https://runbooks.quantumnest.com/compliance/data-retention'
 
-      - alert: EncryptionKeyRotationOverdue
-        expr: (time() - encryption_key_last_rotation_timestamp) / 86400 > 90
-        for: 1h
-        labels:
-          severity: warning
-          category: compliance
-          compliance: pci-dss
-        annotations:
-          summary: "Encryption key rotation overdue"
-          description: "Encryption key has not been rotated for {{ $value }} days"
-          runbook_url: "https://runbooks.quantumnest.com/compliance/key-rotation"
+          - alert: EncryptionKeyRotationOverdue
+            expr: (time() - encryption_key_last_rotation_timestamp) / 86400 > 90
+            for: 1h
+            labels:
+                severity: warning
+                category: compliance
+                compliance: pci-dss
+            annotations:
+                summary: 'Encryption key rotation overdue'
+                description: 'Encryption key has not been rotated for {{ $value }} days'
+                runbook_url: 'https://runbooks.quantumnest.com/compliance/key-rotation'
 
-  - name: application-performance-alerts
-    interval: 30s
-    rules:
-      - alert: HighResponseTime
-        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
-        for: 3m
-        labels:
-          severity: warning
-          category: performance
-          compliance: operational
-        annotations:
-          summary: "High API response time"
-          description: "95th percentile response time is {{ $value }}s for {{ $labels.method }} {{ $labels.endpoint }}"
-          runbook_url: "https://runbooks.quantumnest.com/performance/high-response-time"
+    - name: application-performance-alerts
+      interval: 30s
+      rules:
+          - alert: HighResponseTime
+            expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+            for: 3m
+            labels:
+                severity: warning
+                category: performance
+                compliance: operational
+            annotations:
+                summary: 'High API response time'
+                description: '95th percentile response time is {{ $value }}s for {{ $labels.method }} {{ $labels.endpoint }}'
+                runbook_url: 'https://runbooks.quantumnest.com/performance/high-response-time'
 
-      - alert: HighErrorRate
-        expr: rate(http_requests_total{code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.01
-        for: 2m
-        labels:
-          severity: critical
-          category: performance
-          compliance: operational
-        annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
-          runbook_url: "https://runbooks.quantumnest.com/performance/high-error-rate"
+          - alert: HighErrorRate
+            expr: rate(http_requests_total{code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.01
+            for: 2m
+            labels:
+                severity: critical
+                category: performance
+                compliance: operational
+            annotations:
+                summary: 'High error rate detected'
+                description: 'Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}'
+                runbook_url: 'https://runbooks.quantumnest.com/performance/high-error-rate'
 
-      - alert: MemoryUsageHigh
-        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
-        for: 5m
-        labels:
-          severity: warning
-          category: performance
-          compliance: operational
-        annotations:
-          summary: "High memory usage"
-          description: "Container {{ $labels.name }} is using {{ $value | humanizePercentage }} of allocated memory"
-          runbook_url: "https://runbooks.quantumnest.com/performance/high-memory"
+          - alert: MemoryUsageHigh
+            expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
+            for: 5m
+            labels:
+                severity: warning
+                category: performance
+                compliance: operational
+            annotations:
+                summary: 'High memory usage'
+                description: 'Container {{ $labels.name }} is using {{ $value | humanizePercentage }} of allocated memory'
+                runbook_url: 'https://runbooks.quantumnest.com/performance/high-memory'
 
-      - alert: CPUUsageHigh
-        expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
-        for: 10m
-        labels:
-          severity: warning
-          category: performance
-          compliance: operational
-        annotations:
-          summary: "High CPU usage"
-          description: "Container {{ $labels.name }} CPU usage is {{ $value | humanizePercentage }}"
-          runbook_url: "https://runbooks.quantumnest.com/performance/high-cpu"
+          - alert: CPUUsageHigh
+            expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
+            for: 10m
+            labels:
+                severity: warning
+                category: performance
+                compliance: operational
+            annotations:
+                summary: 'High CPU usage'
+                description: 'Container {{ $labels.name }} CPU usage is {{ $value | humanizePercentage }}'
+                runbook_url: 'https://runbooks.quantumnest.com/performance/high-cpu'

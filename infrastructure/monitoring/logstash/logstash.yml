@@ -27,19 +27,19 @@ dead_letter_queue.max_bytes: 1gb
 # Monitoring
 xpack.monitoring.enabled: true
 xpack.monitoring.elasticsearch.hosts:
-  - "https://elasticsearch.quantumnest.internal:9200"
+    - 'https://elasticsearch.quantumnest.internal:9200'
 xpack.monitoring.elasticsearch.username: logstash_system
-xpack.monitoring.elasticsearch.password: "${LOGSTASH_SYSTEM_PASSWORD}"
-xpack.monitoring.elasticsearch.ssl.certificate_authority: "/usr/share/logstash/config/certs/ca.crt"
-xpack.monitoring.elasticsearch.ssl.certificate: "/usr/share/logstash/config/certs/logstash.crt"
-xpack.monitoring.elasticsearch.ssl.key: "/usr/share/logstash/config/certs/logstash.key"
+xpack.monitoring.elasticsearch.password: '${LOGSTASH_SYSTEM_PASSWORD}'
+xpack.monitoring.elasticsearch.ssl.certificate_authority: '/usr/share/logstash/config/certs/ca.crt'
+xpack.monitoring.elasticsearch.ssl.certificate: '/usr/share/logstash/config/certs/logstash.crt'
+xpack.monitoring.elasticsearch.ssl.key: '/usr/share/logstash/config/certs/logstash.key'
 xpack.monitoring.elasticsearch.ssl.verification_mode: certificate
 
 # Security settings
 xpack.security.enabled: true
 
 # HTTP API settings
-http.host: "0.0.0.0"
+http.host: '0.0.0.0'
 http.port: 9600
 
 # Log level

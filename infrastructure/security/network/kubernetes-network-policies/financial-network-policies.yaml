@@ -1,297 +1,297 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: quantumnest-backend-netpol
-  namespace: quantumnest-prod
-  labels:
-    app.kubernetes.io/name: quantumnest-backend
-    app.kubernetes.io/component: network-policy
-    security.quantumnest.com/policy-type: micro-segmentation
+    name: quantumnest-backend-netpol
+    namespace: quantumnest-prod
+    labels:
+        app.kubernetes.io/name: quantumnest-backend
+        app.kubernetes.io/component: network-policy
+        security.quantumnest.com/policy-type: micro-segmentation
 spec:
-  podSelector:
-    matchLabels:
-      app: quantumnest-backend
-      tier: backend
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: quantumnest-frontend
-        - podSelector:
-            matchLabels:
-              app: quantumnest-api-gateway
-      ports:
-        - protocol: TCP
-          port: 8080
-        - protocol: TCP
-          port: 8443 # HTTPS
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: quantumnest-database
-      ports:
-        - protocol: TCP
-          port: 5432 # PostgreSQL
-        - protocol: TCP
-          port: 3306 # MySQL
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: redis
-      ports:
-        - protocol: TCP
-          port: 6379
-    - to: [] # Allow DNS
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: vault-system
-      ports:
-        - protocol: TCP
-          port: 8200 # Vault API
+    podSelector:
+        matchLabels:
+            app: quantumnest-backend
+            tier: backend
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-frontend
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-api-gateway
+          ports:
+              - protocol: TCP
+                port: 8080
+              - protocol: TCP
+                port: 8443 # HTTPS
+    egress:
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-database
+          ports:
+              - protocol: TCP
+                port: 5432 # PostgreSQL
+              - protocol: TCP
+                port: 3306 # MySQL
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: redis
+          ports:
+              - protocol: TCP
+                port: 6379
+        - to: [] # Allow DNS
+          ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: vault-system
+          ports:
+              - protocol: TCP
+                port: 8200 # Vault API
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: quantumnest-database-netpol
-  namespace: quantumnest-prod
-  labels:
-    app.kubernetes.io/name: quantumnest-database
-    app.kubernetes.io/component: network-policy
-    security.quantumnest.com/policy-type: micro-segmentation
-    security.quantumnest.com/data-classification: restricted
+    name: quantumnest-database-netpol
+    namespace: quantumnest-prod
+    labels:
+        app.kubernetes.io/name: quantumnest-database
+        app.kubernetes.io/component: network-policy
+        security.quantumnest.com/policy-type: micro-segmentation
+        security.quantumnest.com/data-classification: restricted
 spec:
-  podSelector:
-    matchLabels:
-      app: quantumnest-database
-      tier: database
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: quantumnest-backend
-      ports:
-        - protocol: TCP
-          port: 5432
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-monitoring
-        - podSelector:
-            matchLabels:
-              app: prometheus
-      ports:
-        - protocol: TCP
-          port: 9187 # PostgreSQL Exporter
-  egress:
-    - to: [] # Allow DNS
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: vault-system
-      ports:
-        - protocol: TCP
-          port: 8200 # Vault for secrets
+    podSelector:
+        matchLabels:
+            app: quantumnest-database
+            tier: database
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-backend
+          ports:
+              - protocol: TCP
+                port: 5432
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-monitoring
+              - podSelector:
+                    matchLabels:
+                        app: prometheus
+          ports:
+              - protocol: TCP
+                port: 9187 # PostgreSQL Exporter
+    egress:
+        - to: [] # Allow DNS
+          ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: vault-system
+          ports:
+              - protocol: TCP
+                port: 8200 # Vault for secrets
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: quantumnest-frontend-netpol
-  namespace: quantumnest-prod
-  labels:
-    app.kubernetes.io/name: quantumnest-frontend
-    app.kubernetes.io/component: network-policy
-    security.quantumnest.com/policy-type: micro-segmentation
+    name: quantumnest-frontend-netpol
+    namespace: quantumnest-prod
+    labels:
+        app.kubernetes.io/name: quantumnest-frontend
+        app.kubernetes.io/component: network-policy
+        security.quantumnest.com/policy-type: micro-segmentation
 spec:
-  podSelector:
-    matchLabels:
-      app: quantumnest-frontend
-      tier: frontend
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: ingress-nginx
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: ingress-nginx
-      ports:
-        - protocol: TCP
-          port: 80
-        - protocol: TCP
-          port: 443
-    - from: [] # Allow external traffic through ingress
-      ports:
-        - protocol: TCP
-          port: 3000
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: quantumnest-backend
-      ports:
-        - protocol: TCP
-          port: 8080
-        - protocol: TCP
-          port: 8443
-    - to: [] # Allow DNS and external APIs
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-        - protocol: TCP
-          port: 443
+    podSelector:
+        matchLabels:
+            app: quantumnest-frontend
+            tier: frontend
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: ingress-nginx
+              - podSelector:
+                    matchLabels:
+                        app.kubernetes.io/name: ingress-nginx
+          ports:
+              - protocol: TCP
+                port: 80
+              - protocol: TCP
+                port: 443
+        - from: [] # Allow external traffic through ingress
+          ports:
+              - protocol: TCP
+                port: 3000
+    egress:
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-backend
+          ports:
+              - protocol: TCP
+                port: 8080
+              - protocol: TCP
+                port: 8443
+        - to: [] # Allow DNS and external APIs
+          ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53
+              - protocol: TCP
+                port: 443
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: quantumnest-monitoring-netpol
-  namespace: quantumnest-monitoring
-  labels:
-    app.kubernetes.io/name: quantumnest-monitoring
-    app.kubernetes.io/component: network-policy
-    security.quantumnest.com/policy-type: monitoring
+    name: quantumnest-monitoring-netpol
+    namespace: quantumnest-monitoring
+    labels:
+        app.kubernetes.io/name: quantumnest-monitoring
+        app.kubernetes.io/component: network-policy
+        security.quantumnest.com/policy-type: monitoring
 spec:
-  podSelector:
-    matchLabels:
-      app: prometheus
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-monitoring
-        - podSelector:
-            matchLabels:
-              app: grafana
-      ports:
-        - protocol: TCP
-          port: 9090
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-        - podSelector:
-            matchLabels:
-              app: quantumnest-backend
-      ports:
-        - protocol: TCP
-          port: 9090
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-prod
-      ports:
-        - protocol: TCP
-          port: 8080 # Application metrics
-        - protocol: TCP
-          port: 9187 # Database metrics
-        - protocol: TCP
-          port: 6379 # Redis metrics
-    - to: [] # Allow DNS
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+    podSelector:
+        matchLabels:
+            app: prometheus
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-monitoring
+              - podSelector:
+                    matchLabels:
+                        app: grafana
+          ports:
+              - protocol: TCP
+                port: 9090
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+              - podSelector:
+                    matchLabels:
+                        app: quantumnest-backend
+          ports:
+              - protocol: TCP
+                port: 9090
+    egress:
+        - to:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-prod
+          ports:
+              - protocol: TCP
+                port: 8080 # Application metrics
+              - protocol: TCP
+                port: 9187 # Database metrics
+              - protocol: TCP
+                port: 6379 # Redis metrics
+        - to: [] # Allow DNS
+          ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: quantumnest-security-netpol
-  namespace: quantumnest-security
-  labels:
-    app.kubernetes.io/name: quantumnest-security
-    app.kubernetes.io/component: network-policy
-    security.quantumnest.com/policy-type: security-tools
+    name: quantumnest-security-netpol
+    namespace: quantumnest-security
+    labels:
+        app.kubernetes.io/name: quantumnest-security
+        app.kubernetes.io/component: network-policy
+        security.quantumnest.com/policy-type: security-tools
 spec:
-  podSelector:
-    matchLabels:
-      app: falco
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: quantumnest-monitoring
-        - podSelector:
-            matchLabels:
-              app: prometheus
-      ports:
-        - protocol: TCP
-          port: 8765 # Falco metrics
-  egress:
-    - to: [] # Allow all egress for security monitoring
+    podSelector:
+        matchLabels:
+            app: falco
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+              - namespaceSelector:
+                    matchLabels:
+                        name: quantumnest-monitoring
+              - podSelector:
+                    matchLabels:
+                        app: prometheus
+          ports:
+              - protocol: TCP
+                port: 8765 # Falco metrics
+    egress:
+        - to: [] # Allow all egress for security monitoring
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all-default
-  namespace: quantumnest-prod
-  labels:
-    security.quantumnest.com/policy-type: default-deny
+    name: deny-all-default
+    namespace: quantumnest-prod
+    labels:
+        security.quantumnest.com/policy-type: default-deny
 spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
-    - Egress
+    podSelector: {}
+    policyTypes:
+        - Ingress
+        - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-dns
-  namespace: quantumnest-prod
-  labels:
-    security.quantumnest.com/policy-type: dns-allow
+    name: allow-dns
+    namespace: quantumnest-prod
+    labels:
+        security.quantumnest.com/policy-type: dns-allow
 spec:
-  podSelector: {}
-  policyTypes:
-    - Egress
-  egress:
-    - to: []
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+    podSelector: {}
+    policyTypes:
+        - Egress
+    egress:
+        - to: []
+          ports:
+              - protocol: UDP
+                port: 53
+              - protocol: TCP
+                port: 53

@@ -1,237 +1,237 @@
 # Prometheus Configuration for QuantumNest Financial Platform
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
-  external_labels:
-    cluster: "quantumnest-production"
-    environment: "prod"
-    region: "us-west-2"
+    scrape_interval: 15s
+    evaluation_interval: 15s
+    external_labels:
+        cluster: 'quantumnest-production'
+        environment: 'prod'
+        region: 'us-west-2'
 
 # Alertmanager configuration
 alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-            - alertmanager:9093
-      scheme: https
-      tls_config:
-        cert_file: /etc/prometheus/certs/prometheus-cert.pem
-        key_file: /etc/prometheus/certs/prometheus-key.pem
-        ca_file: /etc/prometheus/certs/ca.pem
+    alertmanagers:
+        - static_configs:
+              - targets:
+                    - alertmanager:9093
+          scheme: https
+          tls_config:
+              cert_file: /etc/prometheus/certs/prometheus-cert.pem
+              key_file: /etc/prometheus/certs/prometheus-key.pem
+              ca_file: /etc/prometheus/certs/ca.pem
 
 # Load rules once and periodically evaluate them
 rule_files:
-  - "rules/financial-alerts.yml"
-  - "rules/infrastructure-alerts.yml"
-  - "rules/security-alerts.yml"
-  - "rules/compliance-alerts.yml"
+    - 'rules/financial-alerts.yml'
+    - 'rules/infrastructure-alerts.yml'
+    - 'rules/security-alerts.yml'
+    - 'rules/compliance-alerts.yml'
 
 # Scrape configuration
 scrape_configs:
-  # Prometheus self-monitoring
-  - job_name: "prometheus"
-    static_configs:
-      - targets: ["localhost:9090"]
-    scrape_interval: 30s
-    metrics_path: /metrics
-    scheme: https
-    tls_config:
-      cert_file: /etc/prometheus/certs/prometheus-cert.pem
-      key_file: /etc/prometheus/certs/prometheus-key.pem
-      ca_file: /etc/prometheus/certs/ca.pem
+    # Prometheus self-monitoring
+    - job_name: 'prometheus'
+      static_configs:
+          - targets: ['localhost:9090']
+      scrape_interval: 30s
+      metrics_path: /metrics
+      scheme: https
+      tls_config:
+          cert_file: /etc/prometheus/certs/prometheus-cert.pem
+          key_file: /etc/prometheus/certs/prometheus-key.pem
+          ca_file: /etc/prometheus/certs/ca.pem
 
-  # Kubernetes API Server
-  - job_name: "kubernetes-apiservers"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - default
-    scheme: https
-    tls_config:
-      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-    relabel_configs:
-      - source_labels:
-          [
-            __meta_kubernetes_namespace,
-            __meta_kubernetes_service_name,
-            __meta_kubernetes_endpoint_port_name,
-          ]
-        action: keep
-        regex: default;kubernetes;https
+    # Kubernetes API Server
+    - job_name: 'kubernetes-apiservers'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - default
+      scheme: https
+      tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabel_configs:
+          - source_labels:
+                [
+                    __meta_kubernetes_namespace,
+                    __meta_kubernetes_service_name,
+                    __meta_kubernetes_endpoint_port_name,
+                ]
+            action: keep
+            regex: default;kubernetes;https
 
-  # Kubernetes nodes
-  - job_name: "kubernetes-nodes"
-    kubernetes_sd_configs:
-      - role: node
-    scheme: https
-    tls_config:
-      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-    relabel_configs:
-      - action: labelmap
-        regex: __meta_kubernetes_node_label_(.+)
-      - target_label: __address__
-        replacement: kubernetes.default.svc:443
-      - source_labels: [__meta_kubernetes_node_name]
-        regex: (.+)
-        target_label: __metrics_path__
-        replacement: /api/v1/nodes/${1}/proxy/metrics
+    # Kubernetes nodes
+    - job_name: 'kubernetes-nodes'
+      kubernetes_sd_configs:
+          - role: node
+      scheme: https
+      tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics
 
-  # QuantumNest Backend Services
-  - job_name: "quantumnest-backend"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - quantumnest-prod
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: quantumnest-backend.*
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: metrics
-      - source_labels: [__meta_kubernetes_namespace]
-        target_label: kubernetes_namespace
-      - source_labels: [__meta_kubernetes_service_name]
-        target_label: kubernetes_name
-    scrape_interval: 10s
-    metrics_path: /metrics
-    scheme: https
-    tls_config:
-      insecure_skip_verify: false
-      cert_file: /etc/prometheus/certs/client-cert.pem
-      key_file: /etc/prometheus/certs/client-key.pem
+    # QuantumNest Backend Services
+    - job_name: 'quantumnest-backend'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - quantumnest-prod
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: quantumnest-backend.*
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: metrics
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+      scrape_interval: 10s
+      metrics_path: /metrics
+      scheme: https
+      tls_config:
+          insecure_skip_verify: false
+          cert_file: /etc/prometheus/certs/client-cert.pem
+          key_file: /etc/prometheus/certs/client-key.pem
 
-  # Database Monitoring (PostgreSQL)
-  - job_name: "postgresql"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - quantumnest-prod
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: postgres-exporter.*
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: metrics
-    scrape_interval: 30s
-    metrics_path: /metrics
+    # Database Monitoring (PostgreSQL)
+    - job_name: 'postgresql'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - quantumnest-prod
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: postgres-exporter.*
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: metrics
+      scrape_interval: 30s
+      metrics_path: /metrics
 
-  # Redis Monitoring
-  - job_name: "redis"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - quantumnest-prod
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: redis-exporter.*
-    scrape_interval: 30s
+    # Redis Monitoring
+    - job_name: 'redis'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - quantumnest-prod
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: redis-exporter.*
+      scrape_interval: 30s
 
-  # NGINX Ingress Controller
-  - job_name: "nginx-ingress"
-    kubernetes_sd_configs:
-      - role: pod
-        namespaces:
-          names:
-            - ingress-nginx
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-        action: keep
-        regex: ingress-nginx
-      - source_labels: [__meta_kubernetes_pod_container_port_number]
-        action: keep
-        regex: "10254"
-    scrape_interval: 30s
-    metrics_path: /metrics
+    # NGINX Ingress Controller
+    - job_name: 'nginx-ingress'
+      kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+                names:
+                    - ingress-nginx
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+            action: keep
+            regex: ingress-nginx
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            action: keep
+            regex: '10254'
+      scrape_interval: 30s
+      metrics_path: /metrics
 
-  # Financial Transaction Metrics
-  - job_name: "financial-metrics"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - quantumnest-prod
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: quantumnest-financial-service.*
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: financial-metrics
-    scrape_interval: 5s # High frequency for financial data
-    metrics_path: /financial/metrics
-    scheme: https
+    # Financial Transaction Metrics
+    - job_name: 'financial-metrics'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - quantumnest-prod
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: quantumnest-financial-service.*
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: financial-metrics
+      scrape_interval: 5s # High frequency for financial data
+      metrics_path: /financial/metrics
+      scheme: https
 
-  # Security Monitoring (Falco)
-  - job_name: "falco"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - quantumnest-security
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: falco.*
-    scrape_interval: 15s
-    metrics_path: /metrics
+    # Security Monitoring (Falco)
+    - job_name: 'falco'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - quantumnest-security
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: falco.*
+      scrape_interval: 15s
+      metrics_path: /metrics
 
-  # Vault Monitoring
-  - job_name: "vault"
-    static_configs:
-      - targets: ["vault.quantumnest.internal:8200"]
-    metrics_path: /v1/sys/metrics
-    params:
-      format: ["prometheus"]
-    scheme: https
-    tls_config:
-      cert_file: /etc/prometheus/certs/vault-client-cert.pem
-      key_file: /etc/prometheus/certs/vault-client-key.pem
-      ca_file: /etc/prometheus/certs/vault-ca.pem
-    bearer_token_file: /etc/prometheus/vault-token
-    scrape_interval: 30s
+    # Vault Monitoring
+    - job_name: 'vault'
+      static_configs:
+          - targets: ['vault.quantumnest.internal:8200']
+      metrics_path: /v1/sys/metrics
+      params:
+          format: ['prometheus']
+      scheme: https
+      tls_config:
+          cert_file: /etc/prometheus/certs/vault-client-cert.pem
+          key_file: /etc/prometheus/certs/vault-client-key.pem
+          ca_file: /etc/prometheus/certs/vault-ca.pem
+      bearer_token_file: /etc/prometheus/vault-token
+      scrape_interval: 30s
 
-  # Elasticsearch Monitoring
-  - job_name: "elasticsearch"
-    kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-            - elastic-system
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name]
-        action: keep
-        regex: elasticsearch.*
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: metrics
-    scrape_interval: 30s
+    # Elasticsearch Monitoring
+    - job_name: 'elasticsearch'
+      kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+                names:
+                    - elastic-system
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: elasticsearch.*
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: metrics
+      scrape_interval: 30s
 
 # Remote write configuration for long-term storage
 remote_write:
-  - url: "https://prometheus-remote-storage.quantumnest.internal/api/v1/write"
-    tls_config:
-      cert_file: /etc/prometheus/certs/remote-write-cert.pem
-      key_file: /etc/prometheus/certs/remote-write-key.pem
-      ca_file: /etc/prometheus/certs/ca.pem
-    queue_config:
-      max_samples_per_send: 10000
-      batch_send_deadline: 5s
-      min_shards: 1
-      max_shards: 200
-      capacity: 100000
+    - url: 'https://prometheus-remote-storage.quantumnest.internal/api/v1/write'
+      tls_config:
+          cert_file: /etc/prometheus/certs/remote-write-cert.pem
+          key_file: /etc/prometheus/certs/remote-write-key.pem
+          ca_file: /etc/prometheus/certs/ca.pem
+      queue_config:
+          max_samples_per_send: 10000
+          batch_send_deadline: 5s
+          min_shards: 1
+          max_shards: 200
+          capacity: 100000
 
 # Storage configuration
 storage:
-  tsdb:
-    retention.time: 30d
-    retention.size: 100GB
-    wal-compression: true
+    tsdb:
+        retention.time: 30d
+        retention.size: 100GB
+        wal-compression: true

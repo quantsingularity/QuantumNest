@@ -1,442 +1,442 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: velero
-  labels:
     name: velero
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/part-of: quantumnest-platform
-    security.quantumnest.com/data-classification: restricted
+    labels:
+        name: velero
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/part-of: quantumnest-platform
+        security.quantumnest.com/data-classification: restricted
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: velero
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: server
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT-ID:role/VeleroBackupRole
+    name: velero
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: server
+    annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT-ID:role/VeleroBackupRole
 ---
 apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:
-  name: quantumnest-backup-storage
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: backup-storage
+    name: quantumnest-backup-storage
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: backup-storage
 spec:
-  provider: aws
-  objectStorage:
-    bucket: quantumnest-k8s-backups-prod
-    prefix: cluster-backups
-  config:
-    region: us-west-2
-    s3ForcePathStyle: "false"
-    serverSideEncryption: aws:kms
-    kmsKeyId: arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012
-    insecureSkipTLSVerify: "false"
+    provider: aws
+    objectStorage:
+        bucket: quantumnest-k8s-backups-prod
+        prefix: cluster-backups
+    config:
+        region: us-west-2
+        s3ForcePathStyle: 'false'
+        serverSideEncryption: aws:kms
+        kmsKeyId: arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012
+        insecureSkipTLSVerify: 'false'
 ---
 apiVersion: velero.io/v1
 kind: VolumeSnapshotLocation
 metadata:
-  name: quantumnest-volume-snapshots
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: volume-snapshots
+    name: quantumnest-volume-snapshots
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: volume-snapshots
 spec:
-  provider: aws
-  config:
-    region: us-west-2
-    enableSharedConfig: "true"
+    provider: aws
+    config:
+        region: us-west-2
+        enableSharedConfig: 'true'
 ---
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: quantumnest-daily-backup
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: backup-schedule
-    backup-type: daily
-    compliance.quantumnest.com/financial: "true"
-spec:
-  schedule: "0 2 * * *" # Daily at 2 AM UTC
-  template:
-    metadata:
-      labels:
+    name: quantumnest-daily-backup
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: backup-schedule
         backup-type: daily
-        environment: production
-        compliance: financial
-    spec:
-      includedNamespaces:
-        - quantumnest-prod
-        - quantumnest-monitoring
-        - quantumnest-security
-      excludedNamespaces:
-        - kube-system
-        - kube-public
-        - kube-node-lease
-      includedResources:
-        - "*"
-      excludedResources:
-        - events
-        - events.events.k8s.io
-        - backups.velero.io
-        - restores.velero.io
-        - resticrepositories.velero.io
-      includeClusterResources: true
-      snapshotVolumes: true
-      ttl: 2160h # 90 days retention
-      storageLocation: quantumnest-backup-storage
-      volumeSnapshotLocations:
-        - quantumnest-volume-snapshots
-      defaultVolumesToRestic: true
-      hooks:
-        resources:
-          - name: database-backup-hook
+        compliance.quantumnest.com/financial: 'true'
+spec:
+    schedule: '0 2 * * *' # Daily at 2 AM UTC
+    template:
+        metadata:
+            labels:
+                backup-type: daily
+                environment: production
+                compliance: financial
+        spec:
             includedNamespaces:
-              - quantumnest-prod
+                - quantumnest-prod
+                - quantumnest-monitoring
+                - quantumnest-security
+            excludedNamespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
             includedResources:
-              - pods
-            labelSelector:
-              matchLabels:
-                app: quantumnest-database
-            pre:
-              - exec:
-                  command:
-                    - /bin/bash
-                    - -c
-                    - |
-                      echo "Pre-backup: Flushing database buffers"
-                      psql -c "CHECKPOINT;" || true
-                      psql -c "SELECT pg_start_backup('velero-backup', true);" || true
-            post:
-              - exec:
-                  command:
-                    - /bin/bash
-                    - -c
-                    - |
-                      echo "Post-backup: Stopping backup mode"
-                      psql -c "SELECT pg_stop_backup();" || true
+                - '*'
+            excludedResources:
+                - events
+                - events.events.k8s.io
+                - backups.velero.io
+                - restores.velero.io
+                - resticrepositories.velero.io
+            includeClusterResources: true
+            snapshotVolumes: true
+            ttl: 2160h # 90 days retention
+            storageLocation: quantumnest-backup-storage
+            volumeSnapshotLocations:
+                - quantumnest-volume-snapshots
+            defaultVolumesToRestic: true
+            hooks:
+                resources:
+                    - name: database-backup-hook
+                      includedNamespaces:
+                          - quantumnest-prod
+                      includedResources:
+                          - pods
+                      labelSelector:
+                          matchLabels:
+                              app: quantumnest-database
+                      pre:
+                          - exec:
+                                command:
+                                    - /bin/bash
+                                    - -c
+                                    - |
+                                        echo "Pre-backup: Flushing database buffers"
+                                        psql -c "CHECKPOINT;" || true
+                                        psql -c "SELECT pg_start_backup('velero-backup', true);" || true
+                      post:
+                          - exec:
+                                command:
+                                    - /bin/bash
+                                    - -c
+                                    - |
+                                        echo "Post-backup: Stopping backup mode"
+                                        psql -c "SELECT pg_stop_backup();" || true
 ---
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: quantumnest-weekly-backup
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: backup-schedule
-    backup-type: weekly
-    compliance.quantumnest.com/financial: "true"
-spec:
-  schedule: "0 1 * * 0" # Weekly on Sunday at 1 AM UTC
-  template:
-    metadata:
-      labels:
+    name: quantumnest-weekly-backup
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: backup-schedule
         backup-type: weekly
-        environment: production
-        compliance: financial
-    spec:
-      includedNamespaces:
-        - "*"
-      excludedNamespaces:
-        - kube-system
-        - kube-public
-        - kube-node-lease
-        - velero
-      includedResources:
-        - "*"
-      excludedResources:
-        - events
-        - events.events.k8s.io
-      includeClusterResources: true
-      snapshotVolumes: true
-      ttl: 8760h # 365 days retention (1 year)
-      storageLocation: quantumnest-backup-storage
-      volumeSnapshotLocations:
-        - quantumnest-volume-snapshots
-      defaultVolumesToRestic: true
+        compliance.quantumnest.com/financial: 'true'
+spec:
+    schedule: '0 1 * * 0' # Weekly on Sunday at 1 AM UTC
+    template:
+        metadata:
+            labels:
+                backup-type: weekly
+                environment: production
+                compliance: financial
+        spec:
+            includedNamespaces:
+                - '*'
+            excludedNamespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - velero
+            includedResources:
+                - '*'
+            excludedResources:
+                - events
+                - events.events.k8s.io
+            includeClusterResources: true
+            snapshotVolumes: true
+            ttl: 8760h # 365 days retention (1 year)
+            storageLocation: quantumnest-backup-storage
+            volumeSnapshotLocations:
+                - quantumnest-volume-snapshots
+            defaultVolumesToRestic: true
 ---
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: quantumnest-financial-data-backup
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: backup-schedule
-    backup-type: financial-critical
-    compliance.quantumnest.com/pci-dss: "true"
-    compliance.quantumnest.com/sox: "true"
-spec:
-  schedule: "0 */6 * * *" # Every 6 hours
-  template:
-    metadata:
-      labels:
+    name: quantumnest-financial-data-backup
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: backup-schedule
         backup-type: financial-critical
-        environment: production
-        compliance: pci-dss,sox,finra
-        data-classification: confidential
-    spec:
-      includedNamespaces:
-        - quantumnest-prod
-      labelSelector:
-        matchLabels:
-          security.quantumnest.com/data-classification: confidential
-      includedResources:
-        - persistentvolumes
-        - persistentvolumeclaims
-        - secrets
-        - configmaps
-        - statefulsets
-        - deployments
-      includeClusterResources: false
-      snapshotVolumes: true
-      ttl: 61320h # 7 years retention (2555 days)
-      storageLocation: quantumnest-backup-storage
-      volumeSnapshotLocations:
-        - quantumnest-volume-snapshots
-      defaultVolumesToRestic: true
-      hooks:
-        resources:
-          - name: financial-data-consistency-hook
+        compliance.quantumnest.com/pci-dss: 'true'
+        compliance.quantumnest.com/sox: 'true'
+spec:
+    schedule: '0 */6 * * *' # Every 6 hours
+    template:
+        metadata:
+            labels:
+                backup-type: financial-critical
+                environment: production
+                compliance: pci-dss,sox,finra
+                data-classification: confidential
+        spec:
             includedNamespaces:
-              - quantumnest-prod
+                - quantumnest-prod
             labelSelector:
-              matchLabels:
-                app: quantumnest-backend
-                tier: backend
-            pre:
-              - exec:
-                  command:
-                    - /bin/bash
-                    - -c
-                    - |
-                      echo "Pre-backup: Ensuring financial data consistency"
-                      curl -f http://localhost:8081/backup/prepare || exit 1
-                      sleep 5
-            post:
-              - exec:
-                  command:
-                    - /bin/bash
-                    - -c
-                    - |
-                      echo "Post-backup: Resuming normal operations"
-                      curl -f http://localhost:8081/backup/complete || true
+                matchLabels:
+                    security.quantumnest.com/data-classification: confidential
+            includedResources:
+                - persistentvolumes
+                - persistentvolumeclaims
+                - secrets
+                - configmaps
+                - statefulsets
+                - deployments
+            includeClusterResources: false
+            snapshotVolumes: true
+            ttl: 61320h # 7 years retention (2555 days)
+            storageLocation: quantumnest-backup-storage
+            volumeSnapshotLocations:
+                - quantumnest-volume-snapshots
+            defaultVolumesToRestic: true
+            hooks:
+                resources:
+                    - name: financial-data-consistency-hook
+                      includedNamespaces:
+                          - quantumnest-prod
+                      labelSelector:
+                          matchLabels:
+                              app: quantumnest-backend
+                              tier: backend
+                      pre:
+                          - exec:
+                                command:
+                                    - /bin/bash
+                                    - -c
+                                    - |
+                                        echo "Pre-backup: Ensuring financial data consistency"
+                                        curl -f http://localhost:8081/backup/prepare || exit 1
+                                        sleep 5
+                      post:
+                          - exec:
+                                command:
+                                    - /bin/bash
+                                    - -c
+                                    - |
+                                        echo "Post-backup: Resuming normal operations"
+                                        curl -f http://localhost:8081/backup/complete || true
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: velero-backup-notification
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: velero
-    app.kubernetes.io/component: notification
+    name: velero-backup-notification
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: velero
+        app.kubernetes.io/component: notification
 data:
-  notification.sh: |
-    #!/bin/bash
+    notification.sh: |
+        #!/bin/bash
 
-    BACKUP_NAME="$1"
-    BACKUP_STATUS="$2"
-    BACKUP_NAMESPACE="$3"
+        BACKUP_NAME="$1"
+        BACKUP_STATUS="$2"
+        BACKUP_NAMESPACE="$3"
 
-    # Slack notification
-    if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
-        if [[ "$BACKUP_STATUS" == "Completed" ]]; then
-            MESSAGE="✅ Kubernetes backup completed successfully: $BACKUP_NAME"
-            COLOR="good"
-        else
-            MESSAGE="❌ Kubernetes backup failed: $BACKUP_NAME (Status: $BACKUP_STATUS)"
-            COLOR="danger"
+        # Slack notification
+        if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
+            if [[ "$BACKUP_STATUS" == "Completed" ]]; then
+                MESSAGE="✅ Kubernetes backup completed successfully: $BACKUP_NAME"
+                COLOR="good"
+            else
+                MESSAGE="❌ Kubernetes backup failed: $BACKUP_NAME (Status: $BACKUP_STATUS)"
+                COLOR="danger"
+            fi
+
+            curl -X POST -H 'Content-type: application/json' \
+                --data "{\"text\":\"$MESSAGE\", \"color\":\"$COLOR\"}" \
+                "$SLACK_WEBHOOK_URL"
         fi
 
-        curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"$MESSAGE\", \"color\":\"$COLOR\"}" \
-            "$SLACK_WEBHOOK_URL"
-    fi
+        # Email notification for critical backups
+        if [[ "$BACKUP_NAMESPACE" == "quantumnest-prod" ]]; then
+            echo "$MESSAGE" | mail -s "QuantumNest K8s Backup Status" "${EMAIL_RECIPIENTS}"
+        fi
 
-    # Email notification for critical backups
-    if [[ "$BACKUP_NAMESPACE" == "quantumnest-prod" ]]; then
-        echo "$MESSAGE" | mail -s "QuantumNest K8s Backup Status" "${EMAIL_RECIPIENTS}"
-    fi
-
-    # Audit logging
-    echo "$(date -Iseconds) | K8S_BACKUP_AUDIT | $BACKUP_NAME | $BACKUP_STATUS | $BACKUP_NAMESPACE" >> /var/log/backup-audit.log
+        # Audit logging
+        echo "$(date -Iseconds) | K8S_BACKUP_AUDIT | $BACKUP_NAME | $BACKUP_STATUS | $BACKUP_NAMESPACE" >> /var/log/backup-audit.log
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: backup-verification
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: backup-verification
-    app.kubernetes.io/component: verification
+    name: backup-verification
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: backup-verification
+        app.kubernetes.io/component: verification
 spec:
-  schedule: "0 4 * * *" # Daily at 4 AM UTC
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app: backup-verification
+    schedule: '0 4 * * *' # Daily at 4 AM UTC
+    jobTemplate:
         spec:
-          serviceAccountName: velero
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
-          containers:
-            - name: backup-verifier
-              image: velero/velero:v1.12.0
-              securityContext:
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
-                runAsNonRoot: true
-                capabilities:
-                  drop:
-                    - ALL
-              command:
-                - /bin/bash
-                - -c
-                - |
-                  set -euo pipefail
+            template:
+                metadata:
+                    labels:
+                        app: backup-verification
+                spec:
+                    serviceAccountName: velero
+                    securityContext:
+                        runAsNonRoot: true
+                        runAsUser: 1000
+                        runAsGroup: 1000
+                        fsGroup: 1000
+                    containers:
+                        - name: backup-verifier
+                          image: velero/velero:v1.12.0
+                          securityContext:
+                              allowPrivilegeEscalation: false
+                              readOnlyRootFilesystem: true
+                              runAsNonRoot: true
+                              capabilities:
+                                  drop:
+                                      - ALL
+                          command:
+                              - /bin/bash
+                              - -c
+                              - |
+                                  set -euo pipefail
 
-                  echo "Starting backup verification process..."
+                                  echo "Starting backup verification process..."
 
-                  # Get recent backups
-                  RECENT_BACKUPS=$(velero backup get --output json | jq -r '.items[] | select(.status.phase == "Completed" and (.metadata.creationTimestamp | fromdateiso8601) > (now - 86400)) | .metadata.name')
+                                  # Get recent backups
+                                  RECENT_BACKUPS=$(velero backup get --output json | jq -r '.items[] | select(.status.phase == "Completed" and (.metadata.creationTimestamp | fromdateiso8601) > (now - 86400)) | .metadata.name')
 
-                  if [[ -z "$RECENT_BACKUPS" ]]; then
-                    echo "ERROR: No completed backups found in the last 24 hours"
-                    exit 1
-                  fi
+                                  if [[ -z "$RECENT_BACKUPS" ]]; then
+                                    echo "ERROR: No completed backups found in the last 24 hours"
+                                    exit 1
+                                  fi
 
-                  # Verify each backup
-                  for backup in $RECENT_BACKUPS; do
-                    echo "Verifying backup: $backup"
+                                  # Verify each backup
+                                  for backup in $RECENT_BACKUPS; do
+                                    echo "Verifying backup: $backup"
 
-                    # Check backup details
-                    velero backup describe "$backup" --details
+                                    # Check backup details
+                                    velero backup describe "$backup" --details
 
-                    # Verify backup in storage
-                    velero backup logs "$backup" | grep -q "backup completed successfully" || {
-                      echo "ERROR: Backup $backup verification failed"
-                      exit 1
-                    }
+                                    # Verify backup in storage
+                                    velero backup logs "$backup" | grep -q "backup completed successfully" || {
+                                      echo "ERROR: Backup $backup verification failed"
+                                      exit 1
+                                    }
 
-                    echo "Backup $backup verified successfully"
-                  done
+                                    echo "Backup $backup verified successfully"
+                                  done
 
-                  echo "All backup verifications completed successfully"
-              env:
-                - name: VELERO_NAMESPACE
-                  value: velero
-              volumeMounts:
-                - name: tmp
-                  mountPath: /tmp
-          volumes:
-            - name: tmp
-              emptyDir: {}
-          restartPolicy: OnFailure
+                                  echo "All backup verifications completed successfully"
+                          env:
+                              - name: VELERO_NAMESPACE
+                                value: velero
+                          volumeMounts:
+                              - name: tmp
+                                mountPath: /tmp
+                    volumes:
+                        - name: tmp
+                          emptyDir: {}
+                    restartPolicy: OnFailure
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: disaster-recovery-test
-  namespace: velero
-  labels:
-    app.kubernetes.io/name: disaster-recovery-test
-    app.kubernetes.io/component: dr-test
+    name: disaster-recovery-test
+    namespace: velero
+    labels:
+        app.kubernetes.io/name: disaster-recovery-test
+        app.kubernetes.io/component: dr-test
 spec:
-  schedule: "0 3 1 * *" # Monthly on the 1st at 3 AM UTC
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app: disaster-recovery-test
+    schedule: '0 3 1 * *' # Monthly on the 1st at 3 AM UTC
+    jobTemplate:
         spec:
-          serviceAccountName: velero
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
-          containers:
-            - name: dr-tester
-              image: velero/velero:v1.12.0
-              securityContext:
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
-                runAsNonRoot: true
-                capabilities:
-                  drop:
-                    - ALL
-              command:
-                - /bin/bash
-                - -c
-                - |
-                  set -euo pipefail
+            template:
+                metadata:
+                    labels:
+                        app: disaster-recovery-test
+                spec:
+                    serviceAccountName: velero
+                    securityContext:
+                        runAsNonRoot: true
+                        runAsUser: 1000
+                        runAsGroup: 1000
+                        fsGroup: 1000
+                    containers:
+                        - name: dr-tester
+                          image: velero/velero:v1.12.0
+                          securityContext:
+                              allowPrivilegeEscalation: false
+                              readOnlyRootFilesystem: true
+                              runAsNonRoot: true
+                              capabilities:
+                                  drop:
+                                      - ALL
+                          command:
+                              - /bin/bash
+                              - -c
+                              - |
+                                  set -euo pipefail
 
-                  echo "Starting disaster recovery test..."
+                                  echo "Starting disaster recovery test..."
 
-                  # Create test namespace
-                  kubectl create namespace quantumnest-dr-test || true
+                                  # Create test namespace
+                                  kubectl create namespace quantumnest-dr-test || true
 
-                  # Get latest production backup
-                  LATEST_BACKUP=$(velero backup get --selector="backup-type=daily,environment=production" --sort-by=.metadata.creationTimestamp --output jsonpath='{.items[-1:].metadata.name}')
+                                  # Get latest production backup
+                                  LATEST_BACKUP=$(velero backup get --selector="backup-type=daily,environment=production" --sort-by=.metadata.creationTimestamp --output jsonpath='{.items[-1:].metadata.name}')
 
-                  if [[ -z "$LATEST_BACKUP" ]]; then
-                    echo "ERROR: No production backup found for DR test"
-                    exit 1
-                  fi
+                                  if [[ -z "$LATEST_BACKUP" ]]; then
+                                    echo "ERROR: No production backup found for DR test"
+                                    exit 1
+                                  fi
 
-                  echo "Using backup for DR test: $LATEST_BACKUP"
+                                  echo "Using backup for DR test: $LATEST_BACKUP"
 
-                  # Create restore from backup
-                  RESTORE_NAME="dr-test-$(date +%Y%m%d-%H%M%S)"
-                  velero restore create "$RESTORE_NAME" \
-                    --from-backup "$LATEST_BACKUP" \
-                    --namespace-mappings quantumnest-prod:quantumnest-dr-test \
-                    --wait
+                                  # Create restore from backup
+                                  RESTORE_NAME="dr-test-$(date +%Y%m%d-%H%M%S)"
+                                  velero restore create "$RESTORE_NAME" \
+                                    --from-backup "$LATEST_BACKUP" \
+                                    --namespace-mappings quantumnest-prod:quantumnest-dr-test \
+                                    --wait
 
-                  # Verify restore
-                  velero restore describe "$RESTORE_NAME" --details
+                                  # Verify restore
+                                  velero restore describe "$RESTORE_NAME" --details
 
-                  # Check if pods are running in test namespace
-                  kubectl wait --for=condition=Ready pod -l app=quantumnest-backend -n quantumnest-dr-test --timeout=300s || {
-                    echo "WARNING: DR test pods did not become ready within timeout"
-                  }
+                                  # Check if pods are running in test namespace
+                                  kubectl wait --for=condition=Ready pod -l app=quantumnest-backend -n quantumnest-dr-test --timeout=300s || {
+                                    echo "WARNING: DR test pods did not become ready within timeout"
+                                  }
 
-                  # Cleanup test namespace
-                  kubectl delete namespace quantumnest-dr-test || true
+                                  # Cleanup test namespace
+                                  kubectl delete namespace quantumnest-dr-test || true
 
-                  echo "Disaster recovery test completed"
+                                  echo "Disaster recovery test completed"
 
-                  # Send DR test notification
-                  if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
-                    curl -X POST -H 'Content-type: application/json' \
-                      --data '{"text":"✅ Monthly disaster recovery test completed successfully"}' \
-                      "$SLACK_WEBHOOK_URL"
-                  fi
-              env:
-                - name: VELERO_NAMESPACE
-                  value: velero
-                - name: SLACK_WEBHOOK_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: notification-secrets
-                      key: slack-webhook-url
-              volumeMounts:
-                - name: tmp
-                  mountPath: /tmp
-          volumes:
-            - name: tmp
-              emptyDir: {}
-          restartPolicy: OnFailure
+                                  # Send DR test notification
+                                  if [[ -n "${SLACK_WEBHOOK_URL}" ]]; then
+                                    curl -X POST -H 'Content-type: application/json' \
+                                      --data '{"text":"✅ Monthly disaster recovery test completed successfully"}' \
+                                      "$SLACK_WEBHOOK_URL"
+                                  fi
+                          env:
+                              - name: VELERO_NAMESPACE
+                                value: velero
+                              - name: SLACK_WEBHOOK_URL
+                                valueFrom:
+                                    secretKeyRef:
+                                        name: notification-secrets
+                                        key: slack-webhook-url
+                          volumeMounts:
+                              - name: tmp
+                                mountPath: /tmp
+                    volumes:
+                        - name: tmp
+                          emptyDir: {}
+                    restartPolicy: OnFailure

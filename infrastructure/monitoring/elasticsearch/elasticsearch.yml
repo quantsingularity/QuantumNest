@@ -12,14 +12,14 @@ transport.port: 9300
 
 # Discovery settings for cluster
 discovery.seed_hosts:
-  - elasticsearch-master-0.elasticsearch-master.elastic-system.svc.cluster.local
-  - elasticsearch-master-1.elasticsearch-master.elastic-system.svc.cluster.local
-  - elasticsearch-master-2.elasticsearch-master.elastic-system.svc.cluster.local
+    - elasticsearch-master-0.elasticsearch-master.elastic-system.svc.cluster.local
+    - elasticsearch-master-1.elasticsearch-master.elastic-system.svc.cluster.local
+    - elasticsearch-master-2.elasticsearch-master.elastic-system.svc.cluster.local
 
 cluster.initial_master_nodes:
-  - elasticsearch-master-0
-  - elasticsearch-master-1
-  - elasticsearch-master-2
+    - elasticsearch-master-0
+    - elasticsearch-master-1
+    - elasticsearch-master-2
 
 # Security settings
 xpack.security.enabled: true
@@ -36,17 +36,17 @@ xpack.security.http.ssl.truststore.path: /usr/share/elasticsearch/config/certs/e
 # Audit logging for compliance
 xpack.security.audit.enabled: true
 xpack.security.audit.logfile.events.include:
-  - access_denied
-  - access_granted
-  - anonymous_access_denied
-  - authentication_failed
-  - authentication_success
-  - change_password
-  - connection_denied
-  - connection_granted
-  - tampered_request
-  - run_as_denied
-  - run_as_granted
+    - access_denied
+    - access_granted
+    - anonymous_access_denied
+    - authentication_failed
+    - authentication_success
+    - change_password
+    - connection_denied
+    - connection_granted
+    - tampered_request
+    - run_as_denied
+    - run_as_granted
 
 xpack.security.audit.logfile.events.exclude: []
 xpack.security.audit.logfile.events.emit_request_body: true
@@ -59,16 +59,16 @@ xpack.ml.max_machine_memory_percent: 30
 xpack.monitoring.enabled: true
 xpack.monitoring.collection.enabled: true
 xpack.monitoring.exporters:
-  prometheus:
-    type: http
-    host: ["https://prometheus.quantumnest.internal:9090"]
-    auth:
-      username: elasticsearch_exporter
-      password: ${ELASTICSEARCH_EXPORTER_PASSWORD}
-    ssl:
-      certificate_authorities: ["/usr/share/elasticsearch/config/certs/ca.crt"]
-      certificate: "/usr/share/elasticsearch/config/certs/client.crt"
-      key: "/usr/share/elasticsearch/config/certs/client.key"
+    prometheus:
+        type: http
+        host: ['https://prometheus.quantumnest.internal:9090']
+        auth:
+            username: elasticsearch_exporter
+            password: ${ELASTICSEARCH_EXPORTER_PASSWORD}
+        ssl:
+            certificate_authorities: ['/usr/share/elasticsearch/config/certs/ca.crt']
+            certificate: '/usr/share/elasticsearch/config/certs/client.crt'
+            key: '/usr/share/elasticsearch/config/certs/client.key'
 
 # Index settings for financial data
 index.number_of_shards: 3
@@ -109,7 +109,7 @@ xpack.sql.enabled: true
 xpack.ccr.enabled: true
 
 # Snapshot and restore settings
-path.repo: ["/usr/share/elasticsearch/backup"]
+path.repo: ['/usr/share/elasticsearch/backup']
 
 # JVM heap size (set via environment variables)
 # ES_JAVA_OPTS: "-Xms2g -Xmx2g"
