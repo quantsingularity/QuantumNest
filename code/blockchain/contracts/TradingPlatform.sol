@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 /**
  * @title TradingPlatform
@@ -55,10 +55,24 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
     mapping(address => bool) public whitelistedTokens;
 
     // Events
-    event OrderCreated(uint256 indexed orderId, address indexed maker, address tokenAddress, uint256 amount, uint256 price, bool isBuyOrder);
+    event OrderCreated(
+        uint256 indexed orderId,
+        address indexed maker,
+        address tokenAddress,
+        uint256 amount,
+        uint256 price,
+        bool isBuyOrder
+    );
     event OrderCancelled(uint256 indexed orderId);
     event OrderFilled(uint256 indexed orderId, uint256 indexed tradeId);
-    event TradeExecuted(uint256 indexed tradeId, address indexed buyer, address indexed seller, address tokenAddress, uint256 amount, uint256 price);
+    event TradeExecuted(
+        uint256 indexed tradeId,
+        address indexed buyer,
+        address indexed seller,
+        address tokenAddress,
+        uint256 amount,
+        uint256 price
+    );
     event TokenWhitelisted(address indexed tokenAddress);
     event TokenRemovedFromWhitelist(address indexed tokenAddress);
     event TradingStatusChanged(bool enabled);
@@ -71,8 +85,8 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
      * @param _feeCollector Address to collect fees
      */
     constructor(uint256 _tradingFee, address _feeCollector) Ownable(msg.sender) {
-        require(_tradingFee <= 100, "Fee too high"); // Max 1%
-        require(_feeCollector != address(0), "Invalid fee collector");
+        require(_tradingFee <= 100, 'Fee too high'); // Max 1%
+        require(_feeCollector != address(0), 'Invalid fee collector');
 
         tradingFee = _tradingFee;
         feeCollector = _feeCollector;
@@ -95,16 +109,19 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
         uint256 _price,
         bool _isBuyOrder
     ) external nonReentrant returns (uint256) {
-        require(tradingEnabled, "Trading not enabled");
-        require(whitelistedTokens[_tokenAddress], "Token not whitelisted");
-        require(_amount > 0, "Amount must be greater than 0");
-        require(_price > 0, "Price must be greater than 0");
+        require(tradingEnabled, 'Trading not enabled');
+        require(whitelistedTokens[_tokenAddress], 'Token not whitelisted');
+        require(_amount > 0, 'Amount must be greater than 0');
+        require(_price > 0, 'Price must be greater than 0');
 
         // For sell orders, check token balance and approval
         if (!_isBuyOrder) {
             IERC20 token = IERC20(_tokenAddress);
-            require(token.balanceOf(msg.sender) >= _amount, "Insufficient token balance");
-            require(token.allowance(msg.sender, address(this)) >= _amount, "Insufficient token allowance");
+            require(token.balanceOf(msg.sender) >= _amount, 'Insufficient token balance');
+            require(
+                token.allowance(msg.sender, address(this)) >= _amount,
+                'Insufficient token allowance'
+            );
         }
 
         // Create order
@@ -143,8 +160,8 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
     function cancelOrder(uint256 _orderId) external nonReentrant {
         Order storage order = orders[_orderId];
 
-        require(order.maker == msg.sender, "Not order maker");
-        require(order.isActive, "Order not active");
+        require(order.maker == msg.sender, 'Not order maker');
+        require(order.isActive, 'Order not active');
 
         order.isActive = false;
 
@@ -216,12 +233,14 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
         Order storage buyOrder = orders[_buyOrderId];
         Order storage sellOrder = orders[_sellOrderId];
 
-        require(buyOrder.isActive && sellOrder.isActive, "Orders not active");
-        require(buyOrder.isBuyOrder && !sellOrder.isBuyOrder, "Invalid order types");
-        require(buyOrder.tokenAddress == sellOrder.tokenAddress, "Token mismatch");
+        require(buyOrder.isActive && sellOrder.isActive, 'Orders not active');
+        require(buyOrder.isBuyOrder && !sellOrder.isBuyOrder, 'Invalid order types');
+        require(buyOrder.tokenAddress == sellOrder.tokenAddress, 'Token mismatch');
 
         // Determine trade amount and price
-        uint256 tradeAmount = buyOrder.amount < sellOrder.amount ? buyOrder.amount : sellOrder.amount;
+        uint256 tradeAmount = buyOrder.amount < sellOrder.amount
+            ? buyOrder.amount
+            : sellOrder.amount;
         uint256 tradePrice = sellOrder.price; // Use sell order price
 
         // Calculate total value and fee
@@ -230,7 +249,10 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
 
         // Transfer tokens from seller to buyer
         IERC20 token = IERC20(buyOrder.tokenAddress);
-        require(token.transferFrom(sellOrder.maker, buyOrder.maker, tradeAmount), "Token transfer failed");
+        require(
+            token.transferFrom(sellOrder.maker, buyOrder.maker, tradeAmount),
+            'Token transfer failed'
+        );
 
         // Transfer fee to fee collector
         if (fee > 0) {
@@ -273,7 +295,14 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
         // Emit events
         emit OrderFilled(_buyOrderId, tradeId);
         emit OrderFilled(_sellOrderId, tradeId);
-        emit TradeExecuted(tradeId, buyOrder.maker, sellOrder.maker, buyOrder.tokenAddress, tradeAmount, tradePrice);
+        emit TradeExecuted(
+            tradeId,
+            buyOrder.maker,
+            sellOrder.maker,
+            buyOrder.tokenAddress,
+            tradeAmount,
+            tradePrice
+        );
     }
 
     /**
@@ -281,7 +310,7 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
      * @param _tokenAddress Token contract address
      */
     function whitelistToken(address _tokenAddress) external onlyOwner {
-        require(_tokenAddress != address(0), "Invalid token address");
+        require(_tokenAddress != address(0), 'Invalid token address');
 
         whitelistedTokens[_tokenAddress] = true;
 
@@ -293,7 +322,7 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
      * @param _tokenAddress Token contract address
      */
     function removeTokenFromWhitelist(address _tokenAddress) external onlyOwner {
-        require(whitelistedTokens[_tokenAddress], "Token not whitelisted");
+        require(whitelistedTokens[_tokenAddress], 'Token not whitelisted');
 
         whitelistedTokens[_tokenAddress] = false;
 
@@ -315,7 +344,7 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
      * @param _tradingFee Trading fee in basis points
      */
     function setTradingFee(uint256 _tradingFee) external onlyOwner {
-        require(_tradingFee <= 100, "Fee too high"); // Max 1%
+        require(_tradingFee <= 100, 'Fee too high'); // Max 1%
 
         tradingFee = _tradingFee;
 
@@ -327,7 +356,7 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
      * @param _feeCollector Fee collector address
      */
     function setFeeCollector(address _feeCollector) external onlyOwner {
-        require(_feeCollector != address(0), "Invalid fee collector");
+        require(_feeCollector != address(0), 'Invalid fee collector');
 
         feeCollector = _feeCollector;
 
@@ -379,7 +408,11 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
         uint256 activeCount = 0;
         for (uint256 i = 1; i < orderIdCounter; i++) {
             Order storage order = orders[i];
-            if (order.isActive && order.tokenAddress == _tokenAddress && order.isBuyOrder == _isBuyOrder) {
+            if (
+                order.isActive &&
+                order.tokenAddress == _tokenAddress &&
+                order.isBuyOrder == _isBuyOrder
+            ) {
                 activeCount++;
             }
         }
@@ -401,7 +434,11 @@ contract TradingPlatform is Ownable, ReentrancyGuard {
 
         for (uint256 i = 1; i < orderIdCounter && resultIndex < resultCount; i++) {
             Order storage order = orders[i];
-            if (order.isActive && order.tokenAddress == _tokenAddress && order.isBuyOrder == _isBuyOrder) {
+            if (
+                order.isActive &&
+                order.tokenAddress == _tokenAddress &&
+                order.isBuyOrder == _isBuyOrder
+            ) {
                 if (currentIndex >= _startIndex && currentIndex < endIndex) {
                     result[resultIndex] = order;
                     resultIndex++;

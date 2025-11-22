@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 /**
  * @title TokenizedAsset
@@ -69,7 +69,7 @@ contract TokenizedAsset is ERC20, Ownable {
         tradingFee = 25; // Default 0.25% fee
 
         // Mint initial supply to contract creator
-        _mint(msg.sender, _initialSupply * 10**decimals());
+        _mint(msg.sender, _initialSupply * 10 ** decimals());
     }
 
     /**
@@ -109,7 +109,7 @@ contract TokenizedAsset is ERC20, Ownable {
      * @param _fee Trading fee in basis points
      */
     function setTradingFee(uint256 _fee) external onlyOwner {
-        require(_fee <= 500, "Fee too high"); // Max 5%
+        require(_fee <= 500, 'Fee too high'); // Max 5%
         tradingFee = _fee;
     }
 
@@ -118,10 +118,7 @@ contract TokenizedAsset is ERC20, Ownable {
      * @param _description New description
      * @param _maturityDate New maturity date (0 if no maturity)
      */
-    function updateMetadata(
-        string memory _description,
-        uint256 _maturityDate
-    ) external onlyOwner {
+    function updateMetadata(string memory _description, uint256 _maturityDate) external onlyOwner {
         description = _description;
         maturityDate = _maturityDate;
     }
@@ -146,12 +143,8 @@ contract TokenizedAsset is ERC20, Ownable {
     /**
      * @dev Override transfer function to enforce trading rules
      */
-    function _transfer(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) internal override {
-        require(tradingEnabled || sender == owner() || recipient == owner(), "Trading not enabled");
+    function _transfer(address sender, address recipient, uint256 amount) internal override {
+        require(tradingEnabled || sender == owner() || recipient == owner(), 'Trading not enabled');
 
         // Calculate fee if sender is not owner
         if (sender != owner() && tradingFee > 0) {
@@ -167,20 +160,24 @@ contract TokenizedAsset is ERC20, Ownable {
      * @dev Get asset details
      * @return Asset details as a struct
      */
-    function getAssetDetails() external view returns (
-        string memory _assetSymbol,
-        string memory _assetName,
-        string memory _assetType,
-        uint256 _assetValue,
-        string memory _description,
-        string memory _issuer,
-        uint256 _issuanceDate,
-        uint256 _maturityDate,
-        int256 _yearToDateReturn,
-        uint256 _lastValuationDate,
-        bool _tradingEnabled,
-        uint256 _tradingFee
-    ) {
+    function getAssetDetails()
+        external
+        view
+        returns (
+            string memory _assetSymbol,
+            string memory _assetName,
+            string memory _assetType,
+            uint256 _assetValue,
+            string memory _description,
+            string memory _issuer,
+            uint256 _issuanceDate,
+            uint256 _maturityDate,
+            int256 _yearToDateReturn,
+            uint256 _lastValuationDate,
+            bool _tradingEnabled,
+            uint256 _tradingFee
+        )
+    {
         return (
             assetSymbol,
             assetName,
