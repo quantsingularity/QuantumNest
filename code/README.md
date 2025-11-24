@@ -95,73 +95,73 @@ code/
 
 1. **Clone and navigate to backend directory**:
 
-   ```bash
-   cd code/backend
-   ```
+    ```bash
+    cd code/backend
+    ```
 
 2. **Create virtual environment**:
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
 
 3. **Install dependencies**:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 4. **Environment Configuration**:
    Create a `.env` file in the backend directory:
 
-   ```env
-   # Database
-   DATABASE_URL=postgresql://username:password@localhost:5432/quantumnest
+    ```env
+    # Database
+    DATABASE_URL=postgresql://username:password@localhost:5432/quantumnest
 
-   # Redis
-   REDIS_HOST=localhost
-   REDIS_PORT=6379
-   REDIS_PASSWORD=
+    # Redis
+    REDIS_HOST=localhost
+    REDIS_PORT=6379
+    REDIS_PASSWORD=
 
-   # Security
-   SECRET_KEY=your-secret-key-here
-   JWT_SECRET_KEY=your-jwt-secret-key-here
-   API_SECRET_KEY=your-api-secret-key-here
-   API_KEY=your-api-key-here
+    # Security
+    SECRET_KEY=your-secret-key-here
+    JWT_SECRET_KEY=your-jwt-secret-key-here
+    API_SECRET_KEY=your-api-secret-key-here
+    API_KEY=your-api-key-here
 
-   # Features
-   ENABLE_REQUEST_SIGNING=true
-   ENABLE_IP_FILTERING=false
-   ENABLE_CSRF_PROTECTION=true
+    # Features
+    ENABLE_REQUEST_SIGNING=true
+    ENABLE_IP_FILTERING=false
+    ENABLE_CSRF_PROTECTION=true
 
-   # External APIs
-   ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
-   OPENAI_API_KEY=your-openai-key
+    # External APIs
+    ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
+    OPENAI_API_KEY=your-openai-key
 
-   # Allowed Origins
-   ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
-   ```
+    # Allowed Origins
+    ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+    ```
 
 5. **Database Setup**:
 
-   ```bash
-   # Create database
-   createdb quantumnest
+    ```bash
+    # Create database
+    createdb quantumnest
 
-   # Initialize database (using Flask app)
-   python -c "from app.main_flask import app; app.app_context().push(); from app.models.models import db; db.create_all()"
-   ```
+    # Initialize database (using Flask app)
+    python -c "from app.main_flask import app; app.app_context().push(); from app.models.models import db; db.create_all()"
+    ```
 
 6. **Run the application**:
 
-   ```bash
-   # Using Flask (recommended for enhanced features)
-   python app/main_flask.py
+    ```bash
+    # Using Flask (recommended for enhanced features)
+    python app/main_flask.py
 
-   # Or using FastAPI (original)
-   python app/main.py
-   ```
+    # Or using FastAPI (original)
+    python app/main.py
+    ```
 
 ## 🧪 Testing
 

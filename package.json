@@ -1,15 +1,21 @@
 {
-  "name": "quantumnest",
-  "version": "1.0.0",
-  "description": "QuantumNest: A project for advanced blockchain and quantum-inspired DeFi solutions.",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["blockchain", "DeFi", "smart-contracts", "quantum", "finance"],
-  "author": "Abrar Ahmed",
-  "license": "ISC"
+    "name": "quantumnest",
+    "version": "1.0.0",
+    "description": "QuantumNest: A project for advanced blockchain and quantum-inspired DeFi solutions.",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "blockchain",
+        "DeFi",
+        "smart-contracts",
+        "quantum",
+        "finance"
+    ],
+    "author": "Abrar Ahmed",
+    "license": "ISC"
 }

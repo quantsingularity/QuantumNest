@@ -18,23 +18,23 @@ The system follows a microservices architecture pattern where each component has
 The frontend is built with Next.js and follows a component-based architecture:
 
 - **Layout Components**: Define the overall structure of the application
-  - `Layout.js`: Main layout wrapper
-  - `Navbar.js`: Navigation bar component
+    - `Layout.js`: Main layout wrapper
+    - `Navbar.js`: Navigation bar component
 
 - **Page Components**: Represent different sections of the application
-  - `index.js`: Home page
-  - `portfolio.js`: Portfolio management
-  - `market-analysis.js`: Market analysis tools
-  - `ai-recommendations.js`: AI-powered recommendations
-  - `blockchain-explorer.js`: Blockchain transaction explorer
-  - `dashboard.js`: User dashboard
-  - `admin.js`: Admin panel
-  - `login.js`: Authentication page
+    - `index.js`: Home page
+    - `portfolio.js`: Portfolio management
+    - `market-analysis.js`: Market analysis tools
+    - `ai-recommendations.js`: AI-powered recommendations
+    - `blockchain-explorer.js`: Blockchain transaction explorer
+    - `dashboard.js`: User dashboard
+    - `admin.js`: Admin panel
+    - `login.js`: Authentication page
 
 - **Utility Components**: Reusable functionality
-  - `WalletProvider.js`: Manages wallet connections
-  - `WalletConnection.js`: UI for wallet interaction
-  - `BlockchainExplorer.js`: Interface for blockchain data
+    - `WalletProvider.js`: Manages wallet connections
+    - `WalletConnection.js`: UI for wallet interaction
+    - `BlockchainExplorer.js`: Interface for blockchain data
 
 ### State Management
 
@@ -191,11 +191,11 @@ The TokenizedAsset contract represents real-world assets on the blockchain:
 
 - **Inheritance**: ERC20, Ownable
 - **Key Functions**:
-  - `updateAssetValue`: Update the underlying asset value
-  - `updatePerformance`: Update performance metrics
-  - `setTradingEnabled`: Enable/disable trading
-  - `mint`: Create new tokens
-  - `burn`: Destroy tokens
+    - `updateAssetValue`: Update the underlying asset value
+    - `updatePerformance`: Update performance metrics
+    - `setTradingEnabled`: Enable/disable trading
+    - `mint`: Create new tokens
+    - `burn`: Destroy tokens
 
 #### PortfolioManager
 
@@ -203,11 +203,11 @@ The PortfolioManager contract manages on-chain investment portfolios:
 
 - **Inheritance**: Ownable, ReentrancyGuard
 - **Key Functions**:
-  - `createPortfolio`: Create a new portfolio
-  - `addAsset`: Add asset to portfolio
-  - `updateAllocation`: Update asset allocation
-  - `recordRebalance`: Record portfolio rebalancing
-  - `addManager`: Add portfolio manager
+    - `createPortfolio`: Create a new portfolio
+    - `addAsset`: Add asset to portfolio
+    - `updateAllocation`: Update asset allocation
+    - `recordRebalance`: Record portfolio rebalancing
+    - `addManager`: Add portfolio manager
 
 #### TradingPlatform
 
@@ -215,11 +215,11 @@ The TradingPlatform contract enables secure trading of tokenized assets:
 
 - **Inheritance**: Ownable, ReentrancyGuard
 - **Key Functions**:
-  - `createOrder`: Create buy/sell order
-  - `cancelOrder`: Cancel existing order
-  - `matchOrder`: Match compatible orders
-  - `whitelistToken`: Add token to whitelist
-  - `setTradingFee`: Update trading fee
+    - `createOrder`: Create buy/sell order
+    - `cancelOrder`: Cancel existing order
+    - `matchOrder`: Match compatible orders
+    - `whitelistToken`: Add token to whitelist
+    - `setTradingFee`: Update trading fee
 
 #### DeFiIntegration
 
@@ -227,10 +227,10 @@ The DeFiIntegration contract provides yield strategies:
 
 - **Inheritance**: Ownable, ReentrancyGuard
 - **Key Functions**:
-  - `createStrategy`: Create investment strategy
-  - `createInvestment`: Invest in strategy
-  - `claimYield`: Claim investment yield
-  - `closeInvestment`: Close investment position
+    - `createStrategy`: Create investment strategy
+    - `createInvestment`: Invest in strategy
+    - `claimYield`: Claim investment yield
+    - `closeInvestment`: Close investment position
 
 ### Deployment
 
@@ -314,34 +314,34 @@ The platform integrates with Ethereum wallets through:
 
 1. Build the Next.js application:
 
-   ```
-   cd frontend
-   npm run build
-   ```
+    ```
+    cd frontend
+    npm run build
+    ```
 
 2. Deploy to hosting service (Vercel, Netlify, etc.)
-   ```
-   npm run deploy
-   ```
+    ```
+    npm run deploy
+    ```
 
 ### Backend Deployment
 
 1. Set up PostgreSQL database
 2. Configure environment variables
 3. Deploy FastAPI application:
-   ```
-   cd backend
-   uvicorn app.main:app --host 0.0.0.0 --port 8000
-   ```
+    ```
+    cd backend
+    uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ```
 
 ### Smart Contract Deployment
 
 1. Configure `.env` file with private key and Infura API key
 2. Deploy to Goerli testnet:
-   ```
-   cd blockchain
-   npx hardhat run scripts/deploy.js --network goerli
-   ```
+    ```
+    cd blockchain
+    npx hardhat run scripts/deploy.js --network goerli
+    ```
 
 ## Maintenance and Monitoring
 

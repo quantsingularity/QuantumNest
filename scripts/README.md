@@ -117,21 +117,21 @@ Provides additional CI/CD capabilities to complement the existing GitHub Actions
 
 1. Extract the zip file to your QuantumNest project directory:
 
-   ```bash
-   unzip quantumnest_automation_scripts.zip -d /path/to/QuantumNest/
-   ```
+    ```bash
+    unzip quantumnest_automation_scripts.zip -d /path/to/QuantumNest/
+    ```
 
 2. Make the scripts executable:
 
-   ```bash
-   chmod +x /path/to/QuantumNest/automation_scripts/*.sh
-   ```
+    ```bash
+    chmod +x /path/to/QuantumNest/automation_scripts/*.sh
+    ```
 
 3. Run the scripts from the automation_scripts directory:
-   ```bash
-   cd /path/to/QuantumNest/automation_scripts
-   ./script_name.sh command
-   ```
+    ```bash
+    cd /path/to/QuantumNest/automation_scripts
+    ./script_name.sh command
+    ```
 
 ## Integration with Existing Scripts
 

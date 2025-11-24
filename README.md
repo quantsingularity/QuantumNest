@@ -206,7 +206,7 @@ npm install
 ```
 
 5. Set up environment variables:
-   - Create `.env` files in both frontend and blockchain directories based on the provided `.env.example` files
+    - Create `.env` files in both frontend and blockchain directories based on the provided `.env.example` files
 
 ### Running the Application
 

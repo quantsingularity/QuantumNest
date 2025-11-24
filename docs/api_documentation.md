@@ -52,10 +52,10 @@ Register a new user account.
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "securePassword123",
-  "first_name": "John",
-  "last_name": "Doe"
+    "email": "user@example.com",
+    "password": "securePassword123",
+    "first_name": "John",
+    "last_name": "Doe"
 }
 ```
 
@@ -63,11 +63,11 @@ Register a new user account.
 
 ```json
 {
-  "user_id": "12345",
-  "email": "user@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "created_at": "2025-04-09T12:00:00Z"
+    "user_id": "12345",
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "created_at": "2025-04-09T12:00:00Z"
 }
 ```
 
@@ -79,8 +79,8 @@ Authenticate a user and receive a JWT token.
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "securePassword123"
+    "email": "user@example.com",
+    "password": "securePassword123"
 }
 ```
 
@@ -88,15 +88,15 @@ Authenticate a user and receive a JWT token.
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer",
-  "expires_in": 86400,
-  "user": {
-    "user_id": "12345",
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe"
-  }
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer",
+    "expires_in": 86400,
+    "user": {
+        "user_id": "12345",
+        "email": "user@example.com",
+        "first_name": "John",
+        "last_name": "Doe"
+    }
 }
 ```
 
@@ -114,9 +114,9 @@ Authorization: Bearer <expired_token>
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer",
-  "expires_in": 86400
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer",
+    "expires_in": 86400
 }
 ```
 
@@ -134,16 +134,16 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "user_id": "12345",
-  "email": "user@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "created_at": "2025-04-09T12:00:00Z",
-  "role": "user",
-  "risk_profile": {
-    "score": 7,
-    "category": "growth"
-  }
+    "user_id": "12345",
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "created_at": "2025-04-09T12:00:00Z",
+    "role": "user",
+    "risk_profile": {
+        "score": 7,
+        "category": "growth"
+    }
 }
 ```
 
@@ -168,39 +168,39 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "count": 2,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "id": "portfolio_123",
-      "name": "Growth Portfolio",
-      "description": "High-growth technology stocks",
-      "created_at": "2025-03-15T10:30:00Z",
-      "total_value": 15000.5,
-      "performance": {
-        "daily": 1.2,
-        "weekly": 3.5,
-        "monthly": 5.8,
-        "yearly": 12.3
-      },
-      "risk_score": 7.5
-    },
-    {
-      "id": "portfolio_456",
-      "name": "Dividend Income",
-      "description": "Stable dividend-paying stocks",
-      "created_at": "2025-02-20T14:15:00Z",
-      "total_value": 25000.75,
-      "performance": {
-        "daily": 0.5,
-        "weekly": 1.2,
-        "monthly": 2.8,
-        "yearly": 8.5
-      },
-      "risk_score": 4.2
-    }
-  ]
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": "portfolio_123",
+            "name": "Growth Portfolio",
+            "description": "High-growth technology stocks",
+            "created_at": "2025-03-15T10:30:00Z",
+            "total_value": 15000.5,
+            "performance": {
+                "daily": 1.2,
+                "weekly": 3.5,
+                "monthly": 5.8,
+                "yearly": 12.3
+            },
+            "risk_score": 7.5
+        },
+        {
+            "id": "portfolio_456",
+            "name": "Dividend Income",
+            "description": "Stable dividend-paying stocks",
+            "created_at": "2025-02-20T14:15:00Z",
+            "total_value": 25000.75,
+            "performance": {
+                "daily": 0.5,
+                "weekly": 1.2,
+                "monthly": 2.8,
+                "yearly": 8.5
+            },
+            "risk_score": 4.2
+        }
+    ]
 }
 ```
 
@@ -218,9 +218,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "name": "Tech Growth",
-  "description": "Portfolio focused on high-growth tech companies",
-  "risk_tolerance": "high"
+    "name": "Tech Growth",
+    "description": "Portfolio focused on high-growth tech companies",
+    "risk_tolerance": "high"
 }
 ```
 
@@ -228,19 +228,19 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": "portfolio_789",
-  "name": "Tech Growth",
-  "description": "Portfolio focused on high-growth tech companies",
-  "created_at": "2025-04-09T15:45:00Z",
-  "total_value": 0,
-  "performance": {
-    "daily": 0,
-    "weekly": 0,
-    "monthly": 0,
-    "yearly": 0
-  },
-  "risk_score": 8.0,
-  "risk_tolerance": "high"
+    "id": "portfolio_789",
+    "name": "Tech Growth",
+    "description": "Portfolio focused on high-growth tech companies",
+    "created_at": "2025-04-09T15:45:00Z",
+    "total_value": 0,
+    "performance": {
+        "daily": 0,
+        "weekly": 0,
+        "monthly": 0,
+        "yearly": 0
+    },
+    "risk_score": 8.0,
+    "risk_tolerance": "high"
 }
 ```
 
@@ -258,50 +258,50 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": "portfolio_123",
-  "name": "Growth Portfolio",
-  "description": "High-growth technology stocks",
-  "created_at": "2025-03-15T10:30:00Z",
-  "last_updated": "2025-04-08T16:20:00Z",
-  "total_value": 15000.5,
-  "cash_balance": 1250.75,
-  "performance": {
-    "daily": 1.2,
-    "weekly": 3.5,
-    "monthly": 5.8,
-    "yearly": 12.3
-  },
-  "risk_score": 7.5,
-  "assets": [
-    {
-      "id": "asset_001",
-      "symbol": "AAPL",
-      "name": "Apple Inc.",
-      "quantity": 10,
-      "purchase_price": 150.25,
-      "current_price": 175.5,
-      "value": 1755.0,
-      "allocation": 12.5,
-      "gain_loss": {
-        "amount": 252.5,
-        "percentage": 16.8
-      }
+    "id": "portfolio_123",
+    "name": "Growth Portfolio",
+    "description": "High-growth technology stocks",
+    "created_at": "2025-03-15T10:30:00Z",
+    "last_updated": "2025-04-08T16:20:00Z",
+    "total_value": 15000.5,
+    "cash_balance": 1250.75,
+    "performance": {
+        "daily": 1.2,
+        "weekly": 3.5,
+        "monthly": 5.8,
+        "yearly": 12.3
     },
-    {
-      "id": "asset_002",
-      "symbol": "MSFT",
-      "name": "Microsoft Corporation",
-      "quantity": 8,
-      "purchase_price": 220.75,
-      "current_price": 245.3,
-      "value": 1962.4,
-      "allocation": 14.0,
-      "gain_loss": {
-        "amount": 196.4,
-        "percentage": 11.1
-      }
-    }
-  ]
+    "risk_score": 7.5,
+    "assets": [
+        {
+            "id": "asset_001",
+            "symbol": "AAPL",
+            "name": "Apple Inc.",
+            "quantity": 10,
+            "purchase_price": 150.25,
+            "current_price": 175.5,
+            "value": 1755.0,
+            "allocation": 12.5,
+            "gain_loss": {
+                "amount": 252.5,
+                "percentage": 16.8
+            }
+        },
+        {
+            "id": "asset_002",
+            "symbol": "MSFT",
+            "name": "Microsoft Corporation",
+            "quantity": 8,
+            "purchase_price": 220.75,
+            "current_price": 245.3,
+            "value": 1962.4,
+            "allocation": 14.0,
+            "gain_loss": {
+                "amount": 196.4,
+                "percentage": 11.1
+            }
+        }
+    ]
 }
 ```
 
@@ -319,9 +319,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "name": "Updated Growth Portfolio",
-  "description": "Updated description for growth portfolio",
-  "risk_tolerance": "moderate"
+    "name": "Updated Growth Portfolio",
+    "description": "Updated description for growth portfolio",
+    "risk_tolerance": "moderate"
 }
 ```
 
@@ -329,11 +329,11 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": "portfolio_123",
-  "name": "Updated Growth Portfolio",
-  "description": "Updated description for growth portfolio",
-  "risk_tolerance": "moderate",
-  "updated_at": "2025-04-09T16:30:00Z"
+    "id": "portfolio_123",
+    "name": "Updated Growth Portfolio",
+    "description": "Updated description for growth portfolio",
+    "risk_tolerance": "moderate",
+    "updated_at": "2025-04-09T16:30:00Z"
 }
 ```
 
@@ -367,9 +367,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "symbol": "GOOGL",
-  "quantity": 5,
-  "purchase_price": 2750.5
+    "symbol": "GOOGL",
+    "quantity": 5,
+    "purchase_price": 2750.5
 }
 ```
 
@@ -377,18 +377,18 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": "asset_003",
-  "symbol": "GOOGL",
-  "name": "Alphabet Inc.",
-  "quantity": 5,
-  "purchase_price": 2750.5,
-  "current_price": 2780.25,
-  "value": 13901.25,
-  "allocation": 10.2,
-  "gain_loss": {
-    "amount": 148.75,
-    "percentage": 1.1
-  }
+    "id": "asset_003",
+    "symbol": "GOOGL",
+    "name": "Alphabet Inc.",
+    "quantity": 5,
+    "purchase_price": 2750.5,
+    "current_price": 2780.25,
+    "value": 13901.25,
+    "allocation": 10.2,
+    "gain_loss": {
+        "amount": 148.75,
+        "percentage": 1.1
+    }
 }
 ```
 
@@ -410,31 +410,31 @@ Get a list of available assets.
 
 ```json
 {
-  "count": 100,
-  "next": "/market/assets?offset=50&limit=50",
-  "previous": null,
-  "results": [
-    {
-      "symbol": "AAPL",
-      "name": "Apple Inc.",
-      "type": "stock",
-      "sector": "Technology",
-      "current_price": 175.5,
-      "change": 2.35,
-      "change_percent": 1.36,
-      "market_cap": 2850000000000
-    },
-    {
-      "symbol": "MSFT",
-      "name": "Microsoft Corporation",
-      "type": "stock",
-      "sector": "Technology",
-      "current_price": 245.3,
-      "change": 1.2,
-      "change_percent": 0.49,
-      "market_cap": 1950000000000
-    }
-  ]
+    "count": 100,
+    "next": "/market/assets?offset=50&limit=50",
+    "previous": null,
+    "results": [
+        {
+            "symbol": "AAPL",
+            "name": "Apple Inc.",
+            "type": "stock",
+            "sector": "Technology",
+            "current_price": 175.5,
+            "change": 2.35,
+            "change_percent": 1.36,
+            "market_cap": 2850000000000
+        },
+        {
+            "symbol": "MSFT",
+            "name": "Microsoft Corporation",
+            "type": "stock",
+            "sector": "Technology",
+            "current_price": 245.3,
+            "change": 1.2,
+            "change_percent": 0.49,
+            "market_cap": 1950000000000
+        }
+    ]
 }
 ```
 
@@ -446,25 +446,25 @@ Get detailed information about a specific asset.
 
 ```json
 {
-  "symbol": "AAPL",
-  "name": "Apple Inc.",
-  "type": "stock",
-  "sector": "Technology",
-  "industry": "Consumer Electronics",
-  "current_price": 175.5,
-  "change": 2.35,
-  "change_percent": 1.36,
-  "open": 173.2,
-  "high": 176.4,
-  "low": 172.8,
-  "volume": 75000000,
-  "avg_volume": 82000000,
-  "market_cap": 2850000000000,
-  "pe_ratio": 28.5,
-  "dividend_yield": 0.65,
-  "52_week_high": 182.94,
-  "52_week_low": 124.17,
-  "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide."
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "type": "stock",
+    "sector": "Technology",
+    "industry": "Consumer Electronics",
+    "current_price": 175.5,
+    "change": 2.35,
+    "change_percent": 1.36,
+    "open": 173.2,
+    "high": 176.4,
+    "low": 172.8,
+    "volume": 75000000,
+    "avg_volume": 82000000,
+    "market_cap": 2850000000000,
+    "pe_ratio": 28.5,
+    "dividend_yield": 0.65,
+    "52_week_high": 182.94,
+    "52_week_low": 124.17,
+    "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide."
 }
 ```
 
@@ -481,28 +481,28 @@ Get historical price data for an asset.
 
 ```json
 {
-  "symbol": "AAPL",
-  "name": "Apple Inc.",
-  "period": "1m",
-  "interval": "1d",
-  "data": [
-    {
-      "date": "2025-03-10T00:00:00Z",
-      "open": 170.25,
-      "high": 172.4,
-      "low": 169.8,
-      "close": 171.5,
-      "volume": 68000000
-    },
-    {
-      "date": "2025-03-11T00:00:00Z",
-      "open": 171.75,
-      "high": 173.2,
-      "low": 170.9,
-      "close": 172.8,
-      "volume": 72000000
-    }
-  ]
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "period": "1m",
+    "interval": "1d",
+    "data": [
+        {
+            "date": "2025-03-10T00:00:00Z",
+            "open": 170.25,
+            "high": 172.4,
+            "low": 169.8,
+            "close": 171.5,
+            "volume": 68000000
+        },
+        {
+            "date": "2025-03-11T00:00:00Z",
+            "open": 171.75,
+            "high": 173.2,
+            "low": 170.9,
+            "close": 172.8,
+            "volume": 72000000
+        }
+    ]
 }
 ```
 
@@ -528,42 +528,42 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "timestamp": "2025-04-09T16:45:00Z",
-  "market_outlook": {
-    "sentiment": "bullish",
-    "confidence": 75.5,
-    "key_factors": [
-      "Strong earnings reports",
-      "Favorable economic indicators",
-      "Decreasing inflation"
-    ]
-  },
-  "recommendations": [
-    {
-      "symbol": "NVDA",
-      "name": "NVIDIA Corporation",
-      "type": "buy",
-      "confidence": 85.2,
-      "target_price": 950.0,
-      "current_price": 875.3,
-      "potential_upside": 8.5,
-      "time_horizon": "medium",
-      "risk_level": "moderate",
-      "rationale": "Strong growth in AI chip demand and expanding data center market share."
+    "timestamp": "2025-04-09T16:45:00Z",
+    "market_outlook": {
+        "sentiment": "bullish",
+        "confidence": 75.5,
+        "key_factors": [
+            "Strong earnings reports",
+            "Favorable economic indicators",
+            "Decreasing inflation"
+        ]
     },
-    {
-      "symbol": "AMZN",
-      "name": "Amazon.com Inc.",
-      "type": "buy",
-      "confidence": 82.7,
-      "target_price": 180.0,
-      "current_price": 160.25,
-      "potential_upside": 12.3,
-      "time_horizon": "long",
-      "risk_level": "low",
-      "rationale": "Continued e-commerce dominance and AWS growth acceleration."
-    }
-  ]
+    "recommendations": [
+        {
+            "symbol": "NVDA",
+            "name": "NVIDIA Corporation",
+            "type": "buy",
+            "confidence": 85.2,
+            "target_price": 950.0,
+            "current_price": 875.3,
+            "potential_upside": 8.5,
+            "time_horizon": "medium",
+            "risk_level": "moderate",
+            "rationale": "Strong growth in AI chip demand and expanding data center market share."
+        },
+        {
+            "symbol": "AMZN",
+            "name": "Amazon.com Inc.",
+            "type": "buy",
+            "confidence": 82.7,
+            "target_price": 180.0,
+            "current_price": 160.25,
+            "potential_upside": 12.3,
+            "time_horizon": "long",
+            "risk_level": "low",
+            "rationale": "Continued e-commerce dominance and AWS growth acceleration."
+        }
+    ]
 }
 ```
 
@@ -581,9 +581,9 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "portfolio_id": "portfolio_123",
-  "analysis_type": "risk_return",
-  "time_horizon": "1y"
+    "portfolio_id": "portfolio_123",
+    "analysis_type": "risk_return",
+    "time_horizon": "1y"
 }
 ```
 
@@ -591,33 +591,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "analysis_id": "analysis_456",
-  "portfolio_id": "portfolio_123",
-  "analysis_type": "risk_return",
-  "timestamp": "2025-04-09T17:00:00Z",
-  "results": {
-    "expected_return": 12.5,
-    "volatility": 18.2,
-    "sharpe_ratio": 0.68,
-    "var_95": 8.4,
-    "max_drawdown": 15.3,
-    "risk_contribution": [
-      {
-        "symbol": "AAPL",
-        "contribution": 22.5
-      },
-      {
-        "symbol": "MSFT",
-        "contribution": 18.7
-      }
-    ],
-    "optimization_potential": 3.2,
-    "recommendations": [
-      "Reduce technology sector exposure by 5%",
-      "Add 3% allocation to consumer staples",
-      "Consider hedging strategies to reduce downside risk"
-    ]
-  }
+    "analysis_id": "analysis_456",
+    "portfolio_id": "portfolio_123",
+    "analysis_type": "risk_return",
+    "timestamp": "2025-04-09T17:00:00Z",
+    "results": {
+        "expected_return": 12.5,
+        "volatility": 18.2,
+        "sharpe_ratio": 0.68,
+        "var_95": 8.4,
+        "max_drawdown": 15.3,
+        "risk_contribution": [
+            {
+                "symbol": "AAPL",
+                "contribution": 22.5
+            },
+            {
+                "symbol": "MSFT",
+                "contribution": 18.7
+            }
+        ],
+        "optimization_potential": 3.2,
+        "recommendations": [
+            "Reduce technology sector exposure by 5%",
+            "Add 3% allocation to consumer staples",
+            "Consider hedging strategies to reduce downside risk"
+        ]
+    }
 }
 ```
 
@@ -637,33 +637,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "count": 10,
-  "results": [
-    {
-      "contract_address": "0x1234567890abcdef1234567890abcdef12345678",
-      "symbol": "qAAPL",
-      "name": "QuantumNest Apple Stock Token",
-      "asset_type": "stock",
-      "underlying_symbol": "AAPL",
-      "current_value": 175.5,
-      "total_supply": 1000000,
-      "market_cap": 175500000,
-      "trading_volume_24h": 2500000,
-      "trading_enabled": true
-    },
-    {
-      "contract_address": "0xabcdef1234567890abcdef1234567890abcdef12",
-      "symbol": "qGOLD",
-      "name": "QuantumNest Gold Token",
-      "asset_type": "commodity",
-      "underlying_symbol": "XAU",
-      "current_value": 2150.75,
-      "total_supply": 500000,
-      "market_cap": 1075375000,
-      "trading_volume_24h": 1200000,
-      "trading_enabled": true
-    }
-  ]
+    "count": 10,
+    "results": [
+        {
+            "contract_address": "0x1234567890abcdef1234567890abcdef12345678",
+            "symbol": "qAAPL",
+            "name": "QuantumNest Apple Stock Token",
+            "asset_type": "stock",
+            "underlying_symbol": "AAPL",
+            "current_value": 175.5,
+            "total_supply": 1000000,
+            "market_cap": 175500000,
+            "trading_volume_24h": 2500000,
+            "trading_enabled": true
+        },
+        {
+            "contract_address": "0xabcdef1234567890abcdef1234567890abcdef12",
+            "symbol": "qGOLD",
+            "name": "QuantumNest Gold Token",
+            "asset_type": "commodity",
+            "underlying_symbol": "XAU",
+            "current_value": 2150.75,
+            "total_supply": 500000,
+            "market_cap": 1075375000,
+            "trading_volume_24h": 1200000,
+            "trading_enabled": true
+        }
+    ]
 }
 ```
 
@@ -681,33 +681,33 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "wallet_address": "0x9876543210fedcba9876543210fedcba98765432",
-  "portfolios": [
-    {
-      "portfolio_id": 1,
-      "name": "Growth Portfolio",
-      "creation_date": "2025-03-15T10:30:00Z",
-      "assets": [
+    "wallet_address": "0x9876543210fedcba9876543210fedcba98765432",
+    "portfolios": [
         {
-          "token_address": "0x1234567890abcdef1234567890abcdef12345678",
-          "symbol": "qAAPL",
-          "name": "QuantumNest Apple Stock Token",
-          "balance": 100,
-          "value": 17550.0,
-          "allocation": 45.2
-        },
-        {
-          "token_address": "0xabcdef1234567890abcdef1234567890abcdef12",
-          "symbol": "qGOLD",
-          "name": "QuantumNest Gold Token",
-          "balance": 10,
-          "value": 21507.5,
-          "allocation": 54.8
+            "portfolio_id": 1,
+            "name": "Growth Portfolio",
+            "creation_date": "2025-03-15T10:30:00Z",
+            "assets": [
+                {
+                    "token_address": "0x1234567890abcdef1234567890abcdef12345678",
+                    "symbol": "qAAPL",
+                    "name": "QuantumNest Apple Stock Token",
+                    "balance": 100,
+                    "value": 17550.0,
+                    "allocation": 45.2
+                },
+                {
+                    "token_address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                    "symbol": "qGOLD",
+                    "name": "QuantumNest Gold Token",
+                    "balance": 10,
+                    "value": 21507.5,
+                    "allocation": 54.8
+                }
+            ],
+            "total_value": 39057.5
         }
-      ],
-      "total_value": 39057.5
-    }
-  ]
+    ]
 }
 ```
 
@@ -725,10 +725,10 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "token_address": "0x1234567890abcdef1234567890abcdef12345678",
-  "type": "buy",
-  "amount": 10,
-  "price_limit": 180.0
+    "token_address": "0x1234567890abcdef1234567890abcdef12345678",
+    "type": "buy",
+    "amount": 10,
+    "price_limit": 180.0
 }
 ```
 
@@ -736,17 +736,17 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "transaction_hash": "0xabc123def456789012345678901234567890123456789012345678901234567890",
-  "status": "pending",
-  "token_address": "0x1234567890abcdef1234567890abcdef12345678",
-  "symbol": "qAAPL",
-  "type": "buy",
-  "amount": 10,
-  "price": 175.5,
-  "total_value": 1755.0,
-  "gas_fee": 0.005,
-  "timestamp": "2025-04-09T17:15:00Z",
-  "estimated_confirmation_time": "2025-04-09T17:20:00Z"
+    "transaction_hash": "0xabc123def456789012345678901234567890123456789012345678901234567890",
+    "status": "pending",
+    "token_address": "0x1234567890abcdef1234567890abcdef12345678",
+    "symbol": "qAAPL",
+    "type": "buy",
+    "amount": 10,
+    "price": 175.5,
+    "total_value": 1755.0,
+    "gas_fee": 0.005,
+    "timestamp": "2025-04-09T17:15:00Z",
+    "estimated_confirmation_time": "2025-04-09T17:20:00Z"
 }
 ```
 
@@ -766,21 +766,21 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "count": 100,
-  "next": "/admin/users?offset=50&limit=50",
-  "previous": null,
-  "results": [
-    {
-      "user_id": "12345",
-      "email": "user@example.com",
-      "first_name": "John",
-      "last_name": "Doe",
-      "created_at": "2025-03-15T10:30:00Z",
-      "last_login": "2025-04-09T15:45:00Z",
-      "status": "active",
-      "role": "user"
-    }
-  ]
+    "count": 100,
+    "next": "/admin/users?offset=50&limit=50",
+    "previous": null,
+    "results": [
+        {
+            "user_id": "12345",
+            "email": "user@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "created_at": "2025-03-15T10:30:00Z",
+            "last_login": "2025-04-09T15:45:00Z",
+            "status": "active",
+            "role": "user"
+        }
+    ]
 }
 ```
 
@@ -798,32 +798,32 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "user_stats": {
-    "total_users": 1250,
-    "active_users": 875,
-    "new_users_today": 15,
-    "new_users_this_week": 85
-  },
-  "portfolio_stats": {
-    "total_portfolios": 1850,
-    "average_portfolio_value": 25000.5,
-    "total_assets_under_management": 46250925.0
-  },
-  "transaction_stats": {
-    "transactions_today": 350,
-    "transactions_this_week": 2250,
-    "average_transaction_value": 5000.75
-  },
-  "blockchain_stats": {
-    "total_tokenized_assets": 25,
-    "total_smart_contracts": 45,
-    "total_on_chain_transactions": 12500
-  },
-  "system_health": {
-    "api_uptime": 99.98,
-    "database_performance": "optimal",
-    "blockchain_node_status": "connected"
-  }
+    "user_stats": {
+        "total_users": 1250,
+        "active_users": 875,
+        "new_users_today": 15,
+        "new_users_this_week": 85
+    },
+    "portfolio_stats": {
+        "total_portfolios": 1850,
+        "average_portfolio_value": 25000.5,
+        "total_assets_under_management": 46250925.0
+    },
+    "transaction_stats": {
+        "transactions_today": 350,
+        "transactions_this_week": 2250,
+        "average_transaction_value": 5000.75
+    },
+    "blockchain_stats": {
+        "total_tokenized_assets": 25,
+        "total_smart_contracts": 45,
+        "total_on_chain_transactions": 12500
+    },
+    "system_health": {
+        "api_uptime": 99.98,
+        "database_performance": "optimal",
+        "blockchain_node_status": "connected"
+    }
 }
 ```
 
@@ -846,14 +846,11 @@ Error responses follow this format:
 
 ```json
 {
-  "error": {
-    "code": "invalid_request",
-    "message": "The request was invalid",
-    "details": [
-      "Field 'email' is required",
-      "Password must be at least 8 characters"
-    ]
-  }
+    "error": {
+        "code": "invalid_request",
+        "message": "The request was invalid",
+        "details": ["Field 'email' is required", "Password must be at least 8 characters"]
+    }
 }
 ```
 

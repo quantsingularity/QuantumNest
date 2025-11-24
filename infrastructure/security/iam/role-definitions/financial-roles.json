@@ -1,300 +1,300 @@
 {
-  "Roles": {
-    "FinancialAnalyst": {
-      "Description": "Read-only access to financial data and reporting systems",
-      "MaxSessionDuration": 3600,
-      "AssumeRolePolicyDocument": {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
-            },
-            "Action": "sts:AssumeRoleWithSAML",
-            "Condition": {
-              "StringEquals": {
-                "SAML:Role": "FinancialAnalyst"
-              },
-              "Bool": {
-                "aws:MultiFactorAuthPresent": "true"
-              }
-            }
-          }
-        ]
-      },
-      "Policies": [
-        {
-          "PolicyName": "FinancialDataReadOnly",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": ["s3:GetObject", "s3:ListBucket"],
-                "Resource": [
-                  "arn:aws:s3:::quantumnest-financial-reports/*",
-                  "arn:aws:s3:::quantumnest-analytics-data/*"
-                ],
-                "Condition": {
-                  "StringEquals": {
-                    "s3:ExistingObjectTag/DataClassification": [
-                      "Internal",
-                      "Public"
-                    ]
-                  }
-                }
-              },
-              {
-                "Effect": "Allow",
-                "Action": ["rds:DescribeDBInstances", "rds:DescribeDBClusters"],
-                "Resource": "*"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "ComplianceOfficer": {
-      "Description": "Access to audit logs, compliance reports, and security configurations",
-      "MaxSessionDuration": 7200,
-      "AssumeRolePolicyDocument": {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
-            },
-            "Action": "sts:AssumeRoleWithSAML",
-            "Condition": {
-              "StringEquals": {
-                "SAML:Role": "ComplianceOfficer"
-              },
-              "Bool": {
-                "aws:MultiFactorAuthPresent": "true"
-              },
-              "IpAddress": {
-                "aws:SourceIp": ["10.0.0.0/8", "172.16.0.0/12"]
-              }
-            }
-          }
-        ]
-      },
-      "Policies": [
-        {
-          "PolicyName": "ComplianceAuditAccess",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "cloudtrail:LookupEvents",
-                  "cloudtrail:GetTrailStatus",
-                  "cloudtrail:DescribeTrails",
-                  "logs:DescribeLogGroups",
-                  "logs:DescribeLogStreams",
-                  "logs:GetLogEvents",
-                  "config:GetComplianceDetailsByConfigRule",
-                  "config:GetComplianceSummaryByConfigRule",
-                  "guardduty:GetFindings",
-                  "securityhub:GetFindings"
-                ],
-                "Resource": "*"
-              },
-              {
-                "Effect": "Allow",
-                "Action": ["s3:GetObject", "s3:ListBucket"],
-                "Resource": [
-                  "arn:aws:s3:::quantumnest-audit-logs/*",
-                  "arn:aws:s3:::quantumnest-compliance-reports/*"
+    "Roles": {
+        "FinancialAnalyst": {
+            "Description": "Read-only access to financial data and reporting systems",
+            "MaxSessionDuration": 3600,
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+                        },
+                        "Action": "sts:AssumeRoleWithSAML",
+                        "Condition": {
+                            "StringEquals": {
+                                "SAML:Role": "FinancialAnalyst"
+                            },
+                            "Bool": {
+                                "aws:MultiFactorAuthPresent": "true"
+                            }
+                        }
+                    }
                 ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "SecurityAdministrator": {
-      "Description": "Manage security configurations and incident response",
-      "MaxSessionDuration": 3600,
-      "AssumeRolePolicyDocument": {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
             },
-            "Action": "sts:AssumeRoleWithSAML",
-            "Condition": {
-              "StringEquals": {
-                "SAML:Role": "SecurityAdministrator"
-              },
-              "Bool": {
-                "aws:MultiFactorAuthPresent": "true"
-              },
-              "IpAddress": {
-                "aws:SourceIp": ["10.0.0.0/8"]
-              },
-              "DateGreaterThan": {
-                "aws:CurrentTime": "2024-01-01T00:00:00Z"
-              }
-            }
-          }
-        ]
-      },
-      "Policies": [
-        {
-          "PolicyName": "SecurityManagement",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "iam:ListRoles",
-                  "iam:ListPolicies",
-                  "iam:GetRole",
-                  "iam:GetPolicy",
-                  "iam:GetPolicyVersion",
-                  "kms:ListKeys",
-                  "kms:DescribeKey",
-                  "kms:GetKeyPolicy",
-                  "guardduty:*",
-                  "securityhub:*",
-                  "inspector:*",
-                  "wafv2:*"
-                ],
-                "Resource": "*"
-              },
-              {
-                "Effect": "Deny",
-                "Action": [
-                  "iam:DeleteRole",
-                  "iam:DeletePolicy",
-                  "kms:ScheduleKeyDeletion"
-                ],
-                "Resource": "*"
-              }
+            "Policies": [
+                {
+                    "PolicyName": "FinancialDataReadOnly",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": ["s3:GetObject", "s3:ListBucket"],
+                                "Resource": [
+                                    "arn:aws:s3:::quantumnest-financial-reports/*",
+                                    "arn:aws:s3:::quantumnest-analytics-data/*"
+                                ],
+                                "Condition": {
+                                    "StringEquals": {
+                                        "s3:ExistingObjectTag/DataClassification": [
+                                            "Internal",
+                                            "Public"
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": ["rds:DescribeDBInstances", "rds:DescribeDBClusters"],
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
             ]
-          }
-        }
-      ]
-    },
-    "DatabaseAdministrator": {
-      "Description": "Manage database instances with restricted access to sensitive data",
-      "MaxSessionDuration": 3600,
-      "AssumeRolePolicyDocument": {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+        },
+        "ComplianceOfficer": {
+            "Description": "Access to audit logs, compliance reports, and security configurations",
+            "MaxSessionDuration": 7200,
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+                        },
+                        "Action": "sts:AssumeRoleWithSAML",
+                        "Condition": {
+                            "StringEquals": {
+                                "SAML:Role": "ComplianceOfficer"
+                            },
+                            "Bool": {
+                                "aws:MultiFactorAuthPresent": "true"
+                            },
+                            "IpAddress": {
+                                "aws:SourceIp": ["10.0.0.0/8", "172.16.0.0/12"]
+                            }
+                        }
+                    }
+                ]
             },
-            "Action": "sts:AssumeRoleWithSAML",
-            "Condition": {
-              "StringEquals": {
-                "SAML:Role": "DatabaseAdministrator"
-              },
-              "Bool": {
-                "aws:MultiFactorAuthPresent": "true"
-              }
-            }
-          }
-        ]
-      },
-      "Policies": [
-        {
-          "PolicyName": "DatabaseManagement",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": ["rds:*", "rds-db:connect"],
-                "Resource": "*",
-                "Condition": {
-                  "StringNotEquals": {
-                    "rds:DatabaseEngine": "aurora-mysql"
-                  }
+            "Policies": [
+                {
+                    "PolicyName": "ComplianceAuditAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "cloudtrail:LookupEvents",
+                                    "cloudtrail:GetTrailStatus",
+                                    "cloudtrail:DescribeTrails",
+                                    "logs:DescribeLogGroups",
+                                    "logs:DescribeLogStreams",
+                                    "logs:GetLogEvents",
+                                    "config:GetComplianceDetailsByConfigRule",
+                                    "config:GetComplianceSummaryByConfigRule",
+                                    "guardduty:GetFindings",
+                                    "securityhub:GetFindings"
+                                ],
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": ["s3:GetObject", "s3:ListBucket"],
+                                "Resource": [
+                                    "arn:aws:s3:::quantumnest-audit-logs/*",
+                                    "arn:aws:s3:::quantumnest-compliance-reports/*"
+                                ]
+                            }
+                        ]
+                    }
                 }
-              },
-              {
-                "Effect": "Deny",
-                "Action": ["rds:DeleteDBInstance", "rds:DeleteDBCluster"],
-                "Resource": "*",
-                "Condition": {
-                  "StringEquals": {
-                    "aws:RequestTag/Environment": "production"
-                  }
-                }
-              }
             ]
-          }
-        }
-      ]
-    },
-    "ApplicationDeveloper": {
-      "Description": "Deploy and manage applications in non-production environments",
-      "MaxSessionDuration": 28800,
-      "AssumeRolePolicyDocument": {
-        "Version": "2012-10-17",
-        "Statement": [
-          {
-            "Effect": "Allow",
-            "Principal": {
-              "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+        },
+        "SecurityAdministrator": {
+            "Description": "Manage security configurations and incident response",
+            "MaxSessionDuration": 3600,
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+                        },
+                        "Action": "sts:AssumeRoleWithSAML",
+                        "Condition": {
+                            "StringEquals": {
+                                "SAML:Role": "SecurityAdministrator"
+                            },
+                            "Bool": {
+                                "aws:MultiFactorAuthPresent": "true"
+                            },
+                            "IpAddress": {
+                                "aws:SourceIp": ["10.0.0.0/8"]
+                            },
+                            "DateGreaterThan": {
+                                "aws:CurrentTime": "2024-01-01T00:00:00Z"
+                            }
+                        }
+                    }
+                ]
             },
-            "Action": "sts:AssumeRoleWithSAML",
-            "Condition": {
-              "StringEquals": {
-                "SAML:Role": "ApplicationDeveloper"
-              }
-            }
-          }
-        ]
-      },
-      "Policies": [
-        {
-          "PolicyName": "DevelopmentAccess",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Action": [
-                  "ec2:*",
-                  "ecs:*",
-                  "eks:*",
-                  "lambda:*",
-                  "apigateway:*",
-                  "s3:*",
-                  "cloudformation:*"
-                ],
-                "Resource": "*",
-                "Condition": {
-                  "StringNotEquals": {
-                    "aws:RequestTag/Environment": "production"
-                  }
+            "Policies": [
+                {
+                    "PolicyName": "SecurityManagement",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "iam:ListRoles",
+                                    "iam:ListPolicies",
+                                    "iam:GetRole",
+                                    "iam:GetPolicy",
+                                    "iam:GetPolicyVersion",
+                                    "kms:ListKeys",
+                                    "kms:DescribeKey",
+                                    "kms:GetKeyPolicy",
+                                    "guardduty:*",
+                                    "securityhub:*",
+                                    "inspector:*",
+                                    "wafv2:*"
+                                ],
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Deny",
+                                "Action": [
+                                    "iam:DeleteRole",
+                                    "iam:DeletePolicy",
+                                    "kms:ScheduleKeyDeletion"
+                                ],
+                                "Resource": "*"
+                            }
+                        ]
+                    }
                 }
-              },
-              {
-                "Effect": "Deny",
-                "Action": "*",
-                "Resource": "*",
-                "Condition": {
-                  "StringEquals": {
-                    "aws:RequestTag/Environment": "production"
-                  }
-                }
-              }
             ]
-          }
+        },
+        "DatabaseAdministrator": {
+            "Description": "Manage database instances with restricted access to sensitive data",
+            "MaxSessionDuration": 3600,
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+                        },
+                        "Action": "sts:AssumeRoleWithSAML",
+                        "Condition": {
+                            "StringEquals": {
+                                "SAML:Role": "DatabaseAdministrator"
+                            },
+                            "Bool": {
+                                "aws:MultiFactorAuthPresent": "true"
+                            }
+                        }
+                    }
+                ]
+            },
+            "Policies": [
+                {
+                    "PolicyName": "DatabaseManagement",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": ["rds:*", "rds-db:connect"],
+                                "Resource": "*",
+                                "Condition": {
+                                    "StringNotEquals": {
+                                        "rds:DatabaseEngine": "aurora-mysql"
+                                    }
+                                }
+                            },
+                            {
+                                "Effect": "Deny",
+                                "Action": ["rds:DeleteDBInstance", "rds:DeleteDBCluster"],
+                                "Resource": "*",
+                                "Condition": {
+                                    "StringEquals": {
+                                        "aws:RequestTag/Environment": "production"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "ApplicationDeveloper": {
+            "Description": "Deploy and manage applications in non-production environments",
+            "MaxSessionDuration": 28800,
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "arn:aws:iam::ACCOUNT-ID:saml-provider/QuantumNestSSO"
+                        },
+                        "Action": "sts:AssumeRoleWithSAML",
+                        "Condition": {
+                            "StringEquals": {
+                                "SAML:Role": "ApplicationDeveloper"
+                            }
+                        }
+                    }
+                ]
+            },
+            "Policies": [
+                {
+                    "PolicyName": "DevelopmentAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "ec2:*",
+                                    "ecs:*",
+                                    "eks:*",
+                                    "lambda:*",
+                                    "apigateway:*",
+                                    "s3:*",
+                                    "cloudformation:*"
+                                ],
+                                "Resource": "*",
+                                "Condition": {
+                                    "StringNotEquals": {
+                                        "aws:RequestTag/Environment": "production"
+                                    }
+                                }
+                            },
+                            {
+                                "Effect": "Deny",
+                                "Action": "*",
+                                "Resource": "*",
+                                "Condition": {
+                                    "StringEquals": {
+                                        "aws:RequestTag/Environment": "production"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }
