@@ -485,12 +485,6 @@ kubectl describe networkpolicy POLICY_NAME -n NAMESPACE
 - **Kubernetes logs**: `kubectl logs`
 - **Database logs**: `/var/log/postgresql/`
 
-### Support Contacts
-
-- **Platform Team**: platform-team@quantumnest.com
-- **Security Team**: security@quantumnest.com
-- **On-call**: +1-555-SUPPORT
-
 ## Maintenance Procedures
 
 ### Regular Maintenance Tasks
