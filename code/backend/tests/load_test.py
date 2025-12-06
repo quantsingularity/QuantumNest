@@ -17,6 +17,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.main import app
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Test server configuration
 HOST = "127.0.0.1"
 PORT = 8000
@@ -236,4 +240,4 @@ def run_load_test():
 
 if __name__ == "__main__":
     results = run_load_test()
-    print(json.dumps(results, indent=2))
+    logger.info(json.dumps(results, indent=2))

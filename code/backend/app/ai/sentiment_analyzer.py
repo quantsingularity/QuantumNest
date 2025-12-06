@@ -18,6 +18,10 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Download NLTK resources
 nltk.download("punkt", quiet=True)
 nltk.download("stopwords", quiet=True)
@@ -162,8 +166,7 @@ class SentimentAnalyzer:
         """
         # Preprocess text
         if verbose > 0:
-            print("Preprocessing data...")
-
+            logger.info("Preprocessing data...")
         data["processed_text"] = data[text_column].apply(self._preprocess_text)
 
         # Get classes
@@ -183,8 +186,7 @@ class SentimentAnalyzer:
 
         # Train model
         if verbose > 0:
-            print("Training model...")
-
+            logger.info("Training model...")
         if grid_search:
             # Define parameter grid based on model type
             if self.config["model_type"] == "naive_bayes":
@@ -226,16 +228,14 @@ class SentimentAnalyzer:
             self.pipeline = grid_search.best_estimator_
 
             if verbose > 0:
-                print(f"Best parameters: {grid_search.best_params_}")
-
+                logger.info(f"Best parameters: {grid_search.best_params_}")
             else:
                 # Fit pipeline
                 self.pipeline.fit(X_train, y_train)
 
         # Evaluate model
         if verbose > 0:
-            print("Evaluating model...")
-
+            logger.info("Evaluating model...")
         y_pred = self.pipeline.predict(X_test)
 
         accuracy = accuracy_score(y_test, y_pred)
@@ -244,10 +244,9 @@ class SentimentAnalyzer:
         )
 
         if verbose > 0:
-            print(
+            logger.info(
                 f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}"
             )
-
         self.model = self.pipeline
 
         return self
@@ -406,10 +405,9 @@ if __name__ == "__main__":
 
     predictions = analyzer.predict(new_texts)
     for pred in predictions:
-        print(
+        logger.info(
             f"Text: {pred['text']}, Sentiment: {pred['sentiment']}, Confidence: {pred['confidence']:.2f}"
         )
-
     # Save model
     analyzer.save("sentiment_model")
 
@@ -419,6 +417,6 @@ if __name__ == "__main__":
     # Make predictions with loaded model
     loaded_predictions = loaded_analyzer.predict(new_texts)
     for pred in loaded_predictions:
-        print(
+        logger.info(
             f"Text: {pred['text']}, Sentiment: {pred['sentiment']}, Confidence: {pred['confidence']:.2f}"
         )

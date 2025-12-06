@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 from arch import arch_model
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class GARCHModel:
     def __init__(self, config=None):
@@ -115,8 +119,7 @@ class GARCHModel:
         self.result = self.model.fit(disp="off" if verbose == 0 else "on")
 
         if verbose > 0:
-            print(self.result.summary())
-
+            logger.info(self.result.summary())
         return self.result
 
     def forecast(self, horizon=None, start=None):

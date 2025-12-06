@@ -8,6 +8,10 @@ import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class AIRecommendationEngine:
     def __init__(self, config=None):
@@ -542,17 +546,15 @@ if __name__ == "__main__":
     # Get feature importance
     importance = engine.get_feature_importance()
     for feature, imp in importance.items():
-        print(f"Feature: {feature}, Importance: {imp}")
-
+        logger.info(f"Feature: {feature}, Importance: {imp}")
     # Generate recommendations for test data
     test_features = test_data.drop("target", axis=1)
     recommendations = engine.predict(test_features)
 
     for i, rec in enumerate(recommendations["recommendations"][:5]):  # Show top 5
-        print(
+        logger.info(
             f"Recommendation {i+1}: {rec['symbol']} - {rec['recommendation']} ({rec['confidence']:.2f}%)"
         )
-
     # Save model
     engine.save("recommendation_engine")
 

@@ -12,11 +12,10 @@ from pathlib import Path
 
 def run_command(command, description):
     """Run a command and return the result"""
-    print(f"\n{'='*60}")
-    print(f"Running: {description}")
-    print(f"Command: {command}")
-    print(f"{'='*60}")
-
+    logger.info(f"\n{'='*60}")
+    logger.info(f"Running: {description}")
+    logger.info(f"Command: {command}")
+    logger.info(f"{'='*60}")
     try:
         result = subprocess.run(
             command,
@@ -27,30 +26,27 @@ def run_command(command, description):
         )
 
         if result.stdout:
-            print("STDOUT:")
-            print(result.stdout)
-
+            logger.info("STDOUT:")
+            logger.info(result.stdout)
         if result.stderr:
-            print("STDERR:")
-            print(result.stderr)
-
-        print(f"Return code: {result.returncode}")
+            logger.info("STDERR:")
+            logger.info(result.stderr)
+        logger.info(f"Return code: {result.returncode}")
         return result.returncode == 0
 
     except subprocess.TimeoutExpired:
-        print("ERROR: Command timed out after 5 minutes")
+        logger.info("ERROR: Command timed out after 5 minutes")
         return False
     except Exception as e:
-        print(f"ERROR: {str(e)}")
+        logger.info(f"ERROR: {str(e)}")
         return False
 
 
 def check_syntax():
     """Check Python syntax for all files"""
-    print("\n" + "=" * 80)
-    print("CHECKING PYTHON SYNTAX")
-    print("=" * 80)
-
+    logger.info("\n" + "=" * 80)
+    logger.info("CHECKING PYTHON SYNTAX")
+    logger.info("=" * 80)
     python_files = list(Path("app").rglob("*.py"))
     python_files.extend(list(Path("tests").rglob("*.py")))
 
@@ -63,29 +59,31 @@ def check_syntax():
                 check=True,
                 capture_output=True,
             )
-            print(f"✓ {file_path}")
+            logger.info(f"✓ {file_path}")
         except subprocess.CalledProcessError as e:
-            print(f"✗ {file_path}: {e.stderr.decode()}")
+            logger.info(f"✗ {file_path}: {e.stderr.decode()}")
             failed_files.append(str(file_path))
 
     if failed_files:
-        print(f"\nSyntax errors found in {len(failed_files)} files:")
+        logger.info(f"\nSyntax errors found in {len(failed_files)} files:")
         for file_path in failed_files:
-            print(f"  - {file_path}")
+            logger.info(f"  - {file_path}")
         return False
     else:
-        print(f"\n✓ All {len(python_files)} Python files have valid syntax")
+        logger.info(f"\n✓ All {len(python_files)} Python files have valid syntax")
         return True
 
 
 def check_imports():
     """Check if all imports can be resolved"""
-    print("\n" + "=" * 80)
-    print("CHECKING IMPORTS")
-    print("=" * 80)
-
+    logger.info("\n" + "=" * 80)
+    logger.info("CHECKING IMPORTS")
+    logger.info("=" * 80)
     test_script = """
 import sys
+
+from core.logging import get_logger
+logger = get_logger(__name__)
 sys.path.insert(0, '.')
 
 try:
@@ -93,36 +91,30 @@ try:
     from app.core.config import get_settings
     from app.core.logging import get_logger
     from app.models.models import User, Account, Portfolio, Transaction
-    print("✓ Core imports successful")
-
+    logger.info("✓ Core imports successful")
     # Test auth imports
     from app.auth.authentication import AdvancedAuthenticationSystem
     from app.auth.authorization import RoleBasedAccessControl
-    print("✓ Auth imports successful")
-
+    logger.info("✓ Auth imports successful")
     # Test service imports
     from app.services.trading_service import TradingService
     from app.services.market_data_service import MarketDataService
     from app.services.risk_management_service import RiskManagementService
-    print("✓ Service imports successful")
-
+    logger.info("✓ Service imports successful")
     # Test AI imports
     from app.ai.fraud_detection import AdvancedFraudDetectionSystem
     from app.ai.financial_advisor import AIFinancialAdvisor
     from app.ai.portfolio_optimization import PortfolioOptimizer
-    print("✓ AI imports successful")
-
+    logger.info("✓ AI imports successful")
     # Test utility imports
     from app.utils.encryption import encryption_manager
-    print("✓ Utility imports successful")
-
-    print("\\n✓ All imports successful")
-
+    logger.info("✓ Utility imports successful")
+    logger.info("\\n✓ All imports successful")
 except ImportError as e:
-    print(f"✗ Import error: {e}")
+    logger.info(f"✗ Import error: {e}")
     sys.exit(1)
 except Exception as e:
-    print(f"✗ Unexpected error: {e}")
+    logger.info(f"✗ Unexpected error: {e}")
     sys.exit(1)
 """
 
@@ -137,18 +129,17 @@ except Exception as e:
             timeout=60,
         )
 
-        print(result.stdout)
+        logger.info(result.stdout)
         if result.stderr:
-            print("STDERR:")
-            print(result.stderr)
-
+            logger.info("STDERR:")
+            logger.info(result.stderr)
         success = result.returncode == 0
 
     except subprocess.TimeoutExpired:
-        print("✗ Import check timed out")
+        logger.info("✗ Import check timed out")
         success = False
     except Exception as e:
-        print(f"✗ Import check failed: {e}")
+        logger.info(f"✗ Import check failed: {e}")
         success = False
     finally:
         # Clean up
@@ -161,7 +152,7 @@ except Exception as e:
 def run_unit_tests():
     """Run unit tests"""
     if not os.path.exists("tests"):
-        print("No tests directory found, skipping unit tests")
+        logger.info("No tests directory found, skipping unit tests")
         return True
 
     return run_command("python -m pytest tests/ -v --tb=short", "Unit Tests")
@@ -169,10 +160,9 @@ def run_unit_tests():
 
 def check_code_quality():
     """Check code quality with basic linting"""
-    print("\n" + "=" * 80)
-    print("CHECKING CODE QUALITY")
-    print("=" * 80)
-
+    logger.info("\n" + "=" * 80)
+    logger.info("CHECKING CODE QUALITY")
+    logger.info("=" * 80)
     # Basic code quality checks
     checks = [
         (
@@ -192,21 +182,20 @@ def check_code_quality():
     all_passed = True
 
     for description, command in checks:
-        print(f"\n{description}:")
+        logger.info(f"\n{description}:")
         try:
             result = subprocess.run(
                 command, shell=True, capture_output=True, text=True, timeout=30
             )
 
             if result.stdout.strip():
-                print(result.stdout)
-
+                logger.info(result.stdout)
             if result.stderr.strip():
-                print(f"Error: {result.stderr}")
+                logger.info(f"Error: {result.stderr}")
                 all_passed = False
 
         except Exception as e:
-            print(f"Error running check: {e}")
+            logger.info(f"Error running check: {e}")
             all_passed = False
 
     return all_passed
@@ -214,10 +203,9 @@ def check_code_quality():
 
 def check_security():
     """Basic security checks"""
-    print("\n" + "=" * 80)
-    print("CHECKING SECURITY")
-    print("=" * 80)
-
+    logger.info("\n" + "=" * 80)
+    logger.info("CHECKING SECURITY")
+    logger.info("=" * 80)
     security_issues = []
 
     # Check for hardcoded secrets
@@ -231,14 +219,12 @@ def check_security():
 
         if "No hardcoded passwords found" not in result.stdout:
             security_issues.append("Potential hardcoded passwords found")
-            print("⚠️  Potential hardcoded passwords:")
-            print(result.stdout)
+            logger.info("⚠️  Potential hardcoded passwords:")
+            logger.info(result.stdout)
         else:
-            print("✓ No hardcoded passwords found")
-
+            logger.info("✓ No hardcoded passwords found")
     except Exception as e:
-        print(f"Error checking for hardcoded passwords: {e}")
-
+        logger.info(f"Error checking for hardcoded passwords: {e}")
     # Check for SQL injection patterns
     try:
         result = subprocess.run(
@@ -250,14 +236,12 @@ def check_security():
 
         if "No SQL injection patterns found" not in result.stdout:
             security_issues.append("Potential SQL injection patterns found")
-            print("⚠️  Potential SQL injection patterns:")
-            print(result.stdout)
+            logger.info("⚠️  Potential SQL injection patterns:")
+            logger.info(result.stdout)
         else:
-            print("✓ No SQL injection patterns found")
-
+            logger.info("✓ No SQL injection patterns found")
     except Exception as e:
-        print(f"Error checking for SQL injection: {e}")
-
+        logger.info(f"Error checking for SQL injection: {e}")
     # Check for debug mode in production
     try:
         result = subprocess.run(
@@ -269,21 +253,19 @@ def check_security():
 
         if "No debug mode found" not in result.stdout:
             security_issues.append("Debug mode enabled")
-            print("⚠️  Debug mode enabled:")
-            print(result.stdout)
+            logger.info("⚠️  Debug mode enabled:")
+            logger.info(result.stdout)
         else:
-            print("✓ No debug mode enabled")
-
+            logger.info("✓ No debug mode enabled")
     except Exception as e:
-        print(f"Error checking for debug mode: {e}")
-
+        logger.info(f"Error checking for debug mode: {e}")
     if security_issues:
-        print(f"\n⚠️  {len(security_issues)} security issues found:")
+        logger.info(f"\n⚠️  {len(security_issues)} security issues found:")
         for issue in security_issues:
-            print(f"  - {issue}")
+            logger.info(f"  - {issue}")
         return False
     else:
-        print("\n✓ No security issues found")
+        logger.info("\n✓ No security issues found")
         return True
 
 
@@ -305,9 +287,8 @@ def main():
     if not any([args.syntax, args.imports, args.tests, args.quality, args.security]):
         args.all = True
 
-    print("QuantumNest Capital Backend Test Runner")
-    print("=" * 80)
-
+    logger.info("QuantumNest Capital Backend Test Runner")
+    logger.info("=" * 80)
     results = {}
 
     if args.all or args.syntax:
@@ -326,26 +307,24 @@ def main():
         results["security"] = check_security()
 
     # Summary
-    print("\n" + "=" * 80)
-    print("TEST SUMMARY")
-    print("=" * 80)
-
+    logger.info("\n" + "=" * 80)
+    logger.info("TEST SUMMARY")
+    logger.info("=" * 80)
     passed = 0
     total = len(results)
 
     for check, result in results.items():
         status = "✓ PASSED" if result else "✗ FAILED"
-        print(f"{check.upper():<15}: {status}")
+        logger.info(f"{check.upper():<15}: {status}")
         if result:
             passed += 1
 
-    print(f"\nOverall: {passed}/{total} checks passed")
-
+    logger.info(f"\nOverall: {passed}/{total} checks passed")
     if passed == total:
-        print("🎉 All checks passed! The code is ready for deployment.")
+        logger.info("🎉 All checks passed! The code is ready for deployment.")
         sys.exit(0)
     else:
-        print("❌ Some checks failed. Please review and fix the issues.")
+        logger.info("❌ Some checks failed. Please review and fix the issues.")
         sys.exit(1)
 
 

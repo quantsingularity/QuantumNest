@@ -504,6 +504,10 @@ def mock_requests_post(url, **kwargs):
 import time
 from contextlib import contextmanager
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 @contextmanager
 def timer():
@@ -511,7 +515,7 @@ def timer():
     start = time.time()
     yield
     end = time.time()
-    print(f"Execution time: {end - start:.4f} seconds")
+    logger.info(f"Execution time: {end - start:.4f} seconds")
 
 
 def measure_memory_usage():
