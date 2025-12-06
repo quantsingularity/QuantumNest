@@ -1,5 +1,4 @@
 from typing import List
-
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
@@ -15,7 +14,7 @@ def create_portfolio(
     portfolio: schemas.PortfolioCreate,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio = models.Portfolio(
         name=portfolio.name, description=portfolio.description, owner_id=current_user.id
     )
@@ -31,7 +30,7 @@ def read_portfolios(
     limit: int = 100,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     portfolios = (
         db.query(models.Portfolio)
         .filter(models.Portfolio.owner_id == current_user.id)
@@ -47,7 +46,7 @@ def read_portfolio(
     portfolio_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio = (
         db.query(models.Portfolio)
         .filter(
@@ -67,7 +66,7 @@ def update_portfolio(
     portfolio: schemas.PortfolioCreate,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio = (
         db.query(models.Portfolio)
         .filter(
@@ -78,10 +77,8 @@ def update_portfolio(
     )
     if db_portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
-
     db_portfolio.name = portfolio.name
     db_portfolio.description = portfolio.description
-
     db.commit()
     db.refresh(db_portfolio)
     return db_portfolio
@@ -92,7 +89,7 @@ def delete_portfolio(
     portfolio_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio = (
         db.query(models.Portfolio)
         .filter(
@@ -103,7 +100,6 @@ def delete_portfolio(
     )
     if db_portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
-
     db.delete(db_portfolio)
     db.commit()
     return None
@@ -114,8 +110,7 @@ def add_asset_to_portfolio(
     portfolio_asset: schemas.PortfolioAssetCreate,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # Verify portfolio belongs to user
+) -> Any:
     db_portfolio = (
         db.query(models.Portfolio)
         .filter(
@@ -126,8 +121,6 @@ def add_asset_to_portfolio(
     )
     if db_portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
-
-    # Verify asset exists
     db_asset = (
         db.query(models.Asset)
         .filter(models.Asset.id == portfolio_asset.asset_id)
@@ -135,7 +128,6 @@ def add_asset_to_portfolio(
     )
     if db_asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
-
     db_portfolio_asset = models.PortfolioAsset(
         portfolio_id=portfolio_asset.portfolio_id,
         asset_id=portfolio_asset.asset_id,
@@ -154,7 +146,7 @@ def read_portfolio_asset(
     portfolio_asset_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio_asset = (
         db.query(models.PortfolioAsset)
         .join(models.Portfolio)
@@ -175,7 +167,7 @@ def update_portfolio_asset(
     portfolio_asset: schemas.PortfolioAssetCreate,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio_asset = (
         db.query(models.PortfolioAsset)
         .join(models.Portfolio)
@@ -187,11 +179,9 @@ def update_portfolio_asset(
     )
     if db_portfolio_asset is None:
         raise HTTPException(status_code=404, detail="Portfolio asset not found")
-
     db_portfolio_asset.quantity = portfolio_asset.quantity
     db_portfolio_asset.purchase_price = portfolio_asset.purchase_price
     db_portfolio_asset.purchase_date = portfolio_asset.purchase_date
-
     db.commit()
     db.refresh(db_portfolio_asset)
     return db_portfolio_asset
@@ -202,7 +192,7 @@ def delete_portfolio_asset(
     portfolio_asset_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_portfolio_asset = (
         db.query(models.PortfolioAsset)
         .join(models.Portfolio)
@@ -214,7 +204,6 @@ def delete_portfolio_asset(
     )
     if db_portfolio_asset is None:
         raise HTTPException(status_code=404, detail="Portfolio asset not found")
-
     db.delete(db_portfolio_asset)
     db.commit()
     return None
@@ -226,8 +215,7 @@ def get_portfolio_performance(
     period: str = "1m",
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # Verify portfolio belongs to user
+) -> Any:
     db_portfolio = (
         db.query(models.Portfolio)
         .filter(
@@ -238,9 +226,6 @@ def get_portfolio_performance(
     )
     if db_portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
-
-    # This would be implemented with actual calculations based on asset prices
-    # For now, return mock data
     performance_data = {
         "portfolio_id": portfolio_id,
         "period": period,

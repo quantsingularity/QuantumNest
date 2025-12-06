@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List, Optional
-
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
@@ -18,7 +17,7 @@ def get_smart_contracts(
     contract_type: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     query = db.query(models.SmartContract)
     if contract_type:
         query = query.filter(models.SmartContract.contract_type == contract_type)
@@ -31,7 +30,7 @@ def get_smart_contract(
     contract_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_contract = (
         db.query(models.SmartContract)
         .filter(models.SmartContract.id == contract_id)
@@ -49,7 +48,7 @@ def get_blockchain_transactions(
     contract_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     query = db.query(models.BlockchainTransaction)
     if contract_id:
         query = query.filter(models.BlockchainTransaction.contract_id == contract_id)
@@ -62,7 +61,7 @@ def get_blockchain_transaction(
     tx_hash: str,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_transaction = (
         db.query(models.BlockchainTransaction)
         .filter(models.BlockchainTransaction.tx_hash == tx_hash)
@@ -78,18 +77,16 @@ def get_wallet_balance(
     address: str,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual blockchain integration
-    # For now, return mock data
+) -> Any:
     balance = {
         "address": address,
         "timestamp": datetime.now(),
         "balances": [
-            {"token": "ETH", "balance": 5.25, "value_usd": 15750.00},
-            {"token": "USDC", "balance": 10000.00, "value_usd": 10000.00},
-            {"token": "QNC", "balance": 5000.00, "value_usd": 25000.00},
+            {"token": "ETH", "balance": 5.25, "value_usd": 15750.0},
+            {"token": "USDC", "balance": 10000.0, "value_usd": 10000.0},
+            {"token": "QNC", "balance": 5000.0, "value_usd": 25000.0},
         ],
-        "total_value_usd": 50750.00,
+        "total_value_usd": 50750.0,
     }
     return balance
 
@@ -101,9 +98,7 @@ def get_wallet_transactions(
     limit: int = 10,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual blockchain integration
-    # For now, return mock data
+) -> Any:
     transactions = [
         {
             "tx_hash": "0x7d2a5b3e8f4a1b9c6d8e7f0a2b3c4d5e6f7a8b9c",
@@ -155,9 +150,7 @@ def get_wallet_transactions(
 def get_network_stats(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual blockchain integration
-    # For now, return mock data
+) -> Any:
     network_stats = {
         "timestamp": datetime.now(),
         "network": "Ethereum Mainnet",
@@ -182,18 +175,12 @@ def deploy_smart_contract(
     contract_data: dict,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual blockchain integration
-    # For now, return mock data
-
-    # Check user tier permissions
+) -> Any:
     if current_user.tier == models.UserTier.BASIC:
         raise HTTPException(
             status_code=403,
             detail="Smart contract deployment requires Premium or Enterprise tier",
         )
-
-    # Mock deployment response
     deployment_result = {
         "status": "success",
         "contract_name": contract_data.get("name", "Unnamed Contract"),
@@ -214,8 +201,7 @@ def execute_smart_contract(
     function_data: dict,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # Verify contract exists
+) -> Any:
     db_contract = (
         db.query(models.SmartContract)
         .filter(models.SmartContract.id == contract_id)
@@ -223,9 +209,6 @@ def execute_smart_contract(
     )
     if db_contract is None:
         raise HTTPException(status_code=404, detail="Smart contract not found")
-
-    # This would be implemented with actual blockchain integration
-    # For now, return mock data
     execution_result = {
         "status": "success",
         "contract_id": contract_id,
@@ -246,9 +229,7 @@ def get_tokenized_assets(
     limit: int = 100,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual tokenized assets data
-    # For now, return mock data
+) -> Any:
     tokenized_assets = [
         {
             "token_symbol": "QNC-AAPL",
@@ -257,16 +238,16 @@ def get_tokenized_assets(
             "total_supply": 10000,
             "price_per_token": 2.15,
             "underlying_asset": "AAPL",
-            "market_cap": 21500.00,
+            "market_cap": 21500.0,
         },
         {
             "token_symbol": "QNC-TSLA",
             "name": "Tokenized Tesla Inc.",
             "contract_address": "0x8901DaECbfF9e1d2c7b9C2a154b9dAc45a1B5092",
             "total_supply": 5000,
-            "price_per_token": 1.80,
+            "price_per_token": 1.8,
             "underlying_asset": "TSLA",
-            "market_cap": 9000.00,
+            "market_cap": 9000.0,
         },
         {
             "token_symbol": "QNC-GOLD",
@@ -275,7 +256,7 @@ def get_tokenized_assets(
             "total_supply": 20000,
             "price_per_token": 0.95,
             "underlying_asset": "Gold",
-            "market_cap": 19000.00,
+            "market_cap": 19000.0,
         },
         {
             "token_symbol": "QNC-REITS",
@@ -284,7 +265,7 @@ def get_tokenized_assets(
             "total_supply": 15000,
             "price_per_token": 1.25,
             "underlying_asset": "Real Estate Index",
-            "market_cap": 18750.00,
+            "market_cap": 18750.0,
         },
     ]
     return tokenized_assets[skip : skip + limit]

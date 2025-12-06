@@ -5,7 +5,6 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
-
 import structlog
 from app.core.config import get_settings
 from pythonjsonlogger import jsonlogger
@@ -14,25 +13,17 @@ from pythonjsonlogger import jsonlogger
 class StructuredFormatter(jsonlogger.JsonFormatter):
     """Custom JSON formatter for structured logging"""
 
-    def add_fields(self, log_record, record, message_dict):
+    def add_fields(self, log_record: Any, record: Any, message_dict: Any) -> Any:
         super(StructuredFormatter, self).add_fields(log_record, record, message_dict)
-
-        # Add timestamp
         log_record["timestamp"] = datetime.utcnow().isoformat()
-
-        # Add service info
         log_record["service"] = "quantumnest-api"
         log_record["version"] = get_settings().VERSION
-
-        # Add request context if available
         if hasattr(record, "request_id"):
             log_record["request_id"] = record.request_id
         if hasattr(record, "user_id"):
             log_record["user_id"] = record.user_id
         if hasattr(record, "endpoint"):
             log_record["endpoint"] = record.endpoint
-
-        # Add exception info if present
         if record.exc_info:
             log_record["exception"] = {
                 "type": record.exc_info[0].__name__,
@@ -56,17 +47,19 @@ class SecurityFilter(logging.Filter):
         "api_key",
     ]
 
-    def filter(self, record):
+    def filter(self, record: Any) -> Any:
         if hasattr(record, "msg") and isinstance(record.msg, (dict, str)):
             record.msg = self._sanitize_message(record.msg)
         return True
 
-    def _sanitize_message(self, message):
+    def _sanitize_message(self, message: Any) -> Any:
         """Remove sensitive information from log messages"""
         if isinstance(message, dict):
             sanitized = {}
             for key, value in message.items():
-                if any(sensitive in key.lower() for sensitive in self.SENSITIVE_FIELDS):
+                if any(
+                    (sensitive in key.lower() for sensitive in self.SENSITIVE_FIELDS)
+                ):
                     sanitized[key] = "***REDACTED***"
                 elif isinstance(value, dict):
                     sanitized[key] = self._sanitize_message(value)
@@ -76,7 +69,6 @@ class SecurityFilter(logging.Filter):
         elif isinstance(message, str):
             for field in self.SENSITIVE_FIELDS:
                 if field in message.lower():
-                    # Simple redaction for string messages
                     return message.replace(field, "***REDACTED***")
         return message
 
@@ -84,24 +76,19 @@ class SecurityFilter(logging.Filter):
 class RequestContextFilter(logging.Filter):
     """Filter to add request context to log records"""
 
-    def filter(self, record):
-        # This would be populated by middleware in a real application
+    def filter(self, record: Any) -> Any:
         record.request_id = getattr(record, "request_id", None)
         record.user_id = getattr(record, "user_id", None)
         record.endpoint = getattr(record, "endpoint", None)
         return True
 
 
-def setup_logging():
+def setup_logging() -> Any:
     """Configure application logging"""
     settings = get_settings()
-
-    # Create logs directory if it doesn't exist
     if settings.LOG_FILE:
         log_path = Path(settings.LOG_FILE)
         log_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Configure structlog
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,
@@ -119,33 +106,21 @@ def setup_logging():
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
-
-    # Get root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, settings.LOG_LEVEL.value))
-
-    # Clear existing handlers
     root_logger.handlers.clear()
-
-    # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(getattr(logging, settings.LOG_LEVEL.value))
-
     if settings.ENVIRONMENT.value == "development":
-        # Human-readable format for development
         console_formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
     else:
-        # JSON format for production
         console_formatter = StructuredFormatter()
-
     console_handler.setFormatter(console_formatter)
     console_handler.addFilter(SecurityFilter())
     console_handler.addFilter(RequestContextFilter())
     root_logger.addHandler(console_handler)
-
-    # File handler (if configured)
     if settings.LOG_FILE:
         file_handler = logging.handlers.RotatingFileHandler(
             settings.LOG_FILE,
@@ -157,11 +132,7 @@ def setup_logging():
         file_handler.addFilter(SecurityFilter())
         file_handler.addFilter(RequestContextFilter())
         root_logger.addHandler(file_handler)
-
-    # Configure specific loggers
     configure_logger_levels()
-
-    # Log startup message
     logger = logging.getLogger(__name__)
     logger.info(
         "Logging configured successfully",
@@ -173,16 +144,13 @@ def setup_logging():
     )
 
 
-def configure_logger_levels():
+def configure_logger_levels() -> Any:
     """Configure log levels for specific modules"""
-    # Reduce noise from third-party libraries
     logging.getLogger("uvicorn").setLevel(logging.WARNING)
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
     logging.getLogger("celery").setLevel(logging.WARNING)
     logging.getLogger("redis").setLevel(logging.WARNING)
-
-    # Set application loggers
     logging.getLogger("app").setLevel(logging.INFO)
     logging.getLogger("app.api").setLevel(logging.INFO)
     logging.getLogger("app.ai").setLevel(logging.INFO)
@@ -202,7 +170,7 @@ class LoggerMixin:
         return get_logger(self.__class__.__name__)
 
 
-def log_function_call(func):
+def log_function_call(func: Any) -> Any:
     """Decorator to log function calls"""
 
     def wrapper(*args, **kwargs):
@@ -232,14 +200,14 @@ def log_function_call(func):
     return wrapper
 
 
-def log_api_call(endpoint: str, method: str, user_id: Optional[str] = None):
+def log_api_call(endpoint: str, method: str, user_id: Optional[str] = None) -> Any:
     """Decorator to log API calls"""
 
     def decorator(func):
+
         def wrapper(*args, **kwargs):
             logger = get_logger("api")
             request_id = kwargs.get("request_id", "unknown")
-
             logger.info(
                 "API call started",
                 endpoint=endpoint,
@@ -247,7 +215,6 @@ def log_api_call(endpoint: str, method: str, user_id: Optional[str] = None):
                 user_id=user_id,
                 request_id=request_id,
             )
-
             try:
                 result = func(*args, **kwargs)
                 logger.info(
@@ -275,14 +242,13 @@ def log_api_call(endpoint: str, method: str, user_id: Optional[str] = None):
     return decorator
 
 
-# Performance monitoring
 class PerformanceLogger:
     """Logger for performance metrics"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger("performance")
 
-    def log_request_time(self, endpoint: str, duration: float, status_code: int):
+    def log_request_time(self, endpoint: str, duration: float, status_code: int) -> Any:
         """Log request processing time"""
         self.logger.info(
             "Request processed",
@@ -291,7 +257,7 @@ class PerformanceLogger:
             status_code=status_code,
         )
 
-    def log_database_query(self, query: str, duration: float):
+    def log_database_query(self, query: str, duration: float) -> Any:
         """Log database query performance"""
         self.logger.info(
             "Database query executed",
@@ -299,7 +265,9 @@ class PerformanceLogger:
             duration_ms=round(duration * 1000, 2),
         )
 
-    def log_ai_model_inference(self, model_name: str, duration: float, input_size: int):
+    def log_ai_model_inference(
+        self, model_name: str, duration: float, input_size: int
+    ) -> Any:
         """Log AI model inference performance"""
         self.logger.info(
             "AI model inference completed",
@@ -309,14 +277,13 @@ class PerformanceLogger:
         )
 
 
-# Security logging
 class SecurityLogger:
     """Logger for security events"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger("security")
 
-    def log_login_attempt(self, email: str, success: bool, ip_address: str):
+    def log_login_attempt(self, email: str, success: bool, ip_address: str) -> Any:
         """Log login attempts"""
         self.logger.info(
             "Login attempt",
@@ -326,7 +293,9 @@ class SecurityLogger:
             event_type="login_attempt",
         )
 
-    def log_failed_authentication(self, email: str, reason: str, ip_address: str):
+    def log_failed_authentication(
+        self, email: str, reason: str, ip_address: str
+    ) -> Any:
         """Log failed authentication attempts"""
         self.logger.warning(
             "Authentication failed",
@@ -338,7 +307,7 @@ class SecurityLogger:
 
     def log_suspicious_activity(
         self, user_id: str, activity: str, details: Dict[str, Any]
-    ):
+    ) -> Any:
         """Log suspicious activities"""
         self.logger.warning(
             "Suspicious activity detected",
@@ -348,7 +317,7 @@ class SecurityLogger:
             event_type="suspicious_activity",
         )
 
-    def log_permission_denied(self, user_id: str, resource: str, action: str):
+    def log_permission_denied(self, user_id: str, resource: str, action: str) -> Any:
         """Log permission denied events"""
         self.logger.warning(
             "Permission denied",
@@ -359,6 +328,5 @@ class SecurityLogger:
         )
 
 
-# Initialize loggers
 performance_logger = PerformanceLogger()
 security_logger = SecurityLogger()

@@ -6,16 +6,12 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
-
-# Additional security imports
 import bcrypt
 import pyotp
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-
-# Cryptography imports
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
@@ -71,22 +67,14 @@ class KeyInfo:
 class AdvancedEncryptionManager:
     """Advanced encryption manager with multiple algorithms and key management"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.settings = get_settings()
         self.logger = get_logger(__name__)
-
-        # Key storage (in production, use HSM or key management service)
         self.keys = {}
         self.key_metadata = {}
-
-        # Default encryption settings
         self.default_method = EncryptionMethod.AES_GCM
         self.key_rotation_interval = timedelta(days=90)
-
-        # Initialize master key
         self.master_key = self._get_or_create_master_key()
-
-        # Initialize default keys
         self._initialize_default_keys()
 
     def encrypt(
@@ -100,9 +88,7 @@ class AdvancedEncryptionManager:
         try:
             if isinstance(data, str):
                 data = data.encode("utf-8")
-
             method = method or self.default_method
-
             if method == EncryptionMethod.FERNET:
                 return self._encrypt_fernet(data, key_id, metadata)
             elif method == EncryptionMethod.AES_GCM:
@@ -115,7 +101,6 @@ class AdvancedEncryptionManager:
                 return self._encrypt_hybrid(data, key_id, metadata)
             else:
                 raise ValueError(f"Unsupported encryption method: {method}")
-
         except Exception as e:
             self.logger.error(f"Encryption error: {str(e)}", exc_info=True)
             raise
@@ -126,7 +111,6 @@ class AdvancedEncryptionManager:
         """Decrypt data using the method specified in the result"""
         try:
             method = encrypted_result.method
-
             if method == EncryptionMethod.FERNET:
                 return self._decrypt_fernet(encrypted_result, key_id)
             elif method == EncryptionMethod.AES_GCM:
@@ -139,7 +123,6 @@ class AdvancedEncryptionManager:
                 return self._decrypt_hybrid(encrypted_result, key_id)
             else:
                 raise ValueError(f"Unsupported decryption method: {method}")
-
         except Exception as e:
             self.logger.error(f"Decryption error: {str(e)}", exc_info=True)
             raise
@@ -149,13 +132,10 @@ class AdvancedEncryptionManager:
     ) -> EncryptionResult:
         """Encrypt using Fernet (symmetric)"""
         key_id = key_id or "default_fernet"
-
         if key_id not in self.keys:
             self._generate_fernet_key(key_id)
-
         fernet = Fernet(self.keys[key_id])
         encrypted_data = fernet.encrypt(data)
-
         return EncryptionResult(
             encrypted_data=encrypted_data,
             method=EncryptionMethod.FERNET,
@@ -168,10 +148,8 @@ class AdvancedEncryptionManager:
     ) -> bytes:
         """Decrypt using Fernet"""
         key_id = key_id or encrypted_result.key_id or "default_fernet"
-
         if key_id not in self.keys:
             raise ValueError(f"Key {key_id} not found")
-
         fernet = Fernet(self.keys[key_id])
         return fernet.decrypt(encrypted_result.encrypted_data)
 
@@ -180,21 +158,14 @@ class AdvancedEncryptionManager:
     ) -> EncryptionResult:
         """Encrypt using AES-GCM"""
         key_id = key_id or "default_aes"
-
         if key_id not in self.keys:
             self._generate_aes_key(key_id)
-
-        # Generate random IV
-        iv = os.urandom(12)  # 96-bit IV for GCM
-
-        # Create cipher
+        iv = os.urandom(12)
         cipher = Cipher(
             algorithms.AES(self.keys[key_id]), modes.GCM(iv), backend=default_backend()
         )
-
         encryptor = cipher.encryptor()
         encrypted_data = encryptor.update(data) + encryptor.finalize()
-
         return EncryptionResult(
             encrypted_data=encrypted_data,
             method=EncryptionMethod.AES_GCM,
@@ -209,17 +180,13 @@ class AdvancedEncryptionManager:
     ) -> bytes:
         """Decrypt using AES-GCM"""
         key_id = key_id or encrypted_result.key_id or "default_aes"
-
         if key_id not in self.keys:
             raise ValueError(f"Key {key_id} not found")
-
-        # Create cipher
         cipher = Cipher(
             algorithms.AES(self.keys[key_id]),
             modes.GCM(encrypted_result.iv, encrypted_result.tag),
             backend=default_backend(),
         )
-
         decryptor = cipher.decryptor()
         return decryptor.update(encrypted_result.encrypted_data) + decryptor.finalize()
 
@@ -228,24 +195,15 @@ class AdvancedEncryptionManager:
     ) -> EncryptionResult:
         """Encrypt using AES-CBC with PKCS7 padding"""
         key_id = key_id or "default_aes"
-
         if key_id not in self.keys:
             self._generate_aes_key(key_id)
-
-        # Generate random IV
-        iv = os.urandom(16)  # 128-bit IV for CBC
-
-        # Pad data
+        iv = os.urandom(16)
         padded_data = pad(data, AES.block_size)
-
-        # Create cipher
         cipher = Cipher(
             algorithms.AES(self.keys[key_id]), modes.CBC(iv), backend=default_backend()
         )
-
         encryptor = cipher.encryptor()
         encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
-
         return EncryptionResult(
             encrypted_data=encrypted_data,
             method=EncryptionMethod.AES_CBC,
@@ -259,23 +217,17 @@ class AdvancedEncryptionManager:
     ) -> bytes:
         """Decrypt using AES-CBC"""
         key_id = key_id or encrypted_result.key_id or "default_aes"
-
         if key_id not in self.keys:
             raise ValueError(f"Key {key_id} not found")
-
-        # Create cipher
         cipher = Cipher(
             algorithms.AES(self.keys[key_id]),
             modes.CBC(encrypted_result.iv),
             backend=default_backend(),
         )
-
         decryptor = cipher.decryptor()
         padded_data = (
             decryptor.update(encrypted_result.encrypted_data) + decryptor.finalize()
         )
-
-        # Remove padding
         return unpad(padded_data, AES.block_size)
 
     def _encrypt_rsa(
@@ -283,18 +235,13 @@ class AdvancedEncryptionManager:
     ) -> EncryptionResult:
         """Encrypt using RSA (for small data)"""
         key_id = key_id or "default_rsa"
-
         if key_id not in self.keys:
             self._generate_rsa_key_pair(key_id)
-
         public_key = self.keys[f"{key_id}_public"]
-
-        # RSA can only encrypt small amounts of data
-        if len(data) > 190:  # Conservative limit for 2048-bit key
+        if len(data) > 190:
             raise ValueError(
                 "Data too large for RSA encryption. Use hybrid encryption instead."
             )
-
         encrypted_data = public_key.encrypt(
             data,
             padding.OAEP(
@@ -303,7 +250,6 @@ class AdvancedEncryptionManager:
                 label=None,
             ),
         )
-
         return EncryptionResult(
             encrypted_data=encrypted_data,
             method=EncryptionMethod.RSA,
@@ -316,13 +262,10 @@ class AdvancedEncryptionManager:
     ) -> bytes:
         """Decrypt using RSA"""
         key_id = key_id or encrypted_result.key_id or "default_rsa"
-
         private_key_id = f"{key_id}_private"
         if private_key_id not in self.keys:
             raise ValueError(f"Private key {private_key_id} not found")
-
         private_key = self.keys[private_key_id]
-
         return private_key.decrypt(
             encrypted_result.encrypted_data,
             padding.OAEP(
@@ -337,27 +280,17 @@ class AdvancedEncryptionManager:
     ) -> EncryptionResult:
         """Encrypt using hybrid encryption (RSA + AES)"""
         key_id = key_id or "default_hybrid"
-
-        # Generate random AES key
-        aes_key = os.urandom(32)  # 256-bit key
-
-        # Encrypt data with AES
+        aes_key = os.urandom(32)
         aes_result = self._encrypt_aes_gcm_with_key(data, aes_key)
-
-        # Encrypt AES key with RSA
         rsa_key_id = f"{key_id}_rsa"
         if rsa_key_id not in self.keys:
             self._generate_rsa_key_pair(rsa_key_id)
-
         encrypted_aes_key = self._encrypt_rsa(aes_key, rsa_key_id, None).encrypted_data
-
-        # Combine encrypted key and data
         combined_data = (
             len(encrypted_aes_key).to_bytes(4, "big")
             + encrypted_aes_key
             + aes_result.encrypted_data
         )
-
         return EncryptionResult(
             encrypted_data=combined_data,
             method=EncryptionMethod.HYBRID,
@@ -372,17 +305,9 @@ class AdvancedEncryptionManager:
     ) -> bytes:
         """Decrypt using hybrid encryption"""
         key_id = key_id or encrypted_result.key_id or "default_hybrid"
-
-        # Extract encrypted AES key length
         key_length = int.from_bytes(encrypted_result.encrypted_data[:4], "big")
-
-        # Extract encrypted AES key
         encrypted_aes_key = encrypted_result.encrypted_data[4 : 4 + key_length]
-
-        # Extract encrypted data
         encrypted_data = encrypted_result.encrypted_data[4 + key_length :]
-
-        # Decrypt AES key with RSA
         rsa_key_id = f"{key_id}_rsa"
         rsa_result = EncryptionResult(
             encrypted_data=encrypted_aes_key,
@@ -390,8 +315,6 @@ class AdvancedEncryptionManager:
             key_id=rsa_key_id,
         )
         aes_key = self._decrypt_rsa(rsa_result, rsa_key_id)
-
-        # Decrypt data with AES
         return self._decrypt_aes_gcm_with_key(
             encrypted_data, aes_key, encrypted_result.iv, encrypted_result.tag
         )
@@ -399,12 +322,9 @@ class AdvancedEncryptionManager:
     def _encrypt_aes_gcm_with_key(self, data: bytes, key: bytes) -> EncryptionResult:
         """Encrypt with specific AES key"""
         iv = os.urandom(12)
-
         cipher = Cipher(algorithms.AES(key), modes.GCM(iv), backend=default_backend())
-
         encryptor = cipher.encryptor()
         encrypted_data = encryptor.update(data) + encryptor.finalize()
-
         return EncryptionResult(
             encrypted_data=encrypted_data,
             method=EncryptionMethod.AES_GCM,
@@ -419,15 +339,13 @@ class AdvancedEncryptionManager:
         cipher = Cipher(
             algorithms.AES(key), modes.GCM(iv, tag), backend=default_backend()
         )
-
         decryptor = cipher.decryptor()
         return decryptor.update(encrypted_data) + decryptor.finalize()
 
-    def _generate_fernet_key(self, key_id: str):
+    def _generate_fernet_key(self, key_id: str) -> Any:
         """Generate Fernet key"""
         key = Fernet.generate_key()
         self.keys[key_id] = key
-
         self.key_metadata[key_id] = KeyInfo(
             key_id=key_id,
             key_type="fernet",
@@ -439,11 +357,10 @@ class AdvancedEncryptionManager:
             metadata={},
         )
 
-    def _generate_aes_key(self, key_id: str, key_size: int = 256):
+    def _generate_aes_key(self, key_id: str, key_size: int = 256) -> Any:
         """Generate AES key"""
         key = os.urandom(key_size // 8)
         self.keys[key_id] = key
-
         self.key_metadata[key_id] = KeyInfo(
             key_id=key_id,
             key_type="aes",
@@ -455,18 +372,14 @@ class AdvancedEncryptionManager:
             metadata={},
         )
 
-    def _generate_rsa_key_pair(self, key_id: str, key_size: int = 2048):
+    def _generate_rsa_key_pair(self, key_id: str, key_size: int = 2048) -> Any:
         """Generate RSA key pair"""
         private_key = rsa.generate_private_key(
             public_exponent=65537, key_size=key_size, backend=default_backend()
         )
-
         public_key = private_key.public_key()
-
         self.keys[f"{key_id}_private"] = private_key
         self.keys[f"{key_id}_public"] = public_key
-
-        # Store metadata
         for key_type in ["private", "public"]:
             full_key_id = f"{key_id}_{key_type}"
             self.key_metadata[full_key_id] = KeyInfo(
@@ -483,24 +396,17 @@ class AdvancedEncryptionManager:
     def _get_or_create_master_key(self) -> bytes:
         """Get or create master key for key encryption"""
         master_key_path = os.path.join(os.getcwd(), ".master_key")
-
         if os.path.exists(master_key_path):
             with open(master_key_path, "rb") as f:
                 return f.read()
         else:
-            # Generate new master key
             master_key = os.urandom(32)
-
-            # Save to file (in production, use HSM or secure key storage)
             with open(master_key_path, "wb") as f:
                 f.write(master_key)
-
-            # Set restrictive permissions
-            os.chmod(master_key_path, 0o600)
-
+            os.chmod(master_key_path, 384)
             return master_key
 
-    def _initialize_default_keys(self):
+    def _initialize_default_keys(self) -> Any:
         """Initialize default encryption keys"""
         self._generate_fernet_key("default_fernet")
         self._generate_aes_key("default_aes")
@@ -512,10 +418,7 @@ class AdvancedEncryptionManager:
         try:
             if key_id not in self.key_metadata:
                 return False
-
             key_info = self.key_metadata[key_id]
-
-            # Generate new key based on type
             if key_info.key_type == "fernet":
                 self._generate_fernet_key(f"{key_id}_new")
             elif key_info.key_type == "aes":
@@ -523,10 +426,8 @@ class AdvancedEncryptionManager:
             elif key_info.key_type.startswith("rsa"):
                 base_key_id = key_id.replace("_private", "").replace("_public", "")
                 self._generate_rsa_key_pair(f"{base_key_id}_new", key_info.key_size)
-
             self.logger.info(f"Key {key_id} rotated successfully")
             return True
-
         except Exception as e:
             self.logger.error(f"Key rotation error: {str(e)}")
             return False
@@ -545,15 +446,12 @@ class AdvancedEncryptionManager:
             public_key_id = f"{key_id}_public"
             if public_key_id not in self.keys:
                 return None
-
             public_key = self.keys[public_key_id]
             pem = public_key.public_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PublicFormat.SubjectPublicKeyInfo,
             )
-
             return pem.decode("utf-8")
-
         except Exception as e:
             self.logger.error(f"Public key export error: {str(e)}")
             return None
@@ -562,10 +460,8 @@ class AdvancedEncryptionManager:
 class PasswordManager:
     """Advanced password hashing and verification"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger(__name__)
-
-        # Default settings
         self.bcrypt_rounds = 12
         self.scrypt_n = 2**14
         self.scrypt_r = 8
@@ -585,7 +481,6 @@ class PasswordManager:
                 return self._hash_pbkdf2(password)
             else:
                 raise ValueError(f"Unsupported hashing method: {method}")
-
         except Exception as e:
             self.logger.error(f"Password hashing error: {str(e)}")
             raise
@@ -593,7 +488,6 @@ class PasswordManager:
     def verify_password(self, password: str, hashed_password: str) -> bool:
         """Verify password against hash"""
         try:
-            # Detect method from hash format
             if hashed_password.startswith("$2b$"):
                 return self._verify_bcrypt(password, hashed_password)
             elif hashed_password.startswith("scrypt$"):
@@ -601,9 +495,7 @@ class PasswordManager:
             elif hashed_password.startswith("pbkdf2$"):
                 return self._verify_pbkdf2(password, hashed_password)
             else:
-                # Try bcrypt as fallback
                 return self._verify_bcrypt(password, hashed_password)
-
         except Exception as e:
             self.logger.error(f"Password verification error: {str(e)}")
             return False
@@ -620,7 +512,6 @@ class PasswordManager:
     def _hash_scrypt(self, password: str) -> str:
         """Hash password with scrypt"""
         salt = os.urandom(32)
-
         kdf = Scrypt(
             algorithm=hashes.SHA256(),
             length=32,
@@ -630,10 +521,7 @@ class PasswordManager:
             p=self.scrypt_p,
             backend=default_backend(),
         )
-
         key = kdf.derive(password.encode("utf-8"))
-
-        # Format: scrypt$n$r$p$salt$hash
         return f"scrypt${self.scrypt_n}${self.scrypt_r}${self.scrypt_p}${base64.b64encode(salt).decode()}${base64.b64encode(key).decode()}"
 
     def _verify_scrypt(self, password: str, hashed_password: str) -> bool:
@@ -641,11 +529,9 @@ class PasswordManager:
         parts = hashed_password.split("$")
         if len(parts) != 6 or parts[0] != "scrypt":
             return False
-
-        n, r, p = int(parts[1]), int(parts[2]), int(parts[3])
+        n, r, p = (int(parts[1]), int(parts[2]), int(parts[3]))
         salt = base64.b64decode(parts[4])
         expected_key = base64.b64decode(parts[5])
-
         kdf = Scrypt(
             algorithm=hashes.SHA256(),
             length=32,
@@ -655,7 +541,6 @@ class PasswordManager:
             p=p,
             backend=default_backend(),
         )
-
         try:
             kdf.verify(password.encode("utf-8"), expected_key)
             return True
@@ -665,7 +550,6 @@ class PasswordManager:
     def _hash_pbkdf2(self, password: str) -> str:
         """Hash password with PBKDF2"""
         salt = os.urandom(32)
-
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
@@ -673,10 +557,7 @@ class PasswordManager:
             iterations=self.pbkdf2_iterations,
             backend=default_backend(),
         )
-
         key = kdf.derive(password.encode("utf-8"))
-
-        # Format: pbkdf2$iterations$salt$hash
         return f"pbkdf2${self.pbkdf2_iterations}${base64.b64encode(salt).decode()}${base64.b64encode(key).decode()}"
 
     def _verify_pbkdf2(self, password: str, hashed_password: str) -> bool:
@@ -684,11 +565,9 @@ class PasswordManager:
         parts = hashed_password.split("$")
         if len(parts) != 4 or parts[0] != "pbkdf2":
             return False
-
         iterations = int(parts[1])
         salt = base64.b64decode(parts[2])
         expected_key = base64.b64decode(parts[3])
-
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
@@ -696,7 +575,6 @@ class PasswordManager:
             iterations=iterations,
             backend=default_backend(),
         )
-
         try:
             kdf.verify(password.encode("utf-8"), expected_key)
             return True
@@ -707,7 +585,7 @@ class PasswordManager:
 class TokenManager:
     """Secure token generation and management"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger(__name__)
 
     def generate_secure_token(self, length: int = 32) -> str:
@@ -743,19 +621,17 @@ class TokenManager:
 class DataMasking:
     """Data masking and anonymization utilities"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger(__name__)
 
     def mask_email(self, email: str) -> str:
         """Mask email address"""
         try:
             local, domain = email.split("@")
-
             if len(local) <= 2:
                 masked_local = "*" * len(local)
             else:
                 masked_local = local[0] + "*" * (len(local) - 2) + local[-1]
-
             domain_parts = domain.split(".")
             if len(domain_parts[0]) <= 2:
                 masked_domain = "*" * len(domain_parts[0])
@@ -765,23 +641,18 @@ class DataMasking:
                     + "*" * (len(domain_parts[0]) - 2)
                     + domain_parts[0][-1]
                 )
-
             return f"{masked_local}@{masked_domain}.{'.'.join(domain_parts[1:])}"
-
         except Exception:
             return "***@***.***"
 
     def mask_phone(self, phone: str) -> str:
         """Mask phone number"""
         try:
-            # Remove non-digits
             digits = "".join(filter(str.isdigit, phone))
-
             if len(digits) >= 10:
                 return f"***-***-{digits[-4:]}"
             else:
                 return "***-***-****"
-
         except Exception:
             return "***-***-****"
 
@@ -789,12 +660,10 @@ class DataMasking:
         """Mask Social Security Number"""
         try:
             digits = "".join(filter(str.isdigit, ssn))
-
             if len(digits) == 9:
                 return f"***-**-{digits[-4:]}"
             else:
                 return "***-**-****"
-
         except Exception:
             return "***-**-****"
 
@@ -802,12 +671,10 @@ class DataMasking:
         """Mask credit card number"""
         try:
             digits = "".join(filter(str.isdigit, card_number))
-
             if len(digits) >= 12:
                 return f"****-****-****-{digits[-4:]}"
             else:
                 return "****-****-****-****"
-
         except Exception:
             return "****-****-****-****"
 
@@ -818,19 +685,16 @@ class DataMasking:
                 return "*" * len(account_number)
             else:
                 return "*" * (len(account_number) - 4) + account_number[-4:]
-
         except Exception:
             return "****"
 
 
-# Global instances
 encryption_manager = AdvancedEncryptionManager()
 password_manager = PasswordManager()
 token_manager = TokenManager()
 data_masking = DataMasking()
 
 
-# Utility functions
 def encrypt_sensitive_data(
     data: Union[str, Dict[str, Any]],
     method: EncryptionMethod = EncryptionMethod.AES_GCM,
@@ -839,10 +703,7 @@ def encrypt_sensitive_data(
     try:
         if isinstance(data, dict):
             data = json.dumps(data)
-
         result = encryption_manager.encrypt(data, method)
-
-        # Create serializable result
         serializable_result = {
             "encrypted_data": base64.b64encode(result.encrypted_data).decode(),
             "method": result.method.value,
@@ -852,9 +713,7 @@ def encrypt_sensitive_data(
             "salt": base64.b64encode(result.salt).decode() if result.salt else None,
             "metadata": result.metadata,
         }
-
         return base64.b64encode(json.dumps(serializable_result).encode()).decode()
-
     except Exception as e:
         logger.error(f"Data encryption error: {str(e)}")
         raise
@@ -863,10 +722,7 @@ def encrypt_sensitive_data(
 def decrypt_sensitive_data(encrypted_data: str) -> Union[str, Dict[str, Any]]:
     """Decrypt sensitive data from base64 encoded result"""
     try:
-        # Decode and deserialize
         serialized_result = json.loads(base64.b64decode(encrypted_data).decode())
-
-        # Reconstruct EncryptionResult
         result = EncryptionResult(
             encrypted_data=base64.b64decode(serialized_result["encrypted_data"]),
             method=EncryptionMethod(serialized_result["method"]),
@@ -888,17 +744,12 @@ def decrypt_sensitive_data(encrypted_data: str) -> Union[str, Dict[str, Any]]:
             ),
             metadata=serialized_result["metadata"],
         )
-
-        # Decrypt
         decrypted_data = encryption_manager.decrypt(result)
         decrypted_str = decrypted_data.decode("utf-8")
-
-        # Try to parse as JSON
         try:
             return json.loads(decrypted_str)
         except:
             return decrypted_str
-
     except Exception as e:
         logger.error(f"Data decryption error: {str(e)}")
         raise

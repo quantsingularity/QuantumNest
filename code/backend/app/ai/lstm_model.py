@@ -1,6 +1,5 @@
 import json
 import os
-
 import joblib
 import numpy as np
 import pandas as pd
@@ -12,7 +11,8 @@ from tensorflow.keras.models import Sequential
 
 
 class LSTMModel:
-    def __init__(self, config=None):
+
+    def __init__(self, config: Any = None) -> Any:
         """
         Initialize LSTM model for financial prediction
 
@@ -22,29 +22,27 @@ class LSTMModel:
             Configuration parameters for the model
         """
         self.config = {
-            "sequence_length": 60,  # Number of time steps to look back
-            "prediction_horizon": 5,  # Number of days to predict ahead
-            "features": ["close", "volume", "open", "high", "low"],  # Features to use
-            "target": "close",  # Target variable to predict
-            "lstm_units": 50,  # Number of LSTM units
-            "dropout_rate": 0.2,  # Dropout rate
-            "dense_units": 25,  # Number of dense units
-            "epochs": 50,  # Number of training epochs
-            "batch_size": 32,  # Batch size
-            "validation_split": 0.2,  # Validation split
-            "optimizer": "adam",  # Optimizer
-            "loss": "mean_squared_error",  # Loss function
-            "metrics": ["mae"],  # Metrics
+            "sequence_length": 60,
+            "prediction_horizon": 5,
+            "features": ["close", "volume", "open", "high", "low"],
+            "target": "close",
+            "lstm_units": 50,
+            "dropout_rate": 0.2,
+            "dense_units": 25,
+            "epochs": 50,
+            "batch_size": 32,
+            "validation_split": 0.2,
+            "optimizer": "adam",
+            "loss": "mean_squared_error",
+            "metrics": ["mae"],
         }
-
         if config:
             self.config.update(config)
-
         self.model = None
         self.scaler = MinMaxScaler(feature_range=(0, 1))
         self.feature_scalers = {}
 
-    def _prepare_data(self, data):
+    def _prepare_data(self, data: Any) -> Any:
         """
         Prepare data for LSTM model
 
@@ -60,7 +58,6 @@ class LSTMModel:
         y : numpy.ndarray
             Target values
         """
-        # Scale features
         scaled_features = {}
         for feature in self.config["features"]:
             scaler = MinMaxScaler(feature_range=(0, 1))
@@ -68,16 +65,12 @@ class LSTMModel:
                 data[feature].values.reshape(-1, 1)
             )
             self.feature_scalers[feature] = scaler
-
-        # Scale target
         target_scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_target = target_scaler.fit_transform(
             data[self.config["target"]].values.reshape(-1, 1)
         )
         self.feature_scalers["target"] = target_scaler
-
-        # Create sequences
-        X, y = [], []
+        X, y = ([], [])
         for i in range(
             len(data)
             - self.config["sequence_length"]
@@ -89,7 +82,6 @@ class LSTMModel:
                 features.append(
                     scaled_features[feature][i : i + self.config["sequence_length"]]
                 )
-
             X.append(np.hstack(features))
             y.append(
                 scaled_target[
@@ -99,10 +91,9 @@ class LSTMModel:
                     - 1
                 ]
             )
+        return (np.array(X), np.array(y))
 
-        return np.array(X), np.array(y)
-
-    def build_model(self, input_shape):
+    def build_model(self, input_shape: Any) -> Any:
         """
         Build LSTM model
 
@@ -124,17 +115,15 @@ class LSTMModel:
         model.add(Dropout(self.config["dropout_rate"]))
         model.add(Dense(units=self.config["dense_units"], activation="relu"))
         model.add(Dense(units=1))
-
         model.compile(
             optimizer=self.config["optimizer"],
             loss=self.config["loss"],
             metrics=self.config["metrics"],
         )
-
         self.model = model
         return model
 
-    def train(self, data, verbose=1):
+    def train(self, data: Any, verbose: Any = 1) -> Any:
         """
         Train LSTM model
 
@@ -151,14 +140,10 @@ class LSTMModel:
             Training history
         """
         X, y = self._prepare_data(data)
-
-        # Reshape X for LSTM [samples, time steps, features]
         num_features = len(self.config["features"])
         X = X.reshape(X.shape[0], self.config["sequence_length"], num_features)
-
         if self.model is None:
             self.build_model((self.config["sequence_length"], num_features))
-
         history = self.model.fit(
             X,
             y,
@@ -167,10 +152,9 @@ class LSTMModel:
             validation_split=self.config["validation_split"],
             verbose=verbose,
         )
-
         return history.history
 
-    def predict(self, data):
+    def predict(self, data: Any) -> Any:
         """
         Make predictions with trained model
 
@@ -186,25 +170,16 @@ class LSTMModel:
         """
         if self.model is None:
             raise ValueError("Model not trained yet. Call train() first.")
-
-        # Prepare data for prediction
         X, _ = self._prepare_data(data)
-
-        # Reshape X for LSTM [samples, time steps, features]
         num_features = len(self.config["features"])
         X = X.reshape(X.shape[0], self.config["sequence_length"], num_features)
-
-        # Make predictions
         scaled_predictions = self.model.predict(X)
-
-        # Inverse transform predictions
         predictions = self.feature_scalers["target"].inverse_transform(
             scaled_predictions
         )
-
         return predictions
 
-    def evaluate(self, data):
+    def evaluate(self, data: Any) -> Any:
         """
         Evaluate model performance
 
@@ -219,36 +194,26 @@ class LSTMModel:
             Evaluation metrics
         """
         X, y = self._prepare_data(data)
-
-        # Reshape X for LSTM [samples, time steps, features]
         num_features = len(self.config["features"])
         X = X.reshape(X.shape[0], self.config["sequence_length"], num_features)
-
-        # Make predictions
         scaled_predictions = self.model.predict(X)
-
-        # Inverse transform predictions and actual values
         predictions = self.feature_scalers["target"].inverse_transform(
             scaled_predictions
         )
         actual = self.feature_scalers["target"].inverse_transform(y)
-
-        # Calculate metrics
         mse = mean_squared_error(actual, predictions)
         rmse = np.sqrt(mse)
         mae = mean_absolute_error(actual, predictions)
         r2 = r2_score(actual, predictions)
-
         metrics = {
             "mse": float(mse),
             "rmse": float(rmse),
             "mae": float(mae),
             "r2": float(r2),
         }
-
         return metrics
 
-    def save(self, path):
+    def save(self, path: Any) -> Any:
         """
         Save model and scalers
 
@@ -258,20 +223,14 @@ class LSTMModel:
             Directory path to save model
         """
         os.makedirs(path, exist_ok=True)
-
-        # Save model
         self.model.save(os.path.join(path, "lstm_model.h5"))
-
-        # Save scalers
         for feature, scaler in self.feature_scalers.items():
             joblib.dump(scaler, os.path.join(path, f"scaler_{feature}.pkl"))
-
-        # Save config
         with open(os.path.join(path, "config.json"), "w") as f:
             json.dump(self.config, f)
 
     @classmethod
-    def load(cls, path):
+    def load(cls: Any, path: Any) -> Any:
         """
         Load model and scalers
 
@@ -285,28 +244,18 @@ class LSTMModel:
         model : LSTMModel
             Loaded model
         """
-        # Load config
         with open(os.path.join(path, "config.json"), "r") as f:
             config = json.load(f)
-
-        # Create instance
         instance = cls(config)
-
-        # Load model
         instance.model = tf.keras.models.load_model(os.path.join(path, "lstm_model.h5"))
-
-        # Load scalers
         for feature in instance.config["features"] + ["target"]:
             instance.feature_scalers[feature] = joblib.load(
                 os.path.join(path, f"scaler_{feature}.pkl")
             )
-
         return instance
 
 
-# Example usage
 if __name__ == "__main__":
-    # Generate sample data
     dates = pd.date_range(start="2020-01-01", periods=1000, freq="D")
     data = pd.DataFrame(
         {
@@ -318,28 +267,12 @@ if __name__ == "__main__":
             "low": np.random.normal(100, 10, 1000).cumsum() + 990,
         }
     )
-
-    # Split data
     train_data = data.iloc[:800]
-    test_data = data.iloc[800 - 60 :]  # Include some overlap for sequence
-
-    # Initialize and train model
+    test_data = data.iloc[800 - 60 :]
     model = LSTMModel()
     history = model.train(train_data)
-
-    # Evaluate model
     metrics = model.evaluate(test_data)
-
-    # Make predictions
     predictions = model.predict(test_data)
-
-    # Save model
     model.save("lstm_model")
-
-    # Load model
     loaded_model = LSTMModel.load("lstm_model")
-
-    # Make predictions with loaded model
     loaded_predictions = loaded_model.predict(test_data)
-
-    # Verify predictions are the same

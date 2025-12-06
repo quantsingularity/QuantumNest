@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
-
 from app.core.logging import get_logger
 from app.models.models import Permission, Role, RolePermission, UserRole
 from sqlalchemy.orm import Session
@@ -77,16 +76,12 @@ class AuthorizationResult:
 class RoleBasedAccessControl:
     """Role-Based Access Control (RBAC) system"""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session) -> Any:
         self.db = db
         self.logger = get_logger(__name__)
-
-        # Permission cache
         self.permission_cache = {}
         self.cache_ttl = timedelta(minutes=15)
         self.last_cache_update = {}
-
-        # Default roles and permissions
         self.default_roles = {
             "admin": {
                 "description": "System administrator with full access",
@@ -154,13 +149,8 @@ class RoleBasedAccessControl:
     def authorize(self, request: AccessRequest) -> AuthorizationResult:
         """Authorize access request"""
         try:
-            # Get user permissions
             user_permissions = self._get_user_permissions(request.user_id)
-
-            # Check required permission
             required_permission = f"{request.resource.value}:{request.action.value}"
-
-            # Basic permission check
             if required_permission not in user_permissions:
                 return AuthorizationResult(
                     granted=False,
@@ -170,20 +160,13 @@ class RoleBasedAccessControl:
                     conditions_met=False,
                     risk_level="low",
                 )
-
-            # Resource-specific authorization
             resource_authorized = self._check_resource_authorization(
                 request, user_permissions
             )
             if not resource_authorized.granted:
                 return resource_authorized
-
-            # Context-based conditions
             conditions_met = self._check_conditions(request, user_permissions)
-
-            # Risk assessment
             risk_level = self._assess_access_risk(request)
-
             return AuthorizationResult(
                 granted=True,
                 reason="Access granted",
@@ -192,7 +175,6 @@ class RoleBasedAccessControl:
                 conditions_met=conditions_met,
                 risk_level=risk_level,
             )
-
         except Exception as e:
             self.logger.error(f"Authorization error: {str(e)}", exc_info=True)
             return AuthorizationResult(
@@ -207,21 +189,19 @@ class RoleBasedAccessControl:
     def _get_user_permissions(self, user_id: str) -> List[str]:
         """Get all permissions for user"""
         try:
-            # Check cache first
             cache_key = f"permissions:{user_id}"
             if (
                 cache_key in self.permission_cache
                 and cache_key in self.last_cache_update
-                and datetime.utcnow() - self.last_cache_update[cache_key]
-                < self.cache_ttl
+                and (
+                    datetime.utcnow() - self.last_cache_update[cache_key]
+                    < self.cache_ttl
+                )
             ):
                 return self.permission_cache[cache_key]
-
-            # Query database
             user_roles = (
                 self.db.query(UserRole).filter(UserRole.user_id == user_id).all()
             )
-
             permissions = set()
             for user_role in user_roles:
                 role_permissions = (
@@ -229,24 +209,18 @@ class RoleBasedAccessControl:
                     .filter(RolePermission.role_id == user_role.role_id)
                     .all()
                 )
-
                 for role_permission in role_permissions:
                     permission = (
                         self.db.query(Permission)
                         .filter(Permission.id == role_permission.permission_id)
                         .first()
                     )
-
                     if permission:
                         permissions.add(f"{permission.resource}:{permission.action}")
-
-            # Cache result
             permissions_list = list(permissions)
             self.permission_cache[cache_key] = permissions_list
             self.last_cache_update[cache_key] = datetime.utcnow()
-
             return permissions_list
-
         except Exception as e:
             self.logger.error(f"Error getting user permissions: {str(e)}")
             return []
@@ -256,14 +230,11 @@ class RoleBasedAccessControl:
     ) -> AuthorizationResult:
         """Check resource-specific authorization rules"""
         try:
-            # Account access - users can only access their own accounts
             if request.resource == ResourceType.ACCOUNT:
                 if request.resource_id:
-                    # Check if user owns the account
                     if not self._user_owns_resource(
                         request.user_id, "account", request.resource_id
                     ):
-                        # Check if user has admin privileges
                         if "admin:read" not in user_permissions:
                             return AuthorizationResult(
                                 granted=False,
@@ -275,8 +246,6 @@ class RoleBasedAccessControl:
                                 conditions_met=False,
                                 risk_level="medium",
                             )
-
-            # Portfolio access - similar to accounts
             elif request.resource == ResourceType.PORTFOLIO:
                 if request.resource_id:
                     if not self._user_owns_resource(
@@ -297,11 +266,8 @@ class RoleBasedAccessControl:
                                 conditions_met=False,
                                 risk_level="medium",
                             )
-
-            # Transaction access - check ownership and limits
             elif request.resource == ResourceType.TRANSACTION:
                 if request.action in [Action.CREATE, Action.UPDATE, Action.DELETE]:
-                    # Check transaction limits
                     if not self._check_transaction_limits(request):
                         return AuthorizationResult(
                             granted=False,
@@ -313,8 +279,6 @@ class RoleBasedAccessControl:
                             conditions_met=False,
                             risk_level="high",
                         )
-
-            # Admin resources - require admin role
             elif request.resource == ResourceType.ADMIN:
                 if "admin" not in self._get_user_roles(request.user_id):
                     return AuthorizationResult(
@@ -327,7 +291,6 @@ class RoleBasedAccessControl:
                         conditions_met=False,
                         risk_level="high",
                     )
-
             return AuthorizationResult(
                 granted=True,
                 reason="Resource authorization passed",
@@ -338,7 +301,6 @@ class RoleBasedAccessControl:
                 conditions_met=True,
                 risk_level="low",
             )
-
         except Exception as e:
             self.logger.error(f"Resource authorization error: {str(e)}")
             return AuthorizationResult(
@@ -357,47 +319,35 @@ class RoleBasedAccessControl:
         try:
             if not request.context:
                 return True
-
-            # Time-based conditions
             if "time_restriction" in request.context:
                 current_hour = datetime.utcnow().hour
                 allowed_hours = request.context["time_restriction"]
                 if current_hour not in allowed_hours:
                     return False
-
-            # IP-based conditions
             if "ip_restriction" in request.context:
                 allowed_ips = request.context["ip_restriction"]
                 user_ip = request.context.get("user_ip")
                 if user_ip and user_ip not in allowed_ips:
                     return False
-
-            # Amount-based conditions for transactions
             if (
                 request.resource == ResourceType.TRANSACTION
                 and "amount" in request.context
             ):
                 amount = request.context["amount"]
                 user_roles = self._get_user_roles(request.user_id)
-
-                # Different limits for different roles
                 limits = {
                     "client": 10000,
                     "trader": 100000,
                     "portfolio_manager": 1000000,
                     "admin": float("inf"),
                 }
-
                 max_limit = 0
                 for role in user_roles:
                     if role in limits:
                         max_limit = max(max_limit, limits[role])
-
                 if amount > max_limit:
                     return False
-
             return True
-
         except Exception as e:
             self.logger.error(f"Condition check error: {str(e)}")
             return False
@@ -405,28 +355,21 @@ class RoleBasedAccessControl:
     def _assess_access_risk(self, request: AccessRequest) -> str:
         """Assess risk level of access request"""
         risk_score = 0
-
-        # High-risk actions
         if request.action in [Action.DELETE, Action.EXECUTE]:
             risk_score += 3
         elif request.action in [Action.CREATE, Action.UPDATE]:
             risk_score += 2
         else:
             risk_score += 1
-
-        # High-risk resources
         if request.resource in [ResourceType.ADMIN, ResourceType.SYSTEM]:
             risk_score += 3
         elif request.resource in [ResourceType.TRANSACTION]:
             risk_score += 2
-
-        # Context-based risk
         if request.context:
             if request.context.get("amount", 0) > 100000:
                 risk_score += 2
             if request.context.get("external_access", False):
                 risk_score += 1
-
         if risk_score >= 6:
             return "high"
         elif risk_score >= 4:
@@ -440,7 +383,6 @@ class RoleBasedAccessControl:
         """Check if user owns the resource"""
         try:
             if resource_type == "account":
-                # Check if user owns the account
                 from app.models.models import Account
 
                 account = (
@@ -449,9 +391,7 @@ class RoleBasedAccessControl:
                     .first()
                 )
                 return account is not None
-
             elif resource_type == "portfolio":
-                # Check if user owns or is assigned to the portfolio
                 from app.models.models import Portfolio
 
                 portfolio = (
@@ -460,9 +400,7 @@ class RoleBasedAccessControl:
                     .first()
                 )
                 return portfolio is not None
-
             return False
-
         except Exception as e:
             self.logger.error(f"Resource ownership check error: {str(e)}")
             return False
@@ -474,14 +412,11 @@ class RoleBasedAccessControl:
                 self.db.query(UserRole).filter(UserRole.user_id == user_id).all()
             )
             roles = []
-
             for user_role in user_roles:
                 role = self.db.query(Role).filter(Role.id == user_role.role_id).first()
                 if role:
                     roles.append(role.name)
-
             return roles
-
         except Exception as e:
             self.logger.error(f"Error getting user roles: {str(e)}")
             return []
@@ -491,29 +426,20 @@ class RoleBasedAccessControl:
         try:
             if not request.context or "amount" not in request.context:
                 return True
-
             amount = request.context["amount"]
             user_roles = self._get_user_roles(request.user_id)
-
-            # Daily transaction limits by role
             daily_limits = {
                 "client": 50000,
                 "trader": 500000,
                 "portfolio_manager": 5000000,
                 "admin": float("inf"),
             }
-
-            # Get maximum limit for user
             max_daily_limit = 0
             for role in user_roles:
                 if role in daily_limits:
                     max_daily_limit = max(max_daily_limit, daily_limits[role])
-
-            # Check single transaction limit
             if amount > max_daily_limit:
                 return False
-
-            # Check daily cumulative limit
             today = datetime.utcnow().date()
             from app.models.models import Transaction
 
@@ -526,14 +452,10 @@ class RoleBasedAccessControl:
                 .with_entities(Transaction.amount)
                 .all()
             )
-
-            current_daily_total = sum(t.amount for t in daily_total if t.amount)
-
+            current_daily_total = sum((t.amount for t in daily_total if t.amount))
             if current_daily_total + amount > max_daily_limit:
                 return False
-
             return True
-
         except Exception as e:
             self.logger.error(f"Transaction limit check error: {str(e)}")
             return False
@@ -541,33 +463,23 @@ class RoleBasedAccessControl:
     def assign_role(self, user_id: str, role_name: str) -> bool:
         """Assign role to user"""
         try:
-            # Get role
             role = self.db.query(Role).filter(Role.name == role_name).first()
             if not role:
                 self.logger.error(f"Role {role_name} not found")
                 return False
-
-            # Check if already assigned
             existing = (
                 self.db.query(UserRole)
                 .filter(UserRole.user_id == user_id, UserRole.role_id == role.id)
                 .first()
             )
-
             if existing:
-                return True  # Already assigned
-
-            # Assign role
+                return True
             user_role = UserRole(user_id=user_id, role_id=role.id)
             self.db.add(user_role)
             self.db.commit()
-
-            # Clear cache
             self._clear_user_cache(user_id)
-
             self.logger.info(f"Assigned role {role_name} to user {user_id}")
             return True
-
         except Exception as e:
             self.logger.error(f"Role assignment error: {str(e)}")
             self.db.rollback()
@@ -576,29 +488,20 @@ class RoleBasedAccessControl:
     def revoke_role(self, user_id: str, role_name: str) -> bool:
         """Revoke role from user"""
         try:
-            # Get role
             role = self.db.query(Role).filter(Role.name == role_name).first()
             if not role:
                 return False
-
-            # Remove assignment
             user_role = (
                 self.db.query(UserRole)
                 .filter(UserRole.user_id == user_id, UserRole.role_id == role.id)
                 .first()
             )
-
             if user_role:
                 self.db.delete(user_role)
                 self.db.commit()
-
-                # Clear cache
                 self._clear_user_cache(user_id)
-
                 self.logger.info(f"Revoked role {role_name} from user {user_id}")
-
             return True
-
         except Exception as e:
             self.logger.error(f"Role revocation error: {str(e)}")
             self.db.rollback()
@@ -609,21 +512,14 @@ class RoleBasedAccessControl:
     ) -> bool:
         """Create new role with permissions"""
         try:
-            # Check if role exists
             existing_role = self.db.query(Role).filter(Role.name == role_name).first()
             if existing_role:
                 return False
-
-            # Create role
             role = Role(name=role_name, description=description)
             self.db.add(role)
-            self.db.flush()  # Get role ID
-
-            # Add permissions
+            self.db.flush()
             for perm_string in permissions:
                 resource, action = perm_string.split(":")
-
-                # Get or create permission
                 permission = (
                     self.db.query(Permission)
                     .filter(
@@ -631,24 +527,19 @@ class RoleBasedAccessControl:
                     )
                     .first()
                 )
-
                 if not permission:
                     permission = Permission(resource=resource, action=action)
                     self.db.add(permission)
                     self.db.flush()
-
-                # Link role to permission
                 role_permission = RolePermission(
                     role_id=role.id, permission_id=permission.id
                 )
                 self.db.add(role_permission)
-
             self.db.commit()
             self.logger.info(
                 f"Created role {role_name} with {len(permissions)} permissions"
             )
             return True
-
         except Exception as e:
             self.logger.error(f"Role creation error: {str(e)}")
             self.db.rollback()
@@ -658,7 +549,6 @@ class RoleBasedAccessControl:
         """Initialize default roles and permissions"""
         try:
             for role_name, role_config in self.default_roles.items():
-                # Check if role exists
                 existing_role = (
                     self.db.query(Role).filter(Role.name == role_name).first()
                 )
@@ -668,15 +558,13 @@ class RoleBasedAccessControl:
                         role_config["description"],
                         role_config["permissions"],
                     )
-
             self.logger.info("Default roles initialized")
             return True
-
         except Exception as e:
             self.logger.error(f"Default role initialization error: {str(e)}")
             return False
 
-    def _clear_user_cache(self, user_id: str):
+    def _clear_user_cache(self, user_id: str) -> Any:
         """Clear user permission cache"""
         cache_key = f"permissions:{user_id}"
         if cache_key in self.permission_cache:
@@ -689,15 +577,12 @@ class RoleBasedAccessControl:
         try:
             roles = self._get_user_roles(user_id)
             permissions = self._get_user_permissions(user_id)
-
-            # Group permissions by resource
             permission_groups = {}
             for perm in permissions:
                 resource, action = perm.split(":")
                 if resource not in permission_groups:
                     permission_groups[resource] = []
                 permission_groups[resource].append(action)
-
             return {
                 "user_id": user_id,
                 "roles": roles,
@@ -705,20 +590,18 @@ class RoleBasedAccessControl:
                 "permission_groups": permission_groups,
                 "total_permissions": len(permissions),
             }
-
         except Exception as e:
             self.logger.error(f"Permission summary error: {str(e)}")
             return {}
 
 
-def require_permission(resource: ResourceType, action: Action):
+def require_permission(resource: ResourceType, action: Action) -> Any:
     """Decorator to require specific permission for endpoint access"""
 
     def decorator(func: Callable) -> Callable:
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # This would be implemented with Flask request context
-            # For now, it's a placeholder for the decorator pattern
             return func(*args, **kwargs)
 
         return wrapper
@@ -726,14 +609,13 @@ def require_permission(resource: ResourceType, action: Action):
     return decorator
 
 
-def require_role(role: str):
+def require_role(role: str) -> Any:
     """Decorator to require specific role for endpoint access"""
 
     def decorator(func: Callable) -> Callable:
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # This would be implemented with Flask request context
-            # For now, it's a placeholder for the decorator pattern
             return func(*args, **kwargs)
 
         return wrapper
@@ -744,7 +626,7 @@ def require_role(role: str):
 class AttributeBasedAccessControl:
     """Attribute-Based Access Control (ABAC) system for fine-grained permissions"""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session) -> Any:
         self.db = db
         self.logger = get_logger(__name__)
 
@@ -757,35 +639,23 @@ class AttributeBasedAccessControl:
     ) -> bool:
         """Evaluate ABAC policy"""
         try:
-            # Example policy evaluation
-            # In production, this would use a policy engine
-
-            # Time-based access
             if "allowed_hours" in environment_attributes:
                 current_hour = datetime.utcnow().hour
                 if current_hour not in environment_attributes["allowed_hours"]:
                     return False
-
-            # Location-based access
             if "allowed_locations" in environment_attributes:
                 user_location = subject_attributes.get("location")
                 if user_location not in environment_attributes["allowed_locations"]:
                     return False
-
-            # Resource sensitivity
             if resource_attributes.get("sensitivity") == "high":
                 if subject_attributes.get("clearance_level", 0) < 3:
                     return False
-
-            # Amount-based restrictions
             if "amount" in action_attributes:
                 amount = action_attributes["amount"]
                 max_amount = subject_attributes.get("max_transaction_amount", 0)
                 if amount > max_amount:
                     return False
-
             return True
-
         except Exception as e:
             self.logger.error(f"ABAC policy evaluation error: {str(e)}")
             return False

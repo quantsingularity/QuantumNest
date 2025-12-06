@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from typing import List, Optional
-
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
@@ -11,8 +10,9 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
-# Admin-only middleware
-def admin_required(current_user: schemas.User = Depends(get_current_active_user)):
+def admin_required(
+    current_user: schemas.User = Depends(get_current_active_user),
+) -> Any:
     if current_user.role != models.UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required"
@@ -21,20 +21,11 @@ def admin_required(current_user: schemas.User = Depends(get_current_active_user)
 
 
 @router.get("/dashboard", dependencies=[Depends(admin_required)])
-def get_admin_dashboard(db: Session = Depends(get_db)):
-    # This would be implemented with actual system data
-    # For now, return mock data
-
-    # Get user counts
+def get_admin_dashboard(db: Session = Depends(get_db)) -> Any:
     total_users = db.query(models.User).count()
     active_users = db.query(models.User).filter(models.User.is_active == True).count()
-
-    # Get portfolio counts
     total_portfolios = db.query(models.Portfolio).count()
-
-    # Get transaction counts
     total_transactions = db.query(models.Transaction).count()
-
     dashboard_data = {
         "timestamp": datetime.now(),
         "user_stats": {
@@ -80,7 +71,7 @@ def get_admin_dashboard(db: Session = Depends(get_db)):
         "system_health": {
             "api_uptime": 99.98,
             "database_performance": 95.5,
-            "average_response_time": 120,  # ms
+            "average_response_time": 120,
             "error_rate": 0.05,
             "active_sessions": 85,
         },
@@ -108,17 +99,18 @@ def get_admin_dashboard(db: Session = Depends(get_db)):
 @router.get(
     "/users", response_model=List[schemas.User], dependencies=[Depends(admin_required)]
 )
-def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_all_users(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+) -> Any:
     users = db.query(models.User).offset(skip).limit(limit).all()
     return users
 
 
 @router.put("/users/{user_id}/activate", dependencies=[Depends(admin_required)])
-def activate_user(user_id: int, db: Session = Depends(get_db)):
+def activate_user(user_id: int, db: Session = Depends(get_db)) -> Any:
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
     db_user.is_active = True
     db.commit()
     db.refresh(db_user)
@@ -126,11 +118,10 @@ def activate_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/users/{user_id}/deactivate", dependencies=[Depends(admin_required)])
-def deactivate_user(user_id: int, db: Session = Depends(get_db)):
+def deactivate_user(user_id: int, db: Session = Depends(get_db)) -> Any:
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
     db_user.is_active = False
     db.commit()
     db.refresh(db_user)
@@ -138,15 +129,15 @@ def deactivate_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/users/{user_id}/change-tier", dependencies=[Depends(admin_required)])
-def change_user_tier(user_id: int, tier_data: dict, db: Session = Depends(get_db)):
+def change_user_tier(
+    user_id: int, tier_data: dict, db: Session = Depends(get_db)
+) -> Any:
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
     new_tier = tier_data.get("tier")
     if new_tier not in [tier.value for tier in models.UserTier]:
         raise HTTPException(status_code=400, detail="Invalid tier value")
-
     db_user.tier = new_tier
     db.commit()
     db.refresh(db_user)
@@ -159,7 +150,7 @@ def get_all_transactions(
     limit: int = 100,
     status: Optional[str] = None,
     db: Session = Depends(get_db),
-):
+) -> Any:
     query = db.query(models.Transaction)
     if status:
         query = query.filter(models.Transaction.status == status)
@@ -173,7 +164,7 @@ def get_all_transactions(
 )
 def update_transaction_status(
     transaction_id: int, status_data: dict, db: Session = Depends(get_db)
-):
+) -> Any:
     db_transaction = (
         db.query(models.Transaction)
         .filter(models.Transaction.id == transaction_id)
@@ -181,11 +172,9 @@ def update_transaction_status(
     )
     if db_transaction is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
-
     new_status = status_data.get("status")
     if new_status not in [status.value for status in models.TransactionStatus]:
         raise HTTPException(status_code=400, detail="Invalid status value")
-
     db_transaction.status = new_status
     db.commit()
     db.refresh(db_transaction)
@@ -201,13 +190,12 @@ def get_system_logs(
     log_level: Optional[str] = None,
     component: Optional[str] = None,
     db: Session = Depends(get_db),
-):
+) -> Any:
     query = db.query(models.SystemLog)
     if log_level:
         query = query.filter(models.SystemLog.log_level == log_level)
     if component:
         query = query.filter(models.SystemLog.component == component)
-
     logs = (
         query.order_by(models.SystemLog.timestamp.desc())
         .offset(skip)
@@ -218,7 +206,9 @@ def get_system_logs(
 
 
 @router.post("/system/logs", dependencies=[Depends(admin_required)])
-def create_system_log(log: schemas.SystemLogCreate, db: Session = Depends(get_db)):
+def create_system_log(
+    log: schemas.SystemLogCreate, db: Session = Depends(get_db)
+) -> Any:
     db_log = models.SystemLog(
         log_level=log.log_level, component=log.component, message=log.message
     )
@@ -229,24 +219,22 @@ def create_system_log(log: schemas.SystemLogCreate, db: Session = Depends(get_db
 
 
 @router.get("/system/performance", dependencies=[Depends(admin_required)])
-def get_system_performance():
-    # This would be implemented with actual system monitoring
-    # For now, return mock data
+def get_system_performance() -> Any:
     performance_data = {
         "timestamp": datetime.now(),
-        "cpu_usage": 35.2,  # percentage
-        "memory_usage": 42.8,  # percentage
-        "disk_usage": 68.5,  # percentage
-        "network": {"incoming": 25.6, "outgoing": 18.2},  # MB/s  # MB/s
+        "cpu_usage": 35.2,
+        "memory_usage": 42.8,
+        "disk_usage": 68.5,
+        "network": {"incoming": 25.6, "outgoing": 18.2},
         "database": {
             "connections": 45,
-            "query_time_avg": 28.5,  # ms
+            "query_time_avg": 28.5,
             "active_transactions": 12,
         },
         "api": {
             "requests_per_minute": 250,
-            "average_response_time": 120,  # ms
-            "error_rate": 0.05,  # percentage
+            "average_response_time": 120,
+            "error_rate": 0.05,
         },
         "endpoints": [
             {"path": "/users", "requests": 45, "avg_time": 85},
@@ -260,9 +248,7 @@ def get_system_performance():
 
 
 @router.post("/system/backup", dependencies=[Depends(admin_required)])
-def trigger_system_backup():
-    # This would be implemented with actual backup functionality
-    # For now, return mock response
+def trigger_system_backup() -> Any:
     return {
         "status": "success",
         "message": "System backup initiated",
@@ -273,13 +259,11 @@ def trigger_system_backup():
 
 
 @router.get("/analytics/user-activity", dependencies=[Depends(admin_required)])
-def get_user_activity_analytics(days: int = 30):
-    # This would be implemented with actual analytics data
-    # For now, return mock data
+def get_user_activity_analytics(days: int = 30) -> Any:
     return {
         "period": f"Last {days} days",
         "total_active_users": 320,
-        "average_session_duration": 18.5,  # minutes
+        "average_session_duration": 18.5,
         "average_sessions_per_user": 5.2,
         "most_active_times": [
             {"hour": 9, "activity": 85},
@@ -299,9 +283,7 @@ def get_user_activity_analytics(days: int = 30):
 
 
 @router.post("/announcements", dependencies=[Depends(admin_required)])
-def create_announcement(announcement_data: dict):
-    # This would be implemented with actual announcement functionality
-    # For now, return mock response
+def create_announcement(announcement_data: dict) -> Any:
     return {
         "status": "success",
         "announcement_id": "ann-" + datetime.now().strftime("%Y%m%d-%H%M%S"),

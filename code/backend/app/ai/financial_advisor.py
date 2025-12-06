@@ -5,17 +5,12 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
 warnings.filterwarnings("ignore")
-
 import os
-
-# NLP imports
 from app.ai.advanced_lstm_model import AdvancedLSTMModel
 from app.ai.portfolio_optimization import AdvancedPortfolioOptimizer
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
 from openai import OpenAI
-
-# Machine learning imports
 
 logger = get_logger(__name__)
 
@@ -38,9 +33,9 @@ class RiskTolerance(str, Enum):
 
 
 class InvestmentHorizon(str, Enum):
-    SHORT_TERM = "short_term"  # < 2 years
-    MEDIUM_TERM = "medium_term"  # 2-10 years
-    LONG_TERM = "long_term"  # > 10 years
+    SHORT_TERM = "short_term"
+    MEDIUM_TERM = "medium_term"
+    LONG_TERM = "long_term"
 
 
 @dataclass
@@ -100,42 +95,34 @@ class PortfolioRecommendation:
 class AIFinancialAdvisor:
     """AI-powered financial advisor with personalized recommendations"""
 
-    def __init__(self, config: Optional[Dict] = None):
+    def __init__(self, config: Optional[Dict] = None) -> Any:
         """Initialize AI financial advisor"""
         self.config = {
-            # OpenAI configuration
             "openai_model": "gpt-4",
             "max_tokens": 2000,
             "temperature": 0.7,
-            # Recommendation parameters
             "min_portfolio_size": 1000,
             "max_recommendations": 10,
             "confidence_threshold": 0.6,
-            # Asset allocation models
             "allocation_models": [
                 "target_date",
                 "risk_parity",
                 "factor_based",
                 "goal_based",
             ],
-            # Market data parameters
             "lookback_period": 252,
             "benchmark_symbols": ["SPY", "AGG", "VTI", "VXUS"],
-            # Risk assessment
             "risk_factors": [
                 "age",
                 "income_stability",
                 "debt_ratio",
                 "investment_experience",
             ],
-            # Goal-based parameters
             "retirement_replacement_ratio": 0.8,
             "education_inflation_rate": 0.05,
             "home_down_payment_ratio": 0.2,
-            # Tax optimization
             "tax_loss_harvesting": True,
             "asset_location_optimization": True,
-            # Behavioral factors
             "behavioral_biases": [
                 "loss_aversion",
                 "overconfidence",
@@ -143,32 +130,22 @@ class AIFinancialAdvisor:
                 "anchoring",
             ],
         }
-
         if config:
             self.config.update(config)
-
-        # Initialize services
         self.market_data = MarketDataService()
         self.portfolio_optimizer = AdvancedPortfolioOptimizer()
         self.lstm_model = AdvancedLSTMModel()
-
-        # Initialize OpenAI client
         self.openai_client = OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE")
         )
-
-        # User profiles and recommendation history
         self.user_profiles = {}
         self.recommendation_history = {}
-
-        # Asset database
         self.asset_database = {}
         self.market_insights = {}
 
     async def create_user_profile(self, user_data: Dict[str, Any]) -> UserProfile:
         """Create comprehensive user financial profile"""
         try:
-            # Validate and process user data
             profile = UserProfile(
                 user_id=user_data["user_id"],
                 age=user_data.get("age", 30),
@@ -197,13 +174,9 @@ class AIFinancialAdvisor:
                 emergency_fund_months=user_data.get("emergency_fund_months", 3),
                 preferences=user_data.get("preferences", {}),
             )
-
-            # Store profile
             self.user_profiles[profile.user_id] = profile
-
             logger.info(f"Created user profile for {profile.user_id}")
             return profile
-
         except Exception as e:
             logger.error(f"Error creating user profile: {str(e)}", exc_info=True)
             raise
@@ -215,52 +188,34 @@ class AIFinancialAdvisor:
         try:
             if user_id not in self.user_profiles:
                 raise ValueError(f"User profile not found for {user_id}")
-
             profile = self.user_profiles[user_id]
             advice_list = []
-
-            # 1. Emergency Fund Assessment
             emergency_advice = await self._assess_emergency_fund(profile)
             if emergency_advice:
                 advice_list.append(emergency_advice)
-
-            # 2. Debt Management
             debt_advice = await self._assess_debt_management(profile)
             if debt_advice:
                 advice_list.append(debt_advice)
-
-            # 3. Investment Allocation
             investment_advice = await self._generate_investment_advice(profile)
             if investment_advice:
                 advice_list.append(investment_advice)
-
-            # 4. Tax Optimization
             tax_advice = await self._generate_tax_advice(profile)
             if tax_advice:
                 advice_list.append(tax_advice)
-
-            # 5. Goal-Specific Advice
             for goal in profile.investment_goals:
                 goal_advice = await self._generate_goal_specific_advice(profile, goal)
                 if goal_advice:
                     advice_list.append(goal_advice)
-
-            # 6. Risk Management
             risk_advice = await self._assess_risk_management(profile)
             if risk_advice:
                 advice_list.append(risk_advice)
-
-            # Store recommendation history
             if user_id not in self.recommendation_history:
                 self.recommendation_history[user_id] = []
-
             self.recommendation_history[user_id].extend(advice_list)
-
             logger.info(
                 f"Generated {len(advice_list)} recommendations for user {user_id}"
             )
             return advice_list
-
         except Exception as e:
             logger.error(
                 f"Error generating comprehensive advice: {str(e)}", exc_info=True
@@ -274,44 +229,28 @@ class AIFinancialAdvisor:
         try:
             if user_id not in self.user_profiles:
                 raise ValueError(f"User profile not found for {user_id}")
-
             profile = self.user_profiles[user_id]
-
-            # Determine asset allocation strategy
             allocation_strategy = self._determine_allocation_strategy(profile)
-
-            # Get recommended asset allocation
             recommended_allocation = await self._calculate_target_allocation(
                 profile, allocation_strategy
             )
-
-            # Get specific asset recommendations
             asset_recommendations = await self._recommend_specific_assets(
                 profile, recommended_allocation
             )
-
-            # Calculate expected returns and risk
             expected_return, expected_volatility = (
                 await self._calculate_portfolio_metrics(
                     recommended_allocation, asset_recommendations
                 )
             )
-
-            # Generate rationale using AI
             rationale = await self._generate_allocation_rationale(
                 profile, recommended_allocation
             )
-
-            # Calculate implementation costs
             implementation_cost = self._calculate_implementation_cost(
                 profile.current_portfolio, recommended_allocation
             )
-
-            # Assess tax implications
             tax_implications = self._assess_tax_implications(
                 profile, recommended_allocation
             )
-
             recommendation = PortfolioRecommendation(
                 user_id=user_id,
                 recommended_allocation=recommended_allocation,
@@ -323,10 +262,8 @@ class AIFinancialAdvisor:
                 implementation_cost=implementation_cost,
                 tax_implications=tax_implications,
             )
-
             logger.info(f"Generated portfolio recommendation for user {user_id}")
             return recommendation
-
         except Exception as e:
             logger.error(
                 f"Error generating portfolio recommendation: {str(e)}", exc_info=True
@@ -338,24 +275,12 @@ class AIFinancialAdvisor:
         try:
             if user_id not in self.user_profiles:
                 raise ValueError(f"User profile not found for {user_id}")
-
             profile = self.user_profiles[user_id]
-
-            # Get market data for relevant assets
             market_data = await self._get_relevant_market_data(profile)
-
-            # Generate market outlook
             market_outlook = await self._generate_market_outlook(market_data)
-
-            # Sector analysis
             sector_analysis = await self._analyze_sectors(profile)
-
-            # Economic indicators impact
             economic_impact = await self._assess_economic_indicators(profile)
-
-            # AI-generated insights
             ai_insights = await self._generate_ai_market_insights(profile, market_data)
-
             insights = {
                 "user_id": user_id,
                 "market_outlook": market_outlook,
@@ -368,9 +293,7 @@ class AIFinancialAdvisor:
                 "risk_alerts": await self._identify_risks(profile, market_data),
                 "timestamp": datetime.utcnow().isoformat(),
             }
-
             return insights
-
         except Exception as e:
             logger.error(f"Error providing market insights: {str(e)}", exc_info=True)
             return {"error": str(e)}
@@ -380,15 +303,12 @@ class AIFinancialAdvisor:
     ) -> Optional[FinancialAdvice]:
         """Assess emergency fund adequacy"""
         try:
-            monthly_expenses = profile.income * 0.7  # Assume 70% of income for expenses
+            monthly_expenses = profile.income * 0.7
             recommended_months = 6 if profile.investment_experience == "beginner" else 3
-
             current_emergency_fund = profile.emergency_fund_months * monthly_expenses
             recommended_emergency_fund = recommended_months * monthly_expenses
-
             if current_emergency_fund < recommended_emergency_fund:
                 shortfall = recommended_emergency_fund - current_emergency_fund
-
                 return FinancialAdvice(
                     user_id=profile.user_id,
                     advice_type="emergency_fund",
@@ -421,9 +341,7 @@ class AIFinancialAdvisor:
                     monitoring_metrics=["Emergency fund balance", "Months of coverage"],
                     timestamp=datetime.utcnow(),
                 )
-
             return None
-
         except Exception as e:
             logger.error(f"Error assessing emergency fund: {str(e)}")
             return None
@@ -434,8 +352,7 @@ class AIFinancialAdvisor:
         """Assess debt management strategy"""
         try:
             debt_to_income_ratio = profile.debt_obligations / profile.income
-
-            if debt_to_income_ratio > 0.4:  # High debt ratio
+            if debt_to_income_ratio > 0.4:
                 return FinancialAdvice(
                     user_id=profile.user_id,
                     advice_type="debt_management",
@@ -472,9 +389,7 @@ class AIFinancialAdvisor:
                     ],
                     timestamp=datetime.utcnow(),
                 )
-
             return None
-
         except Exception as e:
             logger.error(f"Error assessing debt management: {str(e)}")
             return None
@@ -484,9 +399,7 @@ class AIFinancialAdvisor:
     ) -> Optional[FinancialAdvice]:
         """Generate investment advice"""
         try:
-            # Calculate investment readiness score
             investment_readiness = self._calculate_investment_readiness(profile)
-
             if investment_readiness < 0.6:
                 return FinancialAdvice(
                     user_id=profile.user_id,
@@ -521,14 +434,11 @@ class AIFinancialAdvisor:
                     ],
                     timestamp=datetime.utcnow(),
                 )
-
-            # Generate investment strategy advice
             strategy = await self._determine_investment_strategy(profile)
-
             return FinancialAdvice(
                 user_id=profile.user_id,
                 advice_type="investment_strategy",
-                title=f'{strategy["name"]} Investment Strategy',
+                title=f"{strategy['name']} Investment Strategy",
                 description=strategy["description"],
                 recommended_actions=strategy["actions"],
                 expected_outcomes=strategy["outcomes"],
@@ -539,7 +449,6 @@ class AIFinancialAdvisor:
                 monitoring_metrics=strategy["monitoring_metrics"],
                 timestamp=datetime.utcnow(),
             )
-
         except Exception as e:
             logger.error(f"Error generating investment advice: {str(e)}")
             return None
@@ -550,23 +459,16 @@ class AIFinancialAdvisor:
         """Generate tax optimization advice"""
         try:
             tax_strategies = []
-
-            # 401(k) contribution optimization
             if profile.income > 50000:
-                max_401k = 22500  # 2023 limit
+                max_401k = 22500
                 recommended_contribution = min(profile.income * 0.15, max_401k)
                 tax_strategies.append(
                     f"Maximize 401(k) contribution: ${recommended_contribution:,.0f}"
                 )
-
-            # IRA contributions
-            if profile.income < 138000:  # Roth IRA income limit
+            if profile.income < 138000:
                 tax_strategies.append("Consider Roth IRA contribution: $6,500")
-
-            # Tax-loss harvesting
             if profile.current_portfolio:
                 tax_strategies.append("Implement tax-loss harvesting strategy")
-
             if tax_strategies:
                 return FinancialAdvice(
                     user_id=profile.user_id,
@@ -597,9 +499,7 @@ class AIFinancialAdvisor:
                     ],
                     timestamp=datetime.utcnow(),
                 )
-
             return None
-
         except Exception as e:
             logger.error(f"Error generating tax advice: {str(e)}")
             return None
@@ -617,7 +517,6 @@ class AIFinancialAdvisor:
                 return await self._generate_home_purchase_advice(profile)
             else:
                 return await self._generate_general_goal_advice(profile, goal)
-
         except Exception as e:
             logger.error(f"Error generating goal-specific advice: {str(e)}")
             return None
@@ -628,19 +527,14 @@ class AIFinancialAdvisor:
         """Generate retirement planning advice"""
         retirement_age = 65
         years_to_retirement = retirement_age - profile.age
-
-        # Calculate retirement needs
         annual_need = profile.income * self.config["retirement_replacement_ratio"]
-        total_need = annual_need * 25  # 4% withdrawal rule
-
-        # Calculate required monthly savings
+        total_need = annual_need * 25
         if years_to_retirement > 0:
             monthly_savings_needed = self._calculate_monthly_savings(
-                total_need, years_to_retirement, 0.07  # 7% assumed return
+                total_need, years_to_retirement, 0.07
             )
         else:
             monthly_savings_needed = 0
-
         return FinancialAdvice(
             user_id=profile.user_id,
             advice_type="retirement_planning",
@@ -711,10 +605,9 @@ class AIFinancialAdvisor:
                 "international_stocks": 0.1,
                 "cash": 0.1,
             }
-        else:  # target_date
+        else:
             stock_allocation = max(0.2, 1.0 - (profile.age - 20) / 100)
             bond_allocation = 1.0 - stock_allocation
-
             return {
                 "stocks": stock_allocation * 0.7,
                 "international_stocks": stock_allocation * 0.3,
@@ -726,7 +619,6 @@ class AIFinancialAdvisor:
     ) -> List[Dict[str, Any]]:
         """Recommend specific assets for allocation"""
         recommendations = []
-
         asset_mapping = {
             "stocks": [
                 {
@@ -767,15 +659,12 @@ class AIFinancialAdvisor:
                 {"symbol": "VMFXX", "name": "Money Market Fund", "expense_ratio": 0.11}
             ],
         }
-
         for asset_class, weight in allocation.items():
             if weight > 0 and asset_class in asset_mapping:
-                # Choose the first (typically lowest cost) option
                 asset = asset_mapping[asset_class][0].copy()
                 asset["allocation"] = weight
                 asset["asset_class"] = asset_class
                 recommendations.append(asset)
-
         return recommendations
 
     async def _generate_allocation_rationale(
@@ -783,22 +672,7 @@ class AIFinancialAdvisor:
     ) -> str:
         """Generate AI-powered rationale for allocation"""
         try:
-            prompt = f"""
-            Generate a clear, professional rationale for the following investment allocation for a {profile.age}-year-old investor:
-
-            Investor Profile:
-            - Age: {profile.age}
-            - Risk Tolerance: {profile.risk_tolerance.value}
-            - Investment Horizon: {profile.investment_horizon.value}
-            - Investment Experience: {profile.investment_experience}
-            - Goals: {[goal.value for goal in profile.investment_goals]}
-
-            Recommended Allocation:
-            {allocation}
-
-            Explain why this allocation is appropriate for this investor in 2-3 paragraphs.
-            """
-
+            prompt = f"\n            Generate a clear, professional rationale for the following investment allocation for a {profile.age}-year-old investor:\n\n            Investor Profile:\n            - Age: {profile.age}\n            - Risk Tolerance: {profile.risk_tolerance.value}\n            - Investment Horizon: {profile.investment_horizon.value}\n            - Investment Experience: {profile.investment_experience}\n            - Goals: {[goal.value for goal in profile.investment_goals]}\n\n            Recommended Allocation:\n            {allocation}\n\n            Explain why this allocation is appropriate for this investor in 2-3 paragraphs.\n            "
             response = self.openai_client.chat.completions.create(
                 model=self.config["openai_model"],
                 messages=[
@@ -811,9 +685,7 @@ class AIFinancialAdvisor:
                 max_tokens=self.config["max_tokens"],
                 temperature=self.config["temperature"],
             )
-
             return response.choices[0].message.content.strip()
-
         except Exception as e:
             logger.error(f"Error generating allocation rationale: {str(e)}")
             return "This allocation is designed to balance growth potential with risk management based on your profile."
@@ -821,29 +693,20 @@ class AIFinancialAdvisor:
     def _calculate_investment_readiness(self, profile: UserProfile) -> float:
         """Calculate investment readiness score"""
         score = 0.0
-
-        # Emergency fund factor
         if profile.emergency_fund_months >= 3:
             score += 0.3
         elif profile.emergency_fund_months >= 1:
             score += 0.15
-
-        # Debt factor
         debt_ratio = profile.debt_obligations / profile.income
         if debt_ratio < 0.2:
             score += 0.3
         elif debt_ratio < 0.4:
             score += 0.15
-
-        # Income stability (simplified)
-        score += 0.2  # Assume stable income
-
-        # Investment capacity
+        score += 0.2
         if profile.monthly_investment_capacity > profile.income * 0.1:
             score += 0.2
         elif profile.monthly_investment_capacity > 0:
             score += 0.1
-
         return min(score, 1.0)
 
     async def _determine_investment_strategy(
@@ -922,14 +785,10 @@ class AIFinancialAdvisor:
         """Calculate required monthly savings for future value"""
         if years <= 0:
             return future_value
-
         monthly_rate = annual_return / 12
         months = years * 12
-
-        # PMT calculation for annuity
         if monthly_rate == 0:
             return future_value / months
-
         return future_value * monthly_rate / ((1 + monthly_rate) ** months - 1)
 
     async def _calculate_portfolio_metrics(
@@ -937,56 +796,55 @@ class AIFinancialAdvisor:
     ) -> Tuple[float, float]:
         """Calculate expected portfolio return and volatility"""
         try:
-            # Simplified calculation - in practice would use historical data
             expected_returns = {
-                "stocks": 0.10,
+                "stocks": 0.1,
                 "international_stocks": 0.08,
                 "bonds": 0.04,
                 "reits": 0.09,
                 "cash": 0.02,
             }
-
             volatilities = {
                 "stocks": 0.16,
                 "international_stocks": 0.18,
                 "bonds": 0.04,
-                "reits": 0.20,
+                "reits": 0.2,
                 "cash": 0.01,
             }
-
             portfolio_return = sum(
-                allocation.get(asset_class, 0) * expected_returns.get(asset_class, 0.06)
-                for asset_class in allocation.keys()
-            )
-
-            # Simplified volatility calculation (assumes some correlation)
-            portfolio_volatility = (
-                sum(
-                    allocation.get(asset_class, 0) * volatilities.get(asset_class, 0.10)
+                (
+                    allocation.get(asset_class, 0)
+                    * expected_returns.get(asset_class, 0.06)
                     for asset_class in allocation.keys()
                 )
+            )
+            portfolio_volatility = (
+                sum(
+                    (
+                        allocation.get(asset_class, 0)
+                        * volatilities.get(asset_class, 0.1)
+                        for asset_class in allocation.keys()
+                    )
+                )
                 * 0.8
-            )  # Correlation adjustment
-
-            return portfolio_return, portfolio_volatility
-
+            )
+            return (portfolio_return, portfolio_volatility)
         except Exception as e:
             logger.error(f"Error calculating portfolio metrics: {str(e)}")
-            return 0.07, 0.12  # Default values
+            return (0.07, 0.12)
 
     def _calculate_implementation_cost(
         self, current_portfolio: Dict[str, float], target_allocation: Dict[str, float]
     ) -> float:
         """Calculate cost of implementing new allocation"""
-        # Simplified calculation - assumes 0.1% transaction cost
         total_changes = sum(
-            abs(target_allocation.get(asset, 0) - current_portfolio.get(asset, 0))
-            for asset in set(
-                list(current_portfolio.keys()) + list(target_allocation.keys())
+            (
+                abs(target_allocation.get(asset, 0) - current_portfolio.get(asset, 0))
+                for asset in set(
+                    list(current_portfolio.keys()) + list(target_allocation.keys())
+                )
             )
         )
-
-        return total_changes * 0.001  # 0.1% transaction cost
+        return total_changes * 0.001
 
     def _assess_tax_implications(
         self, profile: UserProfile, allocation: Dict[str, float]
@@ -1003,8 +861,7 @@ class AIFinancialAdvisor:
                 "tax_deferred": ["bonds"],
                 "tax_free": ["reits"],
             },
-            "estimated_tax_drag": allocation.get("bonds", 0)
-            * 0.02,  # Simplified calculation
+            "estimated_tax_drag": allocation.get("bonds", 0) * 0.02,
         }
 
     def _determine_rebalancing_strategy(self, profile: UserProfile) -> str:
@@ -1020,23 +877,15 @@ class AIFinancialAdvisor:
         """Get market data relevant to user's profile"""
         try:
             market_data = {}
-
-            # Get data for major indices
             for symbol in self.config["benchmark_symbols"]:
                 prices = await self.market_data.get_historical_prices(symbol, days=30)
                 if prices:
                     market_data[symbol] = prices
-
-            # Get sector performance if user has sector preferences
             sector_performance = await self.market_data.get_sector_performance()
             market_data["sectors"] = sector_performance
-
-            # Get economic indicators
             economic_indicators = await self.market_data.get_economic_indicators()
             market_data["economic_indicators"] = economic_indicators
-
             return market_data
-
         except Exception as e:
             logger.error(f"Error getting market data: {str(e)}")
             return {}
@@ -1044,16 +893,7 @@ class AIFinancialAdvisor:
     async def _generate_market_outlook(self, market_data: Dict[str, Any]) -> str:
         """Generate market outlook using AI"""
         try:
-            prompt = f"""
-            Based on the following market data, provide a brief market outlook (2-3 sentences):
-
-            Recent Performance:
-            - Economic Indicators: {market_data.get('economic_indicators', {})}
-            - Sector Performance: {market_data.get('sectors', [])}
-
-            Focus on key trends and implications for long-term investors.
-            """
-
+            prompt = f"\n            Based on the following market data, provide a brief market outlook (2-3 sentences):\n\n            Recent Performance:\n            - Economic Indicators: {market_data.get('economic_indicators', {})}\n            - Sector Performance: {market_data.get('sectors', [])}\n\n            Focus on key trends and implications for long-term investors.\n            "
             response = self.openai_client.chat.completions.create(
                 model=self.config["openai_model"],
                 messages=[
@@ -1066,9 +906,7 @@ class AIFinancialAdvisor:
                 max_tokens=200,
                 temperature=0.5,
             )
-
             return response.choices[0].message.content.strip()
-
         except Exception as e:
             logger.error(f"Error generating market outlook: {str(e)}")
             return "Market conditions remain dynamic. Maintain a long-term perspective and stay diversified."
@@ -1077,8 +915,6 @@ class AIFinancialAdvisor:
         """Analyze sector opportunities and risks"""
         try:
             sector_data = await self.market_data.get_sector_performance()
-
-            # Simple analysis based on performance
             if sector_data:
                 top_performers = sorted(
                     sector_data, key=lambda x: x.get("change_percent", 0), reverse=True
@@ -1086,15 +922,12 @@ class AIFinancialAdvisor:
                 underperformers = sorted(
                     sector_data, key=lambda x: x.get("change_percent", 0)
                 )[:3]
-
                 return {
                     "top_performers": top_performers,
                     "underperformers": underperformers,
                     "recommendation": "Consider rebalancing if sector concentration is high",
                 }
-
             return {"message": "Sector data not available"}
-
         except Exception as e:
             logger.error(f"Error analyzing sectors: {str(e)}")
             return {"error": str(e)}
@@ -1103,15 +936,12 @@ class AIFinancialAdvisor:
         """Assess impact of economic indicators"""
         try:
             await self.market_data.get_economic_indicators()
-
             assessment = {
                 "inflation_impact": "Monitor bond allocation if inflation rises",
                 "interest_rate_impact": "Rising rates may benefit value stocks",
                 "volatility_impact": "High VIX suggests increased market uncertainty",
             }
-
             return assessment
-
         except Exception as e:
             logger.error(f"Error assessing economic indicators: {str(e)}")
             return {}
@@ -1121,16 +951,7 @@ class AIFinancialAdvisor:
     ) -> str:
         """Generate personalized AI insights"""
         try:
-            prompt = f"""
-            Provide personalized market insights for an investor with the following profile:
-            - Age: {profile.age}
-            - Risk Tolerance: {profile.risk_tolerance.value}
-            - Investment Goals: {[goal.value for goal in profile.investment_goals]}
-            - Investment Horizon: {profile.investment_horizon.value}
-
-            Based on current market conditions, what should this investor focus on? (2-3 sentences)
-            """
-
+            prompt = f"\n            Provide personalized market insights for an investor with the following profile:\n            - Age: {profile.age}\n            - Risk Tolerance: {profile.risk_tolerance.value}\n            - Investment Goals: {[goal.value for goal in profile.investment_goals]}\n            - Investment Horizon: {profile.investment_horizon.value}\n\n            Based on current market conditions, what should this investor focus on? (2-3 sentences)\n            "
             response = self.openai_client.chat.completions.create(
                 model=self.config["openai_model"],
                 messages=[
@@ -1143,9 +964,7 @@ class AIFinancialAdvisor:
                 max_tokens=200,
                 temperature=0.6,
             )
-
             return response.choices[0].message.content.strip()
-
         except Exception as e:
             logger.error(f"Error generating AI insights: {str(e)}")
             return "Stay focused on your long-term goals and maintain a diversified portfolio."
@@ -1155,17 +974,13 @@ class AIFinancialAdvisor:
     ) -> List[str]:
         """Identify investment opportunities"""
         opportunities = []
-
-        # Example opportunity identification
         if profile.age < 40 and profile.risk_tolerance in [
             RiskTolerance.MODERATE,
             RiskTolerance.AGGRESSIVE,
         ]:
             opportunities.append("Consider increasing international equity allocation")
-
         if profile.investment_horizon == InvestmentHorizon.LONG_TERM:
             opportunities.append("Dollar-cost averaging into growth sectors")
-
         return opportunities
 
     async def _identify_risks(
@@ -1173,8 +988,6 @@ class AIFinancialAdvisor:
     ) -> List[str]:
         """Identify potential risks"""
         risks = []
-
-        # Example risk identification
         if profile.current_portfolio:
             concentration_risk = (
                 max(profile.current_portfolio.values())
@@ -1185,12 +998,10 @@ class AIFinancialAdvisor:
                 risks.append(
                     "High concentration in single asset - consider diversification"
                 )
-
         if profile.emergency_fund_months < 3:
             risks.append(
                 "Insufficient emergency fund may force early investment liquidation"
             )
-
         return risks
 
     async def _assess_risk_management(
@@ -1199,19 +1010,12 @@ class AIFinancialAdvisor:
         """Assess risk management needs"""
         try:
             risk_factors = []
-
-            # Income protection
             if profile.dependents > 0 and profile.income > 30000:
                 risk_factors.append("Consider life insurance coverage")
-
-            # Disability insurance
             if profile.income > 50000:
                 risk_factors.append("Evaluate disability insurance needs")
-
-            # Asset protection
             if profile.net_worth > 100000:
                 risk_factors.append("Review liability insurance coverage")
-
             if risk_factors:
                 return FinancialAdvice(
                     user_id=profile.user_id,
@@ -1243,25 +1047,20 @@ class AIFinancialAdvisor:
                     ],
                     timestamp=datetime.utcnow(),
                 )
-
             return None
-
         except Exception as e:
             logger.error(f"Error assessing risk management: {str(e)}")
             return None
 
     async def _generate_education_advice(self, profile: UserProfile) -> FinancialAdvice:
         """Generate education funding advice"""
-        # Simplified education planning
         years_to_education = 18 - min(
             [child_age for child_age in [10, 15]] if profile.dependents > 0 else [18]
-        )  # Assume youngest child is 10
-        education_cost = 100000  # Estimated college cost
-
+        )
+        education_cost = 100000
         monthly_savings = self._calculate_monthly_savings(
             education_cost, years_to_education, 0.06
         )
-
         return FinancialAdvice(
             user_id=profile.user_id,
             advice_type="education_planning",
@@ -1302,9 +1101,8 @@ class AIFinancialAdvisor:
         self, profile: UserProfile
     ) -> FinancialAdvice:
         """Generate home purchase advice"""
-        home_price = profile.income * 3  # Conservative estimate
+        home_price = profile.income * 3
         down_payment = home_price * self.config["home_down_payment_ratio"]
-
         return FinancialAdvice(
             user_id=profile.user_id,
             advice_type="home_purchase",
@@ -1344,8 +1142,8 @@ class AIFinancialAdvisor:
         return FinancialAdvice(
             user_id=profile.user_id,
             advice_type=f"{goal.value}_planning",
-            title=f'{goal.value.replace("_", " ").title()} Strategy',
-            description=f'Develop a strategy for your {goal.value.replace("_", " ")} goal.',
+            title=f"{goal.value.replace('_', ' ').title()} Strategy",
+            description=f"Develop a strategy for your {goal.value.replace('_', ' ')} goal.",
             recommended_actions=[
                 "Define specific target amount and timeline",
                 "Choose appropriate investment vehicles",

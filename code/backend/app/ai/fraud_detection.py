@@ -3,20 +3,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
-
 import numpy as np
 import pandas as pd
 
 warnings.filterwarnings("ignore")
-
 import joblib
 import networkx as nx
-
-# Deep learning imports
 import tensorflow as tf
 from app.core.logging import get_logger
-
-# Machine learning imports
 from sklearn.ensemble import (
     GradientBoostingClassifier,
     IsolationForest,
@@ -29,9 +23,6 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.layers import BatchNormalization, Dense, Dropout
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-
-# Statistical imports
-
 
 logger = get_logger(__name__)
 
@@ -86,10 +77,9 @@ class UserRiskProfile:
 class AdvancedFraudDetectionSystem:
     """Advanced fraud detection system with multiple ML models and rule engines"""
 
-    def __init__(self, config: Optional[Dict] = None):
+    def __init__(self, config: Optional[Dict] = None) -> Any:
         """Initialize fraud detection system"""
         self.config = {
-            # Model parameters
             "models": [
                 "random_forest",
                 "gradient_boosting",
@@ -97,41 +87,32 @@ class AdvancedFraudDetectionSystem:
                 "isolation_forest",
             ],
             "ensemble_method": "weighted_voting",
-            # Feature engineering
-            "time_windows": [1, 7, 30, 90],  # days
+            "time_windows": [1, 7, 30, 90],
             "velocity_features": True,
             "network_features": True,
             "behavioral_features": True,
             "device_fingerprinting": True,
-            # Anomaly detection
-            "anomaly_threshold": 0.1,  # 10% contamination
+            "anomaly_threshold": 0.1,
             "isolation_forest_estimators": 100,
-            # Neural network parameters
             "nn_epochs": 100,
             "nn_batch_size": 32,
             "nn_layers": [128, 64, 32],
             "nn_dropout": 0.3,
-            # Risk scoring
             "risk_thresholds": {
                 "low": 0.3,
                 "medium": 0.6,
                 "high": 0.8,
                 "critical": 0.95,
             },
-            # Real-time monitoring
-            "monitoring_window": 300,  # 5 minutes
-            "alert_cooldown": 3600,  # 1 hour
-            # Network analysis
+            "monitoring_window": 300,
+            "alert_cooldown": 3600,
             "max_network_depth": 3,
             "min_connection_strength": 0.1,
-            # Behavioral analysis
-            "behavioral_window": 90,  # days
-            "pattern_deviation_threshold": 2.0,  # standard deviations
+            "behavioral_window": 90,
+            "pattern_deviation_threshold": 2.0,
         }
-
         if config:
             self.config.update(config)
-
         self.models = {}
         self.scalers = {}
         self.encoders = {}
@@ -146,21 +127,13 @@ class AdvancedFraudDetectionSystem:
         """Train fraud detection models"""
         try:
             logger.info("Training fraud detection models")
-
-            # Feature engineering
             features_df = self._engineer_features(training_data)
             self.feature_columns = [
                 col for col in features_df.columns if col != target_column
             ]
-
-            # Prepare data
             X = features_df[self.feature_columns]
             y = features_df[target_column]
-
-            # Handle missing values
             X = X.fillna(0)
-
-            # Encode categorical variables
             categorical_columns = X.select_dtypes(include=["object"]).columns
             for col in categorical_columns:
                 if col not in self.encoders:
@@ -168,51 +141,35 @@ class AdvancedFraudDetectionSystem:
                     X[col] = self.encoders[col].fit_transform(X[col].astype(str))
                 else:
                     X[col] = self.encoders[col].transform(X[col].astype(str))
-
-            # Scale features
             self.scalers["standard"] = StandardScaler()
             X_scaled = self.scalers["standard"].fit_transform(X)
-
-            # Split data
             X_train, X_test, y_train, y_test = train_test_split(
                 X_scaled, y, test_size=0.2, random_state=42, stratify=y
             )
-
             training_results = {}
-
-            # Train Random Forest
             if "random_forest" in self.config["models"]:
                 training_results["random_forest"] = self._train_random_forest(
                     X_train, y_train, X_test, y_test
                 )
-
-            # Train Gradient Boosting
             if "gradient_boosting" in self.config["models"]:
                 training_results["gradient_boosting"] = self._train_gradient_boosting(
                     X_train, y_train, X_test, y_test
                 )
-
-            # Train Neural Network
             if "neural_network" in self.config["models"]:
                 training_results["neural_network"] = self._train_neural_network(
                     X_train, y_train, X_test, y_test
                 )
-
-            # Train Isolation Forest (unsupervised)
             if "isolation_forest" in self.config["models"]:
                 training_results["isolation_forest"] = self._train_isolation_forest(
                     X_train
                 )
-
             self.is_trained = True
             logger.info("Fraud detection models trained successfully")
-
             return {
                 "success": True,
                 "results": training_results,
                 "feature_columns": self.feature_columns,
             }
-
         except Exception as e:
             logger.error(
                 f"Error training fraud detection models: {str(e)}", exc_info=True
@@ -228,36 +185,22 @@ class AdvancedFraudDetectionSystem:
         try:
             if not self.is_trained:
                 raise ValueError("Models must be trained before making predictions")
-
-            # Create DataFrame from transaction data
             df = pd.DataFrame([transaction_data])
-
-            # Add user data if available
             if user_data:
                 for key, value in user_data.items():
                     df[f"user_{key}"] = value
-
-            # Engineer features
             features_df = self._engineer_features(df)
             X = features_df[self.feature_columns].fillna(0)
-
-            # Encode categorical variables
             for col in X.select_dtypes(include=["object"]).columns:
                 if col in self.encoders:
                     X[col] = self.encoders[col].transform(X[col].astype(str))
                 else:
-                    X[col] = 0  # Default for unknown categories
-
-            # Scale features
+                    X[col] = 0
             X_scaled = self.scalers["standard"].transform(X)
-
-            # Get predictions from all models
             predictions = {}
             probabilities = {}
-
             for model_name, model in self.models.items():
                 if model_name == "isolation_forest":
-                    # Isolation forest returns -1 for outliers, 1 for inliers
                     pred = model.predict(X_scaled)[0]
                     predictions[model_name] = 1 if pred == -1 else 0
                     probabilities[model_name] = abs(
@@ -269,8 +212,6 @@ class AdvancedFraudDetectionSystem:
                         probabilities[model_name] = model.predict_proba(X_scaled)[0][1]
                     else:
                         probabilities[model_name] = predictions[model_name]
-
-            # Ensemble prediction
             if self.config["ensemble_method"] == "weighted_voting":
                 weights = {
                     "random_forest": 0.3,
@@ -279,25 +220,21 @@ class AdvancedFraudDetectionSystem:
                     "isolation_forest": 0.15,
                 }
                 ensemble_prob = sum(
-                    weights.get(name, 0.25) * prob
-                    for name, prob in probabilities.items()
+                    (
+                        weights.get(name, 0.25) * prob
+                        for name, prob in probabilities.items()
+                    )
                 )
             else:
                 ensemble_prob = np.mean(list(probabilities.values()))
-
-            # Determine risk level and fraud type
             risk_level = self._get_risk_level(ensemble_prob)
             fraud_type = self._classify_fraud_type(transaction_data, ensemble_prob)
-
-            # Generate risk factors and recommendations
             risk_factors = self._identify_risk_factors(
                 transaction_data, user_data, predictions
             )
             recommendations = self._generate_recommendations(
                 risk_level, fraud_type, risk_factors
             )
-
-            # Create fraud alert
             alert = FraudAlert(
                 transaction_id=transaction_data.get("transaction_id"),
                 user_id=transaction_data.get("user_id", "unknown"),
@@ -313,13 +250,9 @@ class AdvancedFraudDetectionSystem:
                     "ensemble_probability": float(ensemble_prob),
                 },
             )
-
-            # Store alert if significant
             if risk_level in [RiskLevel.HIGH, RiskLevel.CRITICAL]:
                 self.alert_history.append(alert)
-
             return alert
-
         except Exception as e:
             logger.error(f"Error predicting fraud: {str(e)}", exc_info=True)
             return FraudAlert(
@@ -343,7 +276,6 @@ class AdvancedFraudDetectionSystem:
     ) -> UserRiskProfile:
         """Update user risk profile with new transaction data"""
         try:
-            # Get existing profile or create new one
             if user_id in self.user_profiles:
                 profile = self.user_profiles[user_id]
             else:
@@ -357,27 +289,15 @@ class AdvancedFraudDetectionSystem:
                     network_connections=[],
                     last_updated=datetime.utcnow(),
                 )
-
-            # Update transaction patterns
             self._update_transaction_patterns(profile, transaction_data)
-
-            # Update device patterns
             if device_data:
                 self._update_device_patterns(profile, device_data)
-
-            # Update location patterns
             if location_data:
                 self._update_location_patterns(profile, location_data)
-
-            # Recalculate risk score
             profile.risk_score = self._calculate_user_risk_score(profile)
             profile.last_updated = datetime.utcnow()
-
-            # Store updated profile
             self.user_profiles[user_id] = profile
-
             return profile
-
         except Exception as e:
             logger.error(f"Error updating user profile: {str(e)}")
             return self.user_profiles.get(
@@ -399,23 +319,17 @@ class AdvancedFraudDetectionSystem:
     ) -> Dict[str, Any]:
         """Analyze transaction network for suspicious patterns"""
         try:
-            # Create network graph
             G = nx.Graph()
-
-            # Add nodes and edges
             for transaction in transactions:
                 sender = transaction.get("sender_id")
                 receiver = transaction.get("receiver_id")
                 amount = transaction.get("amount", 0)
-
                 if sender and receiver:
                     if G.has_edge(sender, receiver):
                         G[sender][receiver]["weight"] += amount
                         G[sender][receiver]["count"] += 1
                     else:
                         G.add_edge(sender, receiver, weight=amount, count=1)
-
-            # Analyze network properties
             analysis = {
                 "network_stats": {
                     "nodes": G.number_of_nodes(),
@@ -427,21 +341,15 @@ class AdvancedFraudDetectionSystem:
                 "high_risk_nodes": [],
                 "unusual_connections": [],
             }
-
-            # Detect suspicious patterns
-
-            # 1. Circular transactions (potential money laundering)
             cycles = list(nx.simple_cycles(G.to_directed()))
             if cycles:
                 analysis["suspicious_patterns"].append(
                     {
                         "type": "circular_transactions",
                         "count": len(cycles),
-                        "cycles": cycles[:10],  # Limit to first 10
+                        "cycles": cycles[:10],
                     }
                 )
-
-            # 2. High-degree nodes (potential money mules)
             degrees = dict(G.degree())
             high_degree_threshold = np.percentile(list(degrees.values()), 95)
             high_degree_nodes = [
@@ -449,11 +357,8 @@ class AdvancedFraudDetectionSystem:
                 for node, degree in degrees.items()
                 if degree > high_degree_threshold
             ]
-
             if high_degree_nodes:
                 analysis["high_risk_nodes"] = high_degree_nodes
-
-            # 3. Unusual transaction amounts
             edge_weights = [data["weight"] for _, _, data in G.edges(data=True)]
             if edge_weights:
                 weight_threshold = np.percentile(edge_weights, 95)
@@ -462,14 +367,11 @@ class AdvancedFraudDetectionSystem:
                     for u, v, data in G.edges(data=True)
                     if data["weight"] > weight_threshold
                 ]
-
                 analysis["unusual_connections"] = [
                     {"sender": u, "receiver": v, "amount": data["weight"]}
                     for u, v, data in unusual_edges[:10]
                 ]
-
             return analysis
-
         except Exception as e:
             logger.error(f"Error analyzing transaction network: {str(e)}")
             return {"error": str(e)}
@@ -481,38 +383,31 @@ class AdvancedFraudDetectionSystem:
         try:
             if user_id not in self.user_profiles:
                 return {"risk_level": "medium", "reason": "No user profile available"}
-
             profile = self.user_profiles[user_id]
             risk_factors = []
             risk_score = 0.0
-
-            # Check device fingerprint
             current_device = session_data.get("device_fingerprint")
             if current_device and current_device not in profile.device_patterns:
                 risk_factors.append("Unknown device")
                 risk_score += 0.3
-
-            # Check location
             current_location = session_data.get("location")
             if current_location:
                 known_locations = profile.location_patterns.get(
                     "frequent_locations", []
                 )
                 if not any(
-                    self._calculate_distance(current_location, loc) < 100
-                    for loc in known_locations
-                ):  # 100km threshold
+                    (
+                        self._calculate_distance(current_location, loc) < 100
+                        for loc in known_locations
+                    )
+                ):
                     risk_factors.append("Unusual location")
                     risk_score += 0.4
-
-            # Check login time patterns
             current_time = datetime.now().hour
             typical_hours = profile.behavioral_patterns.get("login_hours", [])
             if typical_hours and current_time not in typical_hours:
                 risk_factors.append("Unusual login time")
                 risk_score += 0.2
-
-            # Check session behavior
             session_duration = session_data.get("session_duration", 0)
             typical_duration = profile.behavioral_patterns.get(
                 "avg_session_duration", 1800
@@ -520,8 +415,6 @@ class AdvancedFraudDetectionSystem:
             if abs(session_duration - typical_duration) > typical_duration * 2:
                 risk_factors.append("Unusual session duration")
                 risk_score += 0.1
-
-            # Determine risk level
             if risk_score >= 0.8:
                 risk_level = "critical"
             elif risk_score >= 0.6:
@@ -530,14 +423,12 @@ class AdvancedFraudDetectionSystem:
                 risk_level = "medium"
             else:
                 risk_level = "low"
-
             return {
                 "risk_level": risk_level,
                 "risk_score": float(risk_score),
                 "risk_factors": risk_factors,
                 "recommended_actions": self._get_takeover_recommendations(risk_level),
             }
-
         except Exception as e:
             logger.error(f"Error detecting account takeover: {str(e)}")
             return {"risk_level": "medium", "error": str(e)}
@@ -545,34 +436,23 @@ class AdvancedFraudDetectionSystem:
     def _engineer_features(self, data: pd.DataFrame) -> pd.DataFrame:
         """Engineer features for fraud detection"""
         df = data.copy()
-
-        # Basic transaction features
         if "amount" in df.columns:
             df["amount_log"] = np.log1p(df["amount"])
             df["amount_rounded"] = (df["amount"] % 1 == 0).astype(int)
-
-        # Time-based features
         if "timestamp" in df.columns:
             df["timestamp"] = pd.to_datetime(df["timestamp"])
             df["hour"] = df["timestamp"].dt.hour
             df["day_of_week"] = df["timestamp"].dt.dayofweek
             df["is_weekend"] = (df["day_of_week"] >= 5).astype(int)
             df["is_night"] = ((df["hour"] < 6) | (df["hour"] > 22)).astype(int)
-
-        # Velocity features (if user_id available)
         if "user_id" in df.columns and len(df) > 1:
             df = self._add_velocity_features(df)
-
-        # Device and location features
         if "device_fingerprint" in df.columns:
             df["device_risk_score"] = df["device_fingerprint"].apply(
                 self._calculate_device_risk
             )
-
         if "ip_address" in df.columns:
             df["ip_risk_score"] = df["ip_address"].apply(self._calculate_ip_risk)
-
-        # Merchant/recipient features
         if "merchant_category" in df.columns:
             high_risk_categories = [
                 "gambling",
@@ -583,28 +463,21 @@ class AdvancedFraudDetectionSystem:
             df["high_risk_merchant"] = (
                 df["merchant_category"].isin(high_risk_categories).astype(int)
             )
-
         return df
 
     def _add_velocity_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add velocity-based features"""
         if "user_id" not in df.columns or "timestamp" not in df.columns:
             return df
-
         df = df.sort_values(["user_id", "timestamp"])
-
         for window in self.config["time_windows"]:
             window_str = f"{window}D"
-
-            # Transaction count in window
             df[f"tx_count_{window}d"] = (
                 df.groupby("user_id")["timestamp"]
                 .rolling(window_str, on="timestamp")
                 .count()
                 .reset_index(level=0, drop=True)
             )
-
-            # Transaction amount sum in window
             if "amount" in df.columns:
                 df[f"tx_amount_{window}d"] = (
                     df.groupby("user_id")["amount"]
@@ -612,30 +485,25 @@ class AdvancedFraudDetectionSystem:
                     .sum()
                     .reset_index(level=0, drop=True)
                 )
-
         return df
 
-    def _train_random_forest(self, X_train, y_train, X_test, y_test) -> Dict[str, Any]:
+    def _train_random_forest(
+        self, X_train: Any, y_train: Any, X_test: Any, y_test: Any
+    ) -> Dict[str, Any]:
         """Train Random Forest model"""
         try:
             model = RandomForestClassifier(
                 n_estimators=100, max_depth=10, random_state=42, class_weight="balanced"
             )
-
             model.fit(X_train, y_train)
-
-            # Evaluate
             train_score = model.score(X_train, y_train)
             test_score = model.score(X_test, y_test)
-
             if hasattr(model, "predict_proba"):
                 y_pred_proba = model.predict_proba(X_test)[:, 1]
                 auc_score = roc_auc_score(y_test, y_pred_proba)
             else:
                 auc_score = None
-
             self.models["random_forest"] = model
-
             return {
                 "success": True,
                 "train_accuracy": float(train_score),
@@ -645,31 +513,24 @@ class AdvancedFraudDetectionSystem:
                     zip(self.feature_columns, model.feature_importances_)
                 ),
             }
-
         except Exception as e:
             logger.error(f"Error training Random Forest: {str(e)}")
             return {"success": False, "error": str(e)}
 
     def _train_gradient_boosting(
-        self, X_train, y_train, X_test, y_test
+        self, X_train: Any, y_train: Any, X_test: Any, y_test: Any
     ) -> Dict[str, Any]:
         """Train Gradient Boosting model"""
         try:
             model = GradientBoostingClassifier(
                 n_estimators=100, learning_rate=0.1, max_depth=6, random_state=42
             )
-
             model.fit(X_train, y_train)
-
-            # Evaluate
             train_score = model.score(X_train, y_train)
             test_score = model.score(X_test, y_test)
-
             y_pred_proba = model.predict_proba(X_test)[:, 1]
             auc_score = roc_auc_score(y_test, y_pred_proba)
-
             self.models["gradient_boosting"] = model
-
             return {
                 "success": True,
                 "train_accuracy": float(train_score),
@@ -679,17 +540,16 @@ class AdvancedFraudDetectionSystem:
                     zip(self.feature_columns, model.feature_importances_)
                 ),
             }
-
         except Exception as e:
             logger.error(f"Error training Gradient Boosting: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def _train_neural_network(self, X_train, y_train, X_test, y_test) -> Dict[str, Any]:
+    def _train_neural_network(
+        self, X_train: Any, y_train: Any, X_test: Any, y_test: Any
+    ) -> Dict[str, Any]:
         """Train Neural Network model"""
         try:
             model = Sequential()
-
-            # Input layer
             model.add(
                 Dense(
                     self.config["nn_layers"][0],
@@ -699,28 +559,19 @@ class AdvancedFraudDetectionSystem:
             )
             model.add(BatchNormalization())
             model.add(Dropout(self.config["nn_dropout"]))
-
-            # Hidden layers
             for units in self.config["nn_layers"][1:]:
                 model.add(Dense(units, activation="relu"))
                 model.add(BatchNormalization())
                 model.add(Dropout(self.config["nn_dropout"]))
-
-            # Output layer
             model.add(Dense(1, activation="sigmoid"))
-
-            # Compile
             model.compile(
                 optimizer=Adam(learning_rate=0.001),
                 loss="binary_crossentropy",
                 metrics=["accuracy"],
             )
-
-            # Train
             early_stopping = EarlyStopping(
                 monitor="val_loss", patience=10, restore_best_weights=True
             )
-
             history = model.fit(
                 X_train,
                 y_train,
@@ -730,16 +581,11 @@ class AdvancedFraudDetectionSystem:
                 callbacks=[early_stopping],
                 verbose=0,
             )
-
-            # Evaluate
             train_loss, train_acc = model.evaluate(X_train, y_train, verbose=0)
             test_loss, test_acc = model.evaluate(X_test, y_test, verbose=0)
-
             y_pred_proba = model.predict(X_test, verbose=0).flatten()
             auc_score = roc_auc_score(y_test, y_pred_proba)
-
             self.models["neural_network"] = model
-
             return {
                 "success": True,
                 "train_accuracy": float(train_acc),
@@ -747,12 +593,11 @@ class AdvancedFraudDetectionSystem:
                 "auc_score": float(auc_score),
                 "final_loss": float(test_loss),
             }
-
         except Exception as e:
             logger.error(f"Error training Neural Network: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def _train_isolation_forest(self, X_train) -> Dict[str, Any]:
+    def _train_isolation_forest(self, X_train: Any) -> Dict[str, Any]:
         """Train Isolation Forest for anomaly detection"""
         try:
             model = IsolationForest(
@@ -760,23 +605,16 @@ class AdvancedFraudDetectionSystem:
                 n_estimators=self.config["isolation_forest_estimators"],
                 random_state=42,
             )
-
             model.fit(X_train)
-
-            # Evaluate on training data
             anomaly_scores = model.decision_function(X_train)
             predictions = model.predict(X_train)
-
             anomaly_rate = np.sum(predictions == -1) / len(predictions)
-
             self.models["isolation_forest"] = model
-
             return {
                 "success": True,
                 "anomaly_rate": float(anomaly_rate),
                 "mean_anomaly_score": float(np.mean(anomaly_scores)),
             }
-
         except Exception as e:
             logger.error(f"Error training Isolation Forest: {str(e)}")
             return {"success": False, "error": str(e)}
@@ -784,7 +622,6 @@ class AdvancedFraudDetectionSystem:
     def _get_risk_level(self, probability: float) -> RiskLevel:
         """Convert probability to risk level"""
         thresholds = self.config["risk_thresholds"]
-
         if probability >= thresholds["critical"]:
             return RiskLevel.CRITICAL
         elif probability >= thresholds["high"]:
@@ -798,12 +635,8 @@ class AdvancedFraudDetectionSystem:
         self, transaction_data: Dict[str, Any], probability: float
     ) -> FraudType:
         """Classify the type of fraud based on transaction characteristics"""
-        # Simple rule-based classification
-        # In practice, this would be more sophisticated
-
         amount = transaction_data.get("amount", 0)
         merchant_category = transaction_data.get("merchant_category", "")
-
         if amount > 10000:
             return FraudType.MONEY_LAUNDERING
         elif merchant_category in ["gambling", "adult"]:
@@ -821,31 +654,21 @@ class AdvancedFraudDetectionSystem:
     ) -> List[str]:
         """Identify specific risk factors"""
         risk_factors = []
-
-        # Check which models flagged as fraud
         flagging_models = [name for name, pred in predictions.items() if pred == 1]
         if flagging_models:
             risk_factors.append(f"Flagged by models: {', '.join(flagging_models)}")
-
-        # Transaction amount analysis
         amount = transaction_data.get("amount", 0)
         if amount > 5000:
             risk_factors.append("High transaction amount")
         elif amount < 1:
             risk_factors.append("Unusually low amount")
-
-        # Time-based factors
         timestamp = transaction_data.get("timestamp")
         if timestamp:
             hour = pd.to_datetime(timestamp).hour
             if hour < 6 or hour > 22:
                 risk_factors.append("Transaction during unusual hours")
-
-        # Location factors
         if user_data and "location" in transaction_data:
-            # This would require more sophisticated location analysis
             pass
-
         return risk_factors
 
     def _generate_recommendations(
@@ -853,7 +676,6 @@ class AdvancedFraudDetectionSystem:
     ) -> List[str]:
         """Generate recommended actions based on risk assessment"""
         recommendations = []
-
         if risk_level == RiskLevel.CRITICAL:
             recommendations.extend(
                 [
@@ -882,46 +704,34 @@ class AdvancedFraudDetectionSystem:
             )
         else:
             recommendations.append("Allow transaction with standard monitoring")
-
-        # Fraud type specific recommendations
         if fraud_type == FraudType.ACCOUNT_TAKEOVER:
             recommendations.append("Force password reset")
         elif fraud_type == FraudType.MONEY_LAUNDERING:
             recommendations.append("Report to financial intelligence unit")
-
         return recommendations
 
     def _update_transaction_patterns(
         self, profile: UserRiskProfile, transaction_data: Dict[str, Any]
-    ):
+    ) -> Any:
         """Update user transaction patterns"""
-        # Update transaction amounts
         amount = transaction_data.get("amount", 0)
         if "amounts" not in profile.transaction_patterns:
             profile.transaction_patterns["amounts"] = []
-
         profile.transaction_patterns["amounts"].append(amount)
-
-        # Keep only recent transactions (last 100)
         if len(profile.transaction_patterns["amounts"]) > 100:
             profile.transaction_patterns["amounts"] = profile.transaction_patterns[
                 "amounts"
             ][-100:]
-
-        # Update transaction times
         timestamp = transaction_data.get("timestamp")
         if timestamp:
             hour = pd.to_datetime(timestamp).hour
             if "hours" not in profile.transaction_patterns:
                 profile.transaction_patterns["hours"] = []
             profile.transaction_patterns["hours"].append(hour)
-
-        # Update merchant categories
         merchant_category = transaction_data.get("merchant_category")
         if merchant_category:
             if "merchant_categories" not in profile.transaction_patterns:
                 profile.transaction_patterns["merchant_categories"] = {}
-
             if merchant_category in profile.transaction_patterns["merchant_categories"]:
                 profile.transaction_patterns["merchant_categories"][
                     merchant_category
@@ -933,13 +743,12 @@ class AdvancedFraudDetectionSystem:
 
     def _update_device_patterns(
         self, profile: UserRiskProfile, device_data: Dict[str, Any]
-    ):
+    ) -> Any:
         """Update user device patterns"""
         device_fingerprint = device_data.get("device_fingerprint")
         if device_fingerprint:
             if "devices" not in profile.device_patterns:
                 profile.device_patterns["devices"] = {}
-
             if device_fingerprint in profile.device_patterns["devices"]:
                 profile.device_patterns["devices"][device_fingerprint] += 1
             else:
@@ -947,15 +756,13 @@ class AdvancedFraudDetectionSystem:
 
     def _update_location_patterns(
         self, profile: UserRiskProfile, location_data: Dict[str, Any]
-    ):
+    ) -> Any:
         """Update user location patterns"""
         location = location_data.get("location")
         if location:
             if "locations" not in profile.location_patterns:
                 profile.location_patterns["locations"] = {}
-
             location_key = f"{location.get('lat', 0):.2f},{location.get('lon', 0):.2f}"
-
             if location_key in profile.location_patterns["locations"]:
                 profile.location_patterns["locations"][location_key] += 1
             else:
@@ -963,39 +770,28 @@ class AdvancedFraudDetectionSystem:
 
     def _calculate_user_risk_score(self, profile: UserRiskProfile) -> float:
         """Calculate overall risk score for user"""
-        risk_score = 0.5  # Base score
-
-        # Device diversity (more devices = higher risk)
+        risk_score = 0.5
         device_count = len(profile.device_patterns.get("devices", {}))
         if device_count > 5:
             risk_score += 0.1
-
-        # Location diversity
         location_count = len(profile.location_patterns.get("locations", {}))
         if location_count > 10:
             risk_score += 0.1
-
-        # Transaction pattern consistency
         amounts = profile.transaction_patterns.get("amounts", [])
         if amounts:
             amount_cv = (
                 np.std(amounts) / np.mean(amounts) if np.mean(amounts) > 0 else 0
             )
-            if amount_cv > 2.0:  # High coefficient of variation
+            if amount_cv > 2.0:
                 risk_score += 0.2
-
         return min(risk_score, 1.0)
 
     def _calculate_device_risk(self, device_fingerprint: str) -> float:
         """Calculate risk score for device"""
-        # Simplified device risk calculation
-        # In practice, this would check against known bad devices, etc.
         return 0.1
 
     def _calculate_ip_risk(self, ip_address: str) -> float:
         """Calculate risk score for IP address"""
-        # Simplified IP risk calculation
-        # In practice, this would check against threat intelligence feeds
         return 0.1
 
     def _calculate_distance(
@@ -1004,15 +800,13 @@ class AdvancedFraudDetectionSystem:
         """Calculate distance between two locations in km"""
         from math import asin, cos, radians, sin, sqrt
 
-        lat1, lon1 = radians(loc1["lat"]), radians(loc1["lon"])
-        lat2, lon2 = radians(loc2["lat"]), radians(loc2["lon"])
-
+        lat1, lon1 = (radians(loc1["lat"]), radians(loc1["lon"]))
+        lat2, lon2 = (radians(loc2["lat"]), radians(loc2["lon"]))
         dlon = lon2 - lon1
         dlat = lat2 - lat1
         a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
         c = 2 * asin(sqrt(a))
-        r = 6371  # Radius of earth in kilometers
-
+        r = 6371
         return c * r
 
     def _get_takeover_recommendations(self, risk_level: str) -> List[str]:
@@ -1041,29 +835,20 @@ class AdvancedFraudDetectionSystem:
             import os
 
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
-
-            # Save sklearn models
             sklearn_models = {}
             for name, model in self.models.items():
                 if name in ["random_forest", "gradient_boosting", "isolation_forest"]:
                     sklearn_models[name] = model
-
             if sklearn_models:
                 joblib.dump(sklearn_models, f"{filepath}_sklearn.pkl")
-
-            # Save neural network
             if "neural_network" in self.models:
                 self.models["neural_network"].save(f"{filepath}_neural_network.h5")
-
-            # Save scalers and encoders
             joblib.dump(self.scalers, f"{filepath}_scalers.pkl")
             joblib.dump(self.encoders, f"{filepath}_encoders.pkl")
             joblib.dump(self.config, f"{filepath}_config.pkl")
             joblib.dump(self.feature_columns, f"{filepath}_features.pkl")
-
             logger.info(f"Fraud detection models saved to {filepath}")
             return True
-
         except Exception as e:
             logger.error(f"Error saving models: {str(e)}")
             return False
@@ -1071,31 +856,24 @@ class AdvancedFraudDetectionSystem:
     def load_models(self, filepath: str) -> bool:
         """Load trained models"""
         try:
-            # Load config and features
             self.config = joblib.load(f"{filepath}_config.pkl")
             self.feature_columns = joblib.load(f"{filepath}_features.pkl")
             self.scalers = joblib.load(f"{filepath}_scalers.pkl")
             self.encoders = joblib.load(f"{filepath}_encoders.pkl")
-
-            # Load sklearn models
             try:
                 sklearn_models = joblib.load(f"{filepath}_sklearn.pkl")
                 self.models.update(sklearn_models)
             except FileNotFoundError:
                 pass
-
-            # Load neural network
             try:
                 self.models["neural_network"] = tf.keras.models.load_model(
                     f"{filepath}_neural_network.h5"
                 )
             except FileNotFoundError:
                 pass
-
             self.is_trained = True
             logger.info(f"Fraud detection models loaded from {filepath}")
             return True
-
         except Exception as e:
             logger.error(f"Error loading models: {str(e)}")
             return False

@@ -3,7 +3,6 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from typing import Any, Dict, Generator, Optional
-
 from app.core.config import get_database_url, get_settings
 from app.core.logging import get_logger, performance_logger
 from sqlalchemy import create_engine, event, pool, text
@@ -16,7 +15,7 @@ logger = get_logger(__name__)
 class DatabaseManager:
     """Advanced database manager with connection pooling, monitoring, and optimization"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.settings = get_settings()
         self.database_url = get_database_url(self.settings)
         self.engine = None
@@ -29,25 +28,22 @@ class DatabaseManager:
             "slow_queries": 0,
             "last_reset": datetime.utcnow(),
         }
-        self._slow_query_threshold = 1.0  # seconds
+        self._slow_query_threshold = 1.0
         self._lock = threading.Lock()
 
-    def initialize(self):
+    def initialize(self) -> Any:
         """Initialize database engine and session factory"""
         try:
-            # Create engine with optimized settings
             engine_kwargs = {
                 "poolclass": QueuePool,
                 "pool_size": self.settings.DATABASE_POOL_SIZE,
                 "max_overflow": self.settings.DATABASE_MAX_OVERFLOW,
                 "pool_timeout": self.settings.DATABASE_POOL_TIMEOUT,
                 "pool_recycle": self.settings.DATABASE_POOL_RECYCLE,
-                "pool_pre_ping": True,  # Verify connections before use
-                "echo": self.settings.DEBUG,  # Log SQL queries in debug mode
-                "echo_pool": self.settings.DEBUG,  # Log pool events in debug mode
+                "pool_pre_ping": True,
+                "echo": self.settings.DEBUG,
+                "echo_pool": self.settings.DEBUG,
             }
-
-            # SQLite specific optimizations
             if self.database_url.startswith("sqlite"):
                 engine_kwargs.update(
                     {
@@ -55,37 +51,28 @@ class DatabaseManager:
                         "connect_args": {
                             "check_same_thread": False,
                             "timeout": 20,
-                            "isolation_level": None,  # Enable autocommit mode
+                            "isolation_level": None,
                         },
                     }
                 )
-
             self.engine = create_engine(self.database_url, **engine_kwargs)
-
-            # Set up event listeners for monitoring
             self._setup_event_listeners()
-
-            # Configure SQLite for better performance
             if self.database_url.startswith("sqlite"):
                 self._configure_sqlite()
-
-            # Create session factory
             self.SessionLocal = sessionmaker(
                 autocommit=False, autoflush=False, bind=self.engine
             )
-
             logger.info(
                 "Database manager initialized successfully",
                 extra={"database_url": self.database_url.split("@")[-1]},
-            )  # Hide credentials
-
+            )
         except Exception as e:
             logger.error(
                 f"Failed to initialize database manager: {str(e)}", exc_info=True
             )
             raise
 
-    def _setup_event_listeners(self):
+    def _setup_event_listeners(self) -> Any:
         """Set up SQLAlchemy event listeners for monitoring"""
 
         @event.listens_for(self.engine, "connect")
@@ -93,14 +80,12 @@ class DatabaseManager:
             with self._lock:
                 self._connection_stats["total_connections"] += 1
                 self._connection_stats["active_connections"] += 1
-
             logger.debug("Database connection established")
 
         @event.listens_for(self.engine, "close")
         def on_close(dbapi_connection, connection_record):
             with self._lock:
                 self._connection_stats["active_connections"] -= 1
-
             logger.debug("Database connection closed")
 
         @event.listens_for(self.engine, "close_detached")
@@ -119,13 +104,10 @@ class DatabaseManager:
             conn, cursor, statement, parameters, context, executemany
         ):
             total_time = time.time() - context._query_start_time
-
             with self._lock:
                 self._connection_stats["query_count"] += 1
                 if total_time > self._slow_query_threshold:
                     self._connection_stats["slow_queries"] += 1
-
-            # Log slow queries
             if total_time > self._slow_query_threshold:
                 logger.warning(
                     f"Slow query detected: {total_time:.3f}s",
@@ -138,29 +120,22 @@ class DatabaseManager:
                         ),
                     },
                 )
-
-            # Log to performance logger
             performance_logger.log_database_query(
                 statement.split()[0] if statement else "UNKNOWN", total_time
             )
 
-    def _configure_sqlite(self):
+    def _configure_sqlite(self) -> Any:
         """Configure SQLite for better performance"""
 
         @event.listens_for(self.engine, "connect")
         def set_sqlite_pragma(dbapi_connection, connection_record):
             cursor = dbapi_connection.cursor()
-
-            # Performance optimizations
-            cursor.execute("PRAGMA journal_mode=WAL")  # Write-Ahead Logging
-            cursor.execute("PRAGMA synchronous=NORMAL")  # Faster writes
-            cursor.execute("PRAGMA cache_size=10000")  # Larger cache
-            cursor.execute("PRAGMA temp_store=MEMORY")  # Store temp tables in memory
-            cursor.execute("PRAGMA mmap_size=268435456")  # 256MB memory map
-
-            # Foreign key constraints
+            cursor.execute("PRAGMA journal_mode=WAL")
+            cursor.execute("PRAGMA synchronous=NORMAL")
+            cursor.execute("PRAGMA cache_size=10000")
+            cursor.execute("PRAGMA temp_store=MEMORY")
+            cursor.execute("PRAGMA mmap_size=268435456")
             cursor.execute("PRAGMA foreign_keys=ON")
-
             cursor.close()
 
     @contextmanager
@@ -168,7 +143,6 @@ class DatabaseManager:
         """Get database session with automatic cleanup"""
         if not self.SessionLocal:
             raise RuntimeError("Database manager not initialized")
-
         session = self.SessionLocal()
         try:
             yield session
@@ -203,8 +177,6 @@ class DatabaseManager:
         """Get database connection statistics"""
         with self._lock:
             stats = self._connection_stats.copy()
-
-        # Add engine pool stats if available
         if hasattr(self.engine.pool, "size"):
             stats.update(
                 {
@@ -215,46 +187,37 @@ class DatabaseManager:
                     "invalid": self.engine.pool.invalid(),
                 }
             )
-
         return stats
 
-    def reset_stats(self):
+    def reset_stats(self) -> Any:
         """Reset connection statistics"""
         with self._lock:
             self._connection_stats.update(
                 {
                     "total_connections": 0,
-                    "active_connections": self._connection_stats[
-                        "active_connections"
-                    ],  # Keep current active
+                    "active_connections": self._connection_stats["active_connections"],
                     "failed_connections": 0,
                     "query_count": 0,
                     "slow_queries": 0,
                     "last_reset": datetime.utcnow(),
                 }
             )
-
         logger.info("Database statistics reset")
 
     def health_check(self) -> Dict[str, Any]:
         """Perform database health check"""
         try:
             start_time = time.time()
-
             with self.get_db_session() as session:
-                # Simple query to test connectivity
                 result = session.execute(text("SELECT 1"))
                 result.fetchone()
-
             response_time = time.time() - start_time
-
             return {
                 "status": "healthy",
                 "response_time": response_time,
                 "timestamp": datetime.utcnow().isoformat(),
                 "stats": self.get_connection_stats(),
             }
-
         except Exception as e:
             logger.error(f"Database health check failed: {str(e)}")
             return {
@@ -263,39 +226,28 @@ class DatabaseManager:
                 "timestamp": datetime.utcnow().isoformat(),
             }
 
-    def optimize_database(self):
+    def optimize_database(self) -> Any:
         """Perform database optimization tasks"""
         try:
             if self.database_url.startswith("sqlite"):
                 self._optimize_sqlite()
             else:
                 self._optimize_postgresql()
-
             logger.info("Database optimization completed")
-
         except Exception as e:
             logger.error(f"Database optimization failed: {str(e)}", exc_info=True)
 
-    def _optimize_sqlite(self):
+    def _optimize_sqlite(self) -> Any:
         """SQLite-specific optimizations"""
         with self.get_db_session() as session:
-            # Analyze database for query optimization
             session.execute(text("ANALYZE"))
-
-            # Vacuum to reclaim space and defragment
             session.execute(text("VACUUM"))
-
-            # Update statistics
             session.execute(text("PRAGMA optimize"))
 
-    def _optimize_postgresql(self):
+    def _optimize_postgresql(self) -> Any:
         """PostgreSQL-specific optimizations"""
         with self.get_db_session() as session:
-            # Analyze tables for query optimization
             session.execute(text("ANALYZE"))
-
-            # Note: VACUUM would typically be run by a maintenance job
-            # session.execute(text("VACUUM ANALYZE"))
 
     def backup_database(self, backup_path: str) -> bool:
         """Create database backup"""
@@ -305,7 +257,6 @@ class DatabaseManager:
             else:
                 logger.warning("Backup not implemented for this database type")
                 return False
-
         except Exception as e:
             logger.error(f"Database backup failed: {str(e)}", exc_info=True)
             return False
@@ -315,20 +266,15 @@ class DatabaseManager:
         import shutil
 
         try:
-            # Extract database path from URL
             db_path = self.database_url.replace("sqlite:///", "")
-
-            # Simple file copy for SQLite
             shutil.copy2(db_path, backup_path)
-
             logger.info(f"SQLite database backed up to {backup_path}")
             return True
-
         except Exception as e:
             logger.error(f"SQLite backup failed: {str(e)}")
             return False
 
-    def close(self):
+    def close(self) -> Any:
         """Close database connections and cleanup"""
         try:
             if self.engine:
@@ -338,24 +284,20 @@ class DatabaseManager:
             logger.error(f"Error closing database connections: {str(e)}")
 
 
-# Global database manager instance
 db_manager = DatabaseManager()
 
 
-# Convenience function for FastAPI dependency injection
 def get_database() -> Generator[Session, None, None]:
     """FastAPI dependency for database session"""
     yield from db_manager.get_db()
 
 
-# Database initialization function
-def init_database():
+def init_database() -> Any:
     """Initialize database manager"""
     db_manager.initialize()
 
 
-# Database cleanup function
-def close_database():
+def close_database() -> Any:
     """Close database connections"""
     db_manager.close()
 
@@ -363,24 +305,20 @@ def close_database():
 class DatabaseMiddleware:
     """Middleware for database session management and monitoring"""
 
-    def __init__(self, app):
+    def __init__(self, app: Any) -> Any:
         self.app = app
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
-
         start_time = time.time()
-
-        # Add database session to scope if needed
         scope["db_manager"] = db_manager
 
         async def send_wrapper(message):
             if message["type"] == "http.response.start":
-                # Log database stats for this request
                 duration = time.time() - start_time
-                if duration > 1.0:  # Log slow requests
+                if duration > 1.0:
                     logger.warning(
                         f"Slow request: {duration:.3f}s",
                         extra={
@@ -393,15 +331,13 @@ class DatabaseMiddleware:
         await self.app(scope, receive, send_wrapper)
 
 
-# Query optimization utilities
 class QueryOptimizer:
     """Utilities for query optimization and analysis"""
 
     @staticmethod
-    def explain_query(session: Session, query) -> Dict[str, Any]:
+    def explain_query(session: Session, query: Any) -> Dict[str, Any]:
         """Get query execution plan"""
         try:
-            # This would be database-specific
             if hasattr(query, "statement"):
                 stmt = str(
                     query.statement.compile(compile_kwargs={"literal_binds": True})
@@ -416,14 +352,10 @@ class QueryOptimizer:
     def get_table_stats(session: Session, table_name: str) -> Dict[str, Any]:
         """Get table statistics"""
         try:
-            # Get row count
             count_result = session.execute(text(f"SELECT COUNT(*) FROM {table_name}"))
             row_count = count_result.scalar()
-
-            # Get table info (SQLite specific)
             info_result = session.execute(text(f"PRAGMA table_info({table_name})"))
             columns = [dict(row) for row in info_result]
-
             return {
                 "table_name": table_name,
                 "row_count": row_count,
@@ -433,11 +365,10 @@ class QueryOptimizer:
             return {"error": str(e)}
 
 
-# Connection pool monitoring
 class PoolMonitor:
     """Monitor database connection pool health"""
 
-    def __init__(self, db_manager: DatabaseManager):
+    def __init__(self, db_manager: DatabaseManager) -> Any:
         self.db_manager = db_manager
         self.alerts_sent = set()
 
@@ -445,33 +376,25 @@ class PoolMonitor:
         """Check connection pool health and return status"""
         stats = self.db_manager.get_connection_stats()
         alerts = []
-
-        # Check for high connection usage
         if hasattr(self.db_manager.engine.pool, "size"):
             pool_size = self.db_manager.engine.pool.size()
             checked_out = self.db_manager.engine.pool.checkedout()
-
             if pool_size > 0:
                 utilization = checked_out / pool_size
-                if utilization > 0.8:  # 80% utilization
+                if utilization > 0.8:
                     alert = "High connection pool utilization"
                     alerts.append(alert)
                     if alert not in self.alerts_sent:
                         logger.warning(alert, extra={"utilization": utilization})
                         self.alerts_sent.add(alert)
-
-        # Check for slow queries
         if stats["slow_queries"] > 10:
             alert = "High number of slow queries detected"
             alerts.append(alert)
             if alert not in self.alerts_sent:
                 logger.warning(alert, extra={"slow_queries": stats["slow_queries"]})
                 self.alerts_sent.add(alert)
-
-        # Clear alerts if conditions improve
         if not alerts:
             self.alerts_sent.clear()
-
         return {
             "status": "warning" if alerts else "healthy",
             "alerts": alerts,

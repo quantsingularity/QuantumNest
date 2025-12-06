@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from typing import List, Optional
-
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models
@@ -18,7 +17,7 @@ def get_assets(
     asset_type: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     query = db.query(models.Asset)
     if asset_type:
         query = query.filter(models.Asset.asset_type == asset_type)
@@ -31,7 +30,7 @@ def get_asset(
     asset_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_asset = db.query(models.Asset).filter(models.Asset.id == asset_id).first()
     if db_asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
@@ -43,22 +42,18 @@ def get_asset_price(
     asset_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_asset = db.query(models.Asset).filter(models.Asset.id == asset_id).first()
     if db_asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
-
-    # Get latest price
     latest_price = (
         db.query(models.AssetPrice)
         .filter(models.AssetPrice.asset_id == asset_id)
         .order_by(models.AssetPrice.timestamp.desc())
         .first()
     )
-
     if latest_price is None:
         raise HTTPException(status_code=404, detail="Price data not found")
-
     return {
         "asset_id": asset_id,
         "symbol": db_asset.symbol,
@@ -74,12 +69,10 @@ def get_asset_price_history(
     period: str = "1m",
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
+) -> Any:
     db_asset = db.query(models.Asset).filter(models.Asset.id == asset_id).first()
     if db_asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
-
-    # Calculate date range based on period
     end_date = datetime.now()
     if period == "1d":
         start_date = end_date - timedelta(days=1)
@@ -94,9 +87,7 @@ def get_asset_price_history(
     elif period == "1y":
         start_date = end_date - timedelta(days=365)
     else:
-        start_date = end_date - timedelta(days=30)  # Default to 1 month
-
-    # Get price history
+        start_date = end_date - timedelta(days=30)
     price_history = (
         db.query(models.AssetPrice)
         .filter(
@@ -107,8 +98,6 @@ def get_asset_price_history(
         .order_by(models.AssetPrice.timestamp.asc())
         .all()
     )
-
-    # Format response
     result = {
         "asset_id": asset_id,
         "symbol": db_asset.symbol,
@@ -119,7 +108,6 @@ def get_asset_price_history(
             for price in price_history
         ],
     }
-
     return result
 
 
@@ -127,9 +115,7 @@ def get_asset_price_history(
 def get_market_summary(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual market data
-    # For now, return mock data
+) -> Any:
     market_summary = {
         "indices": [
             {
@@ -175,9 +161,7 @@ def get_market_news(
     limit: int = 5,
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual news API
-    # For now, return mock data
+) -> Any:
     market_news = [
         {
             "title": "Fed Signals Potential Rate Cut in Q3",
@@ -218,9 +202,7 @@ def get_sector_performance(
     period: str = "ytd",
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_active_user),
-):
-    # This would be implemented with actual sector performance data
-    # For now, return mock data
+) -> Any:
     sector_performance = [
         {"name": "Technology", "value": 8.5},
         {"name": "Healthcare", "value": 5.2},

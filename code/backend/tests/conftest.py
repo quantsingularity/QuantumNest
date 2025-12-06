@@ -2,14 +2,11 @@ import os
 import tempfile
 from datetime import datetime
 from unittest.mock import Mock, patch
-
 import pytest
 import redis
 from app.ai.fraud_detection import AdvancedFraudDetectionSystem
 from app.auth.authentication import AdvancedAuthenticationSystem
 from app.auth.authorization import RoleBasedAccessControl
-
-# Import application modules
 from app.models.models import Account, Base, Portfolio, Transaction, User
 from app.services.market_data_service import MarketDataService
 from app.services.trading_service import TradingService
@@ -20,7 +17,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 @pytest.fixture(scope="session")
-def test_settings():
+def test_settings() -> Any:
     """Test settings configuration"""
     return {
         "DATABASE_URL": "sqlite:///:memory:",
@@ -36,25 +33,20 @@ def test_settings():
 
 
 @pytest.fixture(scope="session")
-def test_database():
+def test_database() -> Any:
     """Create test database"""
     engine = create_engine("sqlite:///:memory:", echo=False)
     Base.metadata.create_all(engine)
-
     SessionLocal = sessionmaker(bind=engine)
-
     yield SessionLocal
-
-    # Cleanup
     Base.metadata.drop_all(engine)
     engine.dispose()
 
 
 @pytest.fixture
-def db_session(test_database):
+def db_session(test_database: Any) -> Any:
     """Create database session for test"""
     session = test_database()
-
     try:
         yield session
     finally:
@@ -63,7 +55,7 @@ def db_session(test_database):
 
 
 @pytest.fixture
-def mock_redis():
+def mock_redis() -> Any:
     """Mock Redis client"""
     mock_redis = Mock()
     mock_redis.get.return_value = None
@@ -77,22 +69,20 @@ def mock_redis():
     mock_redis.zcount.return_value = 0
     mock_redis.zremrangebyscore.return_value = 0
     mock_redis.expire.return_value = True
-
     return mock_redis
 
 
 @pytest.fixture
-def test_app():
+def test_app() -> Any:
     """Create test Flask application"""
     app = Flask(__name__)
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = "test-secret-key"
-
     return app
 
 
 @pytest.fixture
-def test_user_data():
+def test_user_data() -> Any:
     """Test user data"""
     return {
         "email": "test@example.com",
@@ -110,7 +100,7 @@ def test_user_data():
 
 
 @pytest.fixture
-def test_user(db_session, test_user_data):
+def test_user(db_session: Any, test_user_data: Any) -> Any:
     """Create test user in database"""
     user = User(
         email=test_user_data["email"],
@@ -128,70 +118,66 @@ def test_user(db_session, test_user_data):
         email_verified=True,
         created_at=datetime.utcnow(),
     )
-
     db_session.add(user)
     db_session.commit()
     db_session.refresh(user)
-
     return user
 
 
 @pytest.fixture
-def test_account(db_session, test_user):
+def test_account(db_session: Any, test_user: Any) -> Any:
     """Create test account"""
     account = Account(
         user_id=test_user.id,
         account_number="TEST123456789",
         account_type="checking",
-        balance=10000.00,
+        balance=10000.0,
         currency="USD",
         is_active=True,
         created_at=datetime.utcnow(),
     )
-
     db_session.add(account)
     db_session.commit()
     db_session.refresh(account)
-
     return account
 
 
 @pytest.fixture
-def test_portfolio(db_session, test_user):
+def test_portfolio(db_session: Any, test_user: Any) -> Any:
     """Create test portfolio"""
     portfolio = Portfolio(
         user_id=test_user.id,
         name="Test Portfolio",
         description="Test portfolio for testing",
-        total_value=50000.00,
-        cash_balance=5000.00,
+        total_value=50000.0,
+        cash_balance=5000.0,
         currency="USD",
         created_at=datetime.utcnow(),
     )
-
     db_session.add(portfolio)
     db_session.commit()
     db_session.refresh(portfolio)
-
     return portfolio
 
 
 @pytest.fixture
-def test_transaction_data():
+def test_transaction_data() -> Any:
     """Test transaction data"""
     return {
-        "amount": 1000.00,
+        "amount": 1000.0,
         "transaction_type": "buy",
         "symbol": "AAPL",
         "quantity": 10,
-        "price": 100.00,
+        "price": 100.0,
         "currency": "USD",
         "description": "Test transaction",
     }
 
 
 @pytest.fixture
-def test_transaction(db_session, test_user, test_account, test_transaction_data):
+def test_transaction(
+    db_session: Any, test_user: Any, test_account: Any, test_transaction_data: Any
+) -> Any:
     """Create test transaction"""
     transaction = Transaction(
         user_id=test_user.id,
@@ -206,105 +192,99 @@ def test_transaction(db_session, test_user, test_account, test_transaction_data)
         status="completed",
         created_at=datetime.utcnow(),
     )
-
     db_session.add(transaction)
     db_session.commit()
     db_session.refresh(transaction)
-
     return transaction
 
 
 @pytest.fixture
-def auth_system(db_session, mock_redis):
+def auth_system(db_session: Any, mock_redis: Any) -> Any:
     """Create authentication system for testing"""
     with patch("app.auth.authentication.redis.Redis", return_value=mock_redis):
         return AdvancedAuthenticationSystem(db_session)
 
 
 @pytest.fixture
-def auth_system_real_redis(db_session):
+def auth_system_real_redis(db_session: Any) -> Any:
     """Create authentication system with real Redis (for integration tests)"""
-    # Skip if Redis is not available
     try:
         redis_client = redis.Redis(host="localhost", port=6379, decode_responses=True)
         redis_client.ping()
     except:
         pytest.skip("Redis not available for integration tests")
-
     return AdvancedAuthenticationSystem(db_session)
 
 
 @pytest.fixture
-def rbac_system(db_session):
+def rbac_system(db_session: Any) -> Any:
     """Create RBAC system for testing"""
     return RoleBasedAccessControl(db_session)
 
 
 @pytest.fixture
-def encryption_manager():
+def encryption_manager() -> Any:
     """Create encryption manager for testing"""
     return AdvancedEncryptionManager()
 
 
 @pytest.fixture
-def trading_service():
+def trading_service() -> Any:
     """Create trading service for testing"""
     return TradingService()
 
 
 @pytest.fixture
-def market_data_service():
+def market_data_service() -> Any:
     """Create market data service for testing"""
     return MarketDataService()
 
 
 @pytest.fixture
-def fraud_detection_system():
+def fraud_detection_system() -> Any:
     """Create fraud detection system for testing"""
     return AdvancedFraudDetectionSystem()
 
 
 @pytest.fixture
-def mock_market_data():
+def mock_market_data() -> Any:
     """Mock market data"""
     return {
         "AAPL": {
             "symbol": "AAPL",
-            "price": 150.00,
-            "change": 2.50,
+            "price": 150.0,
+            "change": 2.5,
             "change_percent": 1.69,
             "volume": 1000000,
-            "high": 152.00,
-            "low": 148.00,
-            "open": 149.00,
-            "close": 150.00,
+            "high": 152.0,
+            "low": 148.0,
+            "open": 149.0,
+            "close": 150.0,
             "timestamp": datetime.utcnow(),
         },
         "GOOGL": {
             "symbol": "GOOGL",
-            "price": 2500.00,
-            "change": -10.00,
-            "change_percent": -0.40,
+            "price": 2500.0,
+            "change": -10.0,
+            "change_percent": -0.4,
             "volume": 500000,
-            "high": 2520.00,
-            "low": 2490.00,
-            "open": 2510.00,
-            "close": 2500.00,
+            "high": 2520.0,
+            "low": 2490.0,
+            "open": 2510.0,
+            "close": 2500.0,
             "timestamp": datetime.utcnow(),
         },
     }
 
 
 @pytest.fixture
-def sample_training_data():
+def sample_training_data() -> Any:
     """Sample training data for ML models"""
     import numpy as np
     import pandas as pd
 
-    # Generate sample transaction data
     np.random.seed(42)
     n_samples = 1000
-
     data = {
         "user_id": np.random.randint(1, 100, n_samples),
         "amount": np.random.exponential(1000, n_samples),
@@ -315,33 +295,25 @@ def sample_training_data():
             ["retail", "restaurant", "gas", "grocery"], n_samples
         ),
         "is_weekend": np.random.choice([0, 1], n_samples),
-        "device_fingerprint": [f"device_{i%20}" for i in range(n_samples)],
-        "ip_address": [f"192.168.1.{i%255}" for i in range(n_samples)],
-        "is_fraud": np.random.choice(
-            [0, 1], n_samples, p=[0.95, 0.05]
-        ),  # 5% fraud rate
+        "device_fingerprint": [f"device_{i % 20}" for i in range(n_samples)],
+        "ip_address": [f"192.168.1.{i % 255}" for i in range(n_samples)],
+        "is_fraud": np.random.choice([0, 1], n_samples, p=[0.95, 0.05]),
     }
-
     return pd.DataFrame(data)
 
 
 @pytest.fixture
-def sample_price_data():
+def sample_price_data() -> Any:
     """Sample price data for time series models"""
     import numpy as np
     import pandas as pd
 
-    # Generate sample price data
     np.random.seed(42)
     dates = pd.date_range(start="2020-01-01", end="2023-12-31", freq="D")
-
-    # Generate realistic price movements
-    returns = np.random.normal(0.001, 0.02, len(dates))  # Daily returns
-    prices = [100]  # Starting price
-
+    returns = np.random.normal(0.001, 0.02, len(dates))
+    prices = [100]
     for ret in returns[1:]:
         prices.append(prices[-1] * (1 + ret))
-
     data = pd.DataFrame(
         {
             "date": dates,
@@ -353,19 +325,18 @@ def sample_price_data():
             "close": prices,
         }
     )
-
     return data
 
 
 @pytest.fixture
-def jwt_token(auth_system, test_user):
+def jwt_token(auth_system: Any, test_user: Any) -> Any:
     """Generate JWT token for testing"""
     session_id = "test_session_123"
     return auth_system._generate_access_token(str(test_user.id), session_id)
 
 
 @pytest.fixture
-def api_headers(jwt_token):
+def api_headers(jwt_token: Any) -> Any:
     """API headers for authenticated requests"""
     return {
         "Authorization": f"Bearer {jwt_token}",
@@ -375,28 +346,23 @@ def api_headers(jwt_token):
 
 
 @pytest.fixture
-def temp_file():
+def temp_file() -> Any:
     """Create temporary file for testing"""
     fd, path = tempfile.mkstemp()
-
     yield path
-
-    # Cleanup
     os.close(fd)
     os.unlink(path)
 
 
 @pytest.fixture
-def temp_dir():
+def temp_dir() -> Any:
     """Create temporary directory for testing"""
     with tempfile.TemporaryDirectory() as temp_dir:
         yield temp_dir
 
 
-# Pytest configuration
-def pytest_configure(config):
+def pytest_configure(config: Any) -> Any:
     """Configure pytest"""
-    # Add custom markers
     config.addinivalue_line("markers", "unit: mark test as unit test")
     config.addinivalue_line("markers", "integration: mark test as integration test")
     config.addinivalue_line("markers", "security: mark test as security test")
@@ -404,9 +370,8 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "slow: mark test as slow running")
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config: Any, items: Any) -> Any:
     """Modify test collection"""
-    # Add markers based on test file names
     for item in items:
         if "test_unit" in item.nodeid:
             item.add_marker(pytest.mark.unit)
@@ -418,12 +383,11 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(pytest.mark.performance)
 
 
-# Test utilities
 class TestDataFactory:
     """Factory for creating test data"""
 
     @staticmethod
-    def create_user_data(**kwargs):
+    def create_user_data(**kwargs) -> Any:
         """Create user data with defaults"""
         default_data = {
             "email": "test@example.com",
@@ -442,14 +406,14 @@ class TestDataFactory:
         return default_data
 
     @staticmethod
-    def create_transaction_data(**kwargs):
+    def create_transaction_data(**kwargs) -> Any:
         """Create transaction data with defaults"""
         default_data = {
-            "amount": 1000.00,
+            "amount": 1000.0,
             "transaction_type": "buy",
             "symbol": "AAPL",
             "quantity": 10,
-            "price": 100.00,
+            "price": 100.0,
             "currency": "USD",
             "description": "Test transaction",
         }
@@ -457,60 +421,57 @@ class TestDataFactory:
         return default_data
 
     @staticmethod
-    def create_portfolio_data(**kwargs):
+    def create_portfolio_data(**kwargs) -> Any:
         """Create portfolio data with defaults"""
         default_data = {
             "name": "Test Portfolio",
             "description": "Test portfolio for testing",
-            "total_value": 50000.00,
-            "cash_balance": 5000.00,
+            "total_value": 50000.0,
+            "cash_balance": 5000.0,
             "currency": "USD",
         }
         default_data.update(kwargs)
         return default_data
 
 
-# Mock helpers
 class MockResponse:
     """Mock HTTP response"""
 
-    def __init__(self, json_data, status_code):
+    def __init__(self, json_data: Any, status_code: Any) -> Any:
         self.json_data = json_data
         self.status_code = status_code
 
-    def json(self):
+    def json(self) -> Any:
         return self.json_data
 
-    def raise_for_status(self):
+    def raise_for_status(self) -> Any:
         if self.status_code >= 400:
             raise Exception(f"HTTP {self.status_code}")
 
 
-def mock_requests_get(url, **kwargs):
+def mock_requests_get(url: Any, **kwargs) -> Any:
     """Mock requests.get"""
     if "api.example.com" in url:
         return MockResponse({"data": "test"}, 200)
     return MockResponse({"error": "Not found"}, 404)
 
 
-def mock_requests_post(url, **kwargs):
+def mock_requests_post(url: Any, **kwargs) -> Any:
     """Mock requests.post"""
     if "api.example.com" in url:
         return MockResponse({"success": True}, 200)
     return MockResponse({"error": "Bad request"}, 400)
 
 
-# Performance testing helpers
 import time
 from contextlib import contextmanager
-
 from core.logging import get_logger
 
 logger = get_logger(__name__)
 
 
 @contextmanager
-def timer():
+def timer() -> Any:
     """Context manager to measure execution time"""
     start = time.time()
     yield
@@ -518,44 +479,36 @@ def timer():
     logger.info(f"Execution time: {end - start:.4f} seconds")
 
 
-def measure_memory_usage():
+def measure_memory_usage() -> Any:
     """Measure memory usage"""
     import psutil
 
     process = psutil.Process()
-    return process.memory_info().rss / 1024 / 1024  # MB
+    return process.memory_info().rss / 1024 / 1024
 
 
-# Security testing helpers
-def generate_malicious_inputs():
+def generate_malicious_inputs() -> Any:
     """Generate malicious inputs for security testing"""
     return [
-        # SQL injection attempts
         "'; DROP TABLE users; --",
         "1' OR '1'='1",
         "admin'--",
-        # XSS attempts
         "<script>alert('xss')</script>",
         "javascript:alert('xss')",
         "<img src=x onerror=alert('xss')>",
-        # Command injection attempts
         "; cat /etc/passwd",
         "| whoami",
         "&& ls -la",
-        # Path traversal attempts
         "../../../etc/passwd",
         "..\\..\\..\\windows\\system32\\config\\sam",
-        # Buffer overflow attempts
         "A" * 10000,
         "\x00" * 1000,
-        # Format string attacks
         "%s%s%s%s%s",
         "%x%x%x%x%x",
     ]
 
 
-# Assertion helpers
-def assert_valid_uuid(uuid_string):
+def assert_valid_uuid(uuid_string: Any) -> Any:
     """Assert that string is valid UUID"""
     import uuid
 
@@ -566,57 +519,43 @@ def assert_valid_uuid(uuid_string):
         return False
 
 
-def assert_valid_email(email):
+def assert_valid_email(email: Any) -> Any:
     """Assert that string is valid email"""
     import re
 
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
 
 
-def assert_secure_password(password):
+def assert_secure_password(password: Any) -> Any:
     """Assert that password meets security requirements"""
     import re
 
-    # At least 8 characters
     if len(password) < 8:
         return False
-
-    # Contains uppercase letter
-    if not re.search(r"[A-Z]", password):
+    if not re.search("[A-Z]", password):
         return False
-
-    # Contains lowercase letter
-    if not re.search(r"[a-z]", password):
+    if not re.search("[a-z]", password):
         return False
-
-    # Contains digit
-    if not re.search(r"\d", password):
+    if not re.search("\\d", password):
         return False
-
-    # Contains special character
-    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+    if not re.search('[!@#$%^&*(),.?":{}|<>]', password):
         return False
-
     return True
 
 
-def assert_encrypted_data(data):
+def assert_encrypted_data(data: Any) -> Any:
     """Assert that data appears to be encrypted"""
-    # Basic checks for encrypted data
     if isinstance(data, str):
-        # Should not be readable text
-        if any(word in data.lower() for word in ["password", "secret", "key", "token"]):
+        if any(
+            (word in data.lower() for word in ["password", "secret", "key", "token"])
+        ):
             return False
-
-        # Should contain non-printable characters or be base64 encoded
         try:
             import base64
 
             base64.b64decode(data)
             return True
         except:
-            # Check for non-printable characters
-            return any(ord(c) < 32 or ord(c) > 126 for c in data)
-
+            return any((ord(c) < 32 or ord(c) > 126 for c in data))
     return isinstance(data, bytes)

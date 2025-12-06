@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
-
 import aiohttp
 import pandas as pd
 import yfinance as yf
@@ -46,35 +45,28 @@ class MarketQuote:
 class MarketDataService:
     """Comprehensive market data service with multiple providers"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.settings = get_settings()
         self.logger = get_logger(__name__)
         self._cache = {}
-        self._cache_timeout = 60  # 1 minute cache
+        self._cache_timeout = 60
 
     async def get_current_price(self, symbol: str) -> Optional[Decimal]:
         """Get current price for a symbol"""
         try:
-            # Check cache first
             cache_key = f"price_{symbol}"
             if self._is_cached(cache_key):
                 return self._cache[cache_key]["data"]
-
-            # Try Yahoo Finance first (free and reliable)
             price = await self._get_yahoo_price(symbol)
             if price:
                 self._cache_data(cache_key, price)
                 return price
-
-            # Fallback to other providers if available
             if self.settings.ALPHA_VANTAGE_API_KEY:
                 price = await self._get_alpha_vantage_price(symbol)
                 if price:
                     self._cache_data(cache_key, price)
                     return price
-
             return None
-
         except Exception as e:
             self.logger.error(f"Error getting current price for {symbol}: {str(e)}")
             return None
@@ -85,14 +77,11 @@ class MarketDataService:
             cache_key = f"quote_{symbol}"
             if self._is_cached(cache_key):
                 return self._cache[cache_key]["data"]
-
             quote = await self._get_yahoo_quote(symbol)
             if quote:
                 self._cache_data(cache_key, quote)
                 return quote
-
             return None
-
         except Exception as e:
             self.logger.error(f"Error getting market quote for {symbol}: {str(e)}")
             return None
@@ -103,21 +92,14 @@ class MarketDataService:
         """Get historical price data"""
         try:
             cache_key = f"history_{symbol}_{days}_{interval}"
-            if self._is_cached(
-                cache_key, timeout=300
-            ):  # 5 minute cache for historical data
+            if self._is_cached(cache_key, timeout=300):
                 return self._cache[cache_key]["data"]
-
-            # Use Yahoo Finance for historical data
             ticker = yf.Ticker(symbol)
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
-
             hist = ticker.history(start=start_date, end=end_date, interval=interval)
-
             if hist.empty:
                 return []
-
             prices = []
             for date, row in hist.iterrows():
                 prices.append(
@@ -128,15 +110,11 @@ class MarketDataService:
                         "low": float(row["Low"]),
                         "close": float(row["Close"]),
                         "volume": int(row["Volume"]),
-                        "adjusted_close": float(
-                            row["Close"]
-                        ),  # Yahoo Finance adjusts automatically
+                        "adjusted_close": float(row["Close"]),
                     }
                 )
-
             self._cache_data(cache_key, prices, timeout=300)
             return prices
-
         except Exception as e:
             self.logger.error(f"Error getting historical prices for {symbol}: {str(e)}")
             return []
@@ -146,7 +124,6 @@ class MarketDataService:
         try:
             tasks = [self.get_market_quote(symbol) for symbol in symbols]
             results = await asyncio.gather(*tasks, return_exceptions=True)
-
             quotes = {}
             for symbol, result in zip(symbols, results):
                 if isinstance(result, MarketQuote):
@@ -155,9 +132,7 @@ class MarketDataService:
                     self.logger.warning(
                         f"Failed to get quote for {symbol}: {str(result)}"
                     )
-
             return quotes
-
         except Exception as e:
             self.logger.error(f"Error getting multiple quotes: {str(e)}")
             return {}
@@ -167,10 +142,7 @@ class MarketDataService:
     ) -> Dict[str, List[Dict]]:
         """Get market movers (gainers, losers, most active)"""
         try:
-            # This would typically connect to a financial data provider
-            # For now, return mock data structure
             return {"gainers": [], "losers": [], "most_active": []}
-
         except Exception as e:
             self.logger.error(f"Error getting market movers: {str(e)}")
             return {"gainers": [], "losers": [], "most_active": []}
@@ -178,7 +150,6 @@ class MarketDataService:
     async def get_sector_performance(self) -> List[Dict]:
         """Get sector performance data"""
         try:
-            # Major sector ETFs for tracking sector performance
             sector_etfs = {
                 "XLK": "Technology",
                 "XLF": "Financial",
@@ -192,7 +163,6 @@ class MarketDataService:
                 "XLRE": "Real Estate",
                 "XLC": "Communication Services",
             }
-
             sector_data = []
             for etf, sector_name in sector_etfs.items():
                 quote = await self.get_market_quote(etf)
@@ -206,9 +176,7 @@ class MarketDataService:
                             "change_percent": float(quote.change_percent),
                         }
                     )
-
             return sorted(sector_data, key=lambda x: x["change_percent"], reverse=True)
-
         except Exception as e:
             self.logger.error(f"Error getting sector performance: {str(e)}")
             return []
@@ -216,7 +184,6 @@ class MarketDataService:
     async def get_economic_indicators(self) -> Dict[str, Any]:
         """Get key economic indicators"""
         try:
-            # Key economic indicator symbols
             indicators = {
                 "^TNX": "10-Year Treasury",
                 "^VIX": "VIX Volatility Index",
@@ -224,7 +191,6 @@ class MarketDataService:
                 "GC=F": "Gold Futures",
                 "CL=F": "Oil Futures",
             }
-
             indicator_data = {}
             for symbol, name in indicators.items():
                 quote = await self.get_market_quote(symbol)
@@ -236,9 +202,7 @@ class MarketDataService:
                         "change_percent": float(quote.change_percent),
                         "timestamp": quote.timestamp.isoformat(),
                     }
-
             return indicator_data
-
         except Exception as e:
             self.logger.error(f"Error getting economic indicators: {str(e)}")
             return {}
@@ -246,10 +210,6 @@ class MarketDataService:
     async def search_symbols(self, query: str, limit: int = 10) -> List[Dict]:
         """Search for symbols by name or ticker"""
         try:
-            # This would typically use a financial data provider's search API
-            # For now, implement basic search using yfinance
-
-            # Try direct ticker lookup first
             try:
                 ticker = yf.Ticker(query.upper())
                 info = ticker.info
@@ -265,11 +225,7 @@ class MarketDataService:
                     ]
             except:
                 pass
-
-            # If direct lookup fails, return empty for now
-            # In production, this would use a proper search API
             return []
-
         except Exception as e:
             self.logger.error(f"Error searching symbols for '{query}': {str(e)}")
             return []
@@ -278,15 +234,12 @@ class MarketDataService:
         """Get detailed company information"""
         try:
             cache_key = f"info_{symbol}"
-            if self._is_cached(cache_key, timeout=3600):  # 1 hour cache
+            if self._is_cached(cache_key, timeout=3600):
                 return self._cache[cache_key]["data"]
-
             ticker = yf.Ticker(symbol)
             info = ticker.info
-
             if not info:
                 return None
-
             company_info = {
                 "symbol": symbol,
                 "name": info.get("longName", info.get("shortName", "")),
@@ -318,13 +271,9 @@ class MarketDataService:
                 "employees": info.get("fullTimeEmployees"),
                 "headquarters": f"{info.get('city', '')}, {info.get('state', '')} {info.get('country', '')}".strip(),
             }
-
-            # Clean up None values
             company_info = {k: v for k, v in company_info.items() if v is not None}
-
             self._cache_data(cache_key, company_info, timeout=3600)
             return company_info
-
         except Exception as e:
             self.logger.error(f"Error getting company info for {symbol}: {str(e)}")
             return None
@@ -334,62 +283,44 @@ class MarketDataService:
     ) -> Dict[str, float]:
         """Calculate technical indicators"""
         try:
-            # Get historical data
             prices = await self.get_historical_prices(symbol, days=max(period * 2, 50))
             if len(prices) < period:
                 return {}
-
-            # Convert to pandas DataFrame for easier calculation
             df = pd.DataFrame(prices)
             df["close"] = pd.to_numeric(df["close"])
             df["high"] = pd.to_numeric(df["high"])
             df["low"] = pd.to_numeric(df["low"])
             df["volume"] = pd.to_numeric(df["volume"])
-
             indicators = {}
-
-            # Simple Moving Averages
             indicators["sma_20"] = float(df["close"].rolling(window=20).mean().iloc[-1])
             indicators["sma_50"] = (
                 float(df["close"].rolling(window=50).mean().iloc[-1])
                 if len(df) >= 50
                 else None
             )
-
-            # Exponential Moving Averages
             indicators["ema_12"] = float(df["close"].ewm(span=12).mean().iloc[-1])
             indicators["ema_26"] = float(df["close"].ewm(span=26).mean().iloc[-1])
-
-            # MACD
             ema_12 = df["close"].ewm(span=12).mean()
             ema_26 = df["close"].ewm(span=26).mean()
             indicators["macd"] = float((ema_12 - ema_26).iloc[-1])
-
-            # RSI
             delta = df["close"].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+            gain = delta.where(delta > 0, 0).rolling(window=14).mean()
             loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
             rs = gain / loss
-            indicators["rsi"] = float(100 - (100 / (1 + rs.iloc[-1])))
-
-            # Bollinger Bands
+            indicators["rsi"] = float(100 - 100 / (1 + rs.iloc[-1]))
             sma_20 = df["close"].rolling(window=20).mean()
             std_20 = df["close"].rolling(window=20).std()
-            indicators["bollinger_upper"] = float((sma_20 + (std_20 * 2)).iloc[-1])
-            indicators["bollinger_lower"] = float((sma_20 - (std_20 * 2)).iloc[-1])
-
-            # Volume indicators
+            indicators["bollinger_upper"] = float((sma_20 + std_20 * 2).iloc[-1])
+            indicators["bollinger_lower"] = float((sma_20 - std_20 * 2).iloc[-1])
             indicators["volume_sma"] = float(
                 df["volume"].rolling(window=20).mean().iloc[-1]
             )
-
-            # Clean up None values
             indicators = {
-                k: v for k, v in indicators.items() if v is not None and not pd.isna(v)
+                k: v
+                for k, v in indicators.items()
+                if v is not None and (not pd.isna(v))
             }
-
             return indicators
-
         except Exception as e:
             self.logger.error(
                 f"Error calculating technical indicators for {symbol}: {str(e)}"
@@ -413,20 +344,14 @@ class MarketDataService:
         try:
             ticker = yf.Ticker(symbol)
             info = ticker.info
-
             if not info:
                 return None
-
             current_price = info.get("currentPrice") or info.get("regularMarketPrice")
             if not current_price:
                 return None
-
             previous_close = info.get("previousClose", current_price)
             change = current_price - previous_close
-            change_percent = (
-                (change / previous_close) * 100 if previous_close > 0 else 0
-            )
-
+            change_percent = change / previous_close * 100 if previous_close > 0 else 0
             return MarketQuote(
                 symbol=symbol,
                 price=Decimal(str(current_price)),
@@ -439,7 +364,6 @@ class MarketDataService:
                 bid_size=info.get("bidSize"),
                 ask_size=info.get("askSize"),
             )
-
         except Exception as e:
             self.logger.debug(f"Yahoo Finance quote error for {symbol}: {str(e)}")
             return None
@@ -449,14 +373,12 @@ class MarketDataService:
         try:
             if not self.settings.ALPHA_VANTAGE_API_KEY:
                 return None
-
             url = "https://www.alphavantage.co/query"
             params = {
                 "function": "GLOBAL_QUOTE",
                 "symbol": symbol,
                 "apikey": self.settings.ALPHA_VANTAGE_API_KEY,
             }
-
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, params=params) as response:
                     if response.status == 200:
@@ -465,9 +387,7 @@ class MarketDataService:
                         price = quote.get("05. price")
                         if price:
                             return Decimal(price)
-
             return None
-
         except Exception as e:
             self.logger.debug(f"Alpha Vantage error for {symbol}: {str(e)}")
             return None
@@ -476,16 +396,15 @@ class MarketDataService:
         """Check if data is cached and not expired"""
         if key not in self._cache:
             return False
-
         cache_timeout = timeout or self._cache_timeout
         age = (datetime.now() - self._cache[key]["timestamp"]).total_seconds()
         return age < cache_timeout
 
-    def _cache_data(self, key: str, data: Any, timeout: int = None):
+    def _cache_data(self, key: str, data: Any, timeout: int = None) -> Any:
         """Cache data with timestamp"""
         self._cache[key] = {"data": data, "timestamp": datetime.now()}
 
-    def clear_cache(self):
+    def clear_cache(self) -> Any:
         """Clear all cached data"""
         self._cache.clear()
         self.logger.info("Market data cache cleared")
@@ -494,7 +413,7 @@ class MarketDataService:
 class RealTimeDataService:
     """Real-time market data streaming service"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.logger = get_logger(__name__)
         self.subscribers = {}
         self.is_running = False
@@ -504,7 +423,6 @@ class RealTimeDataService:
         if symbol not in self.subscribers:
             self.subscribers[symbol] = []
         self.subscribers[symbol].append(callback)
-
         if not self.is_running:
             asyncio.create_task(self._start_streaming())
 
@@ -522,14 +440,10 @@ class RealTimeDataService:
         """Start the real-time data streaming loop"""
         self.is_running = True
         market_data = MarketDataService()
-
         while self.is_running and self.subscribers:
             try:
-                # Get updates for all subscribed symbols
                 symbols = list(self.subscribers.keys())
                 quotes = await market_data.get_multiple_quotes(symbols)
-
-                # Notify subscribers
                 for symbol, quote in quotes.items():
                     if symbol in self.subscribers:
                         for callback in self.subscribers[symbol]:
@@ -539,12 +453,8 @@ class RealTimeDataService:
                                 self.logger.error(
                                     f"Error in subscriber callback: {str(e)}"
                                 )
-
-                # Wait before next update
-                await asyncio.sleep(1)  # 1 second updates
-
+                await asyncio.sleep(1)
             except Exception as e:
                 self.logger.error(f"Error in streaming loop: {str(e)}")
-                await asyncio.sleep(5)  # Wait longer on error
-
+                await asyncio.sleep(5)
         self.is_running = False

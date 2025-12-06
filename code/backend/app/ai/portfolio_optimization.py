@@ -3,22 +3,14 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
-
 import numpy as np
 import pandas as pd
 
 warnings.filterwarnings("ignore")
-
 import cvxpy as cp
-
-# Financial libraries
 from app.core.logging import get_logger
 from app.services.market_data_service import MarketDataService
-
-# Optimization imports
 from scipy.optimize import minimize
-
-# Machine learning imports
 from sklearn.covariance import LedoitWolf
 
 logger = get_logger(__name__)
@@ -75,42 +67,32 @@ class PortfolioResult:
 class AdvancedPortfolioOptimizer:
     """Advanced portfolio optimization with multiple objectives and constraints"""
 
-    def __init__(self, config: Optional[Dict] = None):
+    def __init__(self, config: Optional[Dict] = None) -> Any:
         """Initialize portfolio optimizer"""
         self.config = {
-            # Data parameters
-            "lookback_period": 252,  # 1 year of daily data
-            "min_history": 60,  # Minimum days of history required
-            "return_frequency": "daily",  # daily, weekly, monthly
-            # Risk parameters
-            "risk_free_rate": 0.02,  # 2% annual risk-free rate
+            "lookback_period": 252,
+            "min_history": 60,
+            "return_frequency": "daily",
+            "risk_free_rate": 0.02,
             "confidence_levels": [0.95, 0.99],
             "risk_model": RiskModel.LEDOIT_WOLF,
-            # Optimization parameters
             "objective": OptimizationObjective.MAX_SHARPE,
-            "solver": "ECOS",  # CVXPY solver
+            "solver": "ECOS",
             "max_iterations": 1000,
-            "tolerance": 1e-6,
-            # Black-Litterman parameters
-            "tau": 0.025,  # Scaling factor for uncertainty
+            "tolerance": 1e-06,
+            "tau": 0.025,
             "market_cap_weights": True,
-            # Hierarchical Risk Parity parameters
             "linkage_method": "ward",
             "distance_metric": "euclidean",
-            # Factor model parameters
             "factors": ["market", "size", "value", "momentum", "quality"],
             "factor_exposure_limit": 0.3,
-            # Rebalancing parameters
             "rebalance_frequency": "monthly",
-            "rebalance_threshold": 0.05,  # 5% drift threshold
-            # Performance parameters
+            "rebalance_threshold": 0.05,
             "benchmark": "SPY",
             "attribution_factors": ["sector", "style", "selection"],
         }
-
         if config:
             self.config.update(config)
-
         self.market_data = MarketDataService()
         self.risk_models = {}
         self.factor_models = {}
@@ -124,20 +106,13 @@ class AdvancedPortfolioOptimizer:
         """Optimize portfolio allocation"""
         try:
             logger.info(f"Optimizing portfolio for {len(assets)} assets")
-
             if constraints is None:
                 constraints = OptimizationConstraints()
-
-            # Get market data
             returns_data = await self._get_returns_data(assets)
             if returns_data.empty:
                 raise ValueError("No market data available for optimization")
-
-            # Calculate expected returns and covariance matrix
             expected_returns = self._calculate_expected_returns(returns_data)
             covariance_matrix = self._calculate_covariance_matrix(returns_data)
-
-            # Perform optimization based on objective
             if self.config["objective"] == OptimizationObjective.MAX_SHARPE:
                 result = self._optimize_max_sharpe(
                     expected_returns, covariance_matrix, constraints
@@ -163,27 +138,18 @@ class AdvancedPortfolioOptimizer:
                 raise ValueError(
                     f"Unknown optimization objective: {self.config['objective']}"
                 )
-
-            # Calculate portfolio metrics
             portfolio_metrics = self._calculate_portfolio_metrics(
                 result["weights"], expected_returns, covariance_matrix, returns_data
             )
-
-            # Get sector allocations
             sector_allocations = await self._calculate_sector_allocations(
                 assets, result["weights"]
             )
-
-            # Calculate risk contributions
             risk_contributions = self._calculate_risk_contributions(
                 result["weights"], covariance_matrix
             )
-
-            # Performance attribution
             performance_attribution = await self._calculate_performance_attribution(
                 assets, result["weights"], returns_data
             )
-
             portfolio_result = PortfolioResult(
                 weights=dict(zip(assets, result["weights"])),
                 expected_return=portfolio_metrics["expected_return"],
@@ -198,10 +164,8 @@ class AdvancedPortfolioOptimizer:
                 sector_allocations=sector_allocations,
                 performance_attribution=performance_attribution,
             )
-
             logger.info("Portfolio optimization completed successfully")
             return portfolio_result
-
         except Exception as e:
             logger.error(f"Error in portfolio optimization: {str(e)}", exc_info=True)
             raise
@@ -210,23 +174,16 @@ class AdvancedPortfolioOptimizer:
         """Get historical returns data for assets"""
         try:
             returns_data = pd.DataFrame()
-
             for asset in assets:
-                # Get historical prices
                 prices = await self.market_data.get_historical_prices(
                     asset, days=self.config["lookback_period"] + 30
                 )
-
                 if len(prices) < self.config["min_history"]:
                     logger.warning(f"Insufficient data for {asset}: {len(prices)} days")
                     continue
-
-                # Convert to DataFrame and calculate returns
                 price_df = pd.DataFrame(prices)
                 price_df["timestamp"] = pd.to_datetime(price_df["timestamp"])
                 price_df.set_index("timestamp", inplace=True)
-
-                # Calculate returns
                 if self.config["return_frequency"] == "daily":
                     returns = price_df["close"].pct_change().dropna()
                 elif self.config["return_frequency"] == "weekly":
@@ -237,18 +194,11 @@ class AdvancedPortfolioOptimizer:
                     returns = monthly_prices.pct_change().dropna()
                 else:
                     returns = price_df["close"].pct_change().dropna()
-
                 returns_data[asset] = returns
-
-            # Align data and remove NaN values
             returns_data = returns_data.dropna()
-
-            # Limit to lookback period
             if len(returns_data) > self.config["lookback_period"]:
                 returns_data = returns_data.tail(self.config["lookback_period"])
-
             return returns_data
-
         except Exception as e:
             logger.error(f"Error getting returns data: {str(e)}")
             return pd.DataFrame()
@@ -256,7 +206,6 @@ class AdvancedPortfolioOptimizer:
     def _calculate_expected_returns(self, returns_data: pd.DataFrame) -> np.ndarray:
         """Calculate expected returns using various methods"""
         if self.config["return_frequency"] == "daily":
-            # Annualize daily returns
             expected_returns = returns_data.mean() * 252
         elif self.config["return_frequency"] == "weekly":
             expected_returns = returns_data.mean() * 52
@@ -264,7 +213,6 @@ class AdvancedPortfolioOptimizer:
             expected_returns = returns_data.mean() * 12
         else:
             expected_returns = returns_data.mean() * 252
-
         return expected_returns.values
 
     def _calculate_covariance_matrix(self, returns_data: pd.DataFrame) -> np.ndarray:
@@ -273,7 +221,7 @@ class AdvancedPortfolioOptimizer:
             cov_matrix = returns_data.cov().values
         elif self.config["risk_model"] == RiskModel.LEDOIT_WOLF:
             lw = LedoitWolf()
-            cov_matrix, _ = lw.fit(returns_data.values).covariance_, lw.shrinkage_
+            cov_matrix, _ = (lw.fit(returns_data.values).covariance_, lw.shrinkage_)
         elif self.config["risk_model"] == RiskModel.ROBUST_COVARIANCE:
             from sklearn.covariance import MinCovDet
 
@@ -281,15 +229,12 @@ class AdvancedPortfolioOptimizer:
             cov_matrix = robust_cov.covariance_
         else:
             cov_matrix = returns_data.cov().values
-
-        # Annualize covariance matrix
         if self.config["return_frequency"] == "daily":
             cov_matrix *= 252
         elif self.config["return_frequency"] == "weekly":
             cov_matrix *= 52
         elif self.config["return_frequency"] == "monthly":
             cov_matrix *= 12
-
         return cov_matrix
 
     def _optimize_max_sharpe(
@@ -300,41 +245,26 @@ class AdvancedPortfolioOptimizer:
     ) -> Dict[str, Any]:
         """Optimize for maximum Sharpe ratio"""
         n_assets = len(expected_returns)
-
-        # Define variables
         weights = cp.Variable(n_assets)
-
-        # Objective: maximize Sharpe ratio (minimize negative Sharpe)
         excess_returns = expected_returns - self.config["risk_free_rate"]
         portfolio_return = weights.T @ excess_returns
         portfolio_variance = cp.quad_form(weights, covariance_matrix)
-
-        # We can't directly optimize Sharpe ratio (non-convex)
-        # Instead, we maximize return for a given risk level
         objective = cp.Maximize(portfolio_return)
-
-        # Constraints
         constraint_list = [
-            cp.sum(weights) == 1,  # Weights sum to 1
-            weights >= constraints.min_weight,  # Minimum weight
-            weights <= constraints.max_weight,  # Maximum weight
+            cp.sum(weights) == 1,
+            weights >= constraints.min_weight,
+            weights <= constraints.max_weight,
         ]
-
         if constraints.long_only:
             constraint_list.append(weights >= 0)
-
         if constraints.max_volatility:
             constraint_list.append(
                 cp.sqrt(portfolio_variance) <= constraints.max_volatility
             )
-
-        # Solve optimization problem
         problem = cp.Problem(objective, constraint_list)
         problem.solve(solver=self.config["solver"])
-
         if problem.status not in ["infeasible", "unbounded"]:
             optimal_weights = weights.value
-            # Calculate actual Sharpe ratio
             portfolio_ret = np.dot(optimal_weights, expected_returns)
             portfolio_vol = np.sqrt(
                 np.dot(optimal_weights.T, np.dot(covariance_matrix, optimal_weights))
@@ -342,7 +272,6 @@ class AdvancedPortfolioOptimizer:
             sharpe_ratio = (
                 portfolio_ret - self.config["risk_free_rate"]
             ) / portfolio_vol
-
             return {
                 "weights": optimal_weights,
                 "status": problem.status,
@@ -356,28 +285,18 @@ class AdvancedPortfolioOptimizer:
     ) -> Dict[str, Any]:
         """Optimize for minimum volatility"""
         n_assets = covariance_matrix.shape[0]
-
-        # Define variables
         weights = cp.Variable(n_assets)
-
-        # Objective: minimize portfolio variance
         portfolio_variance = cp.quad_form(weights, covariance_matrix)
         objective = cp.Minimize(portfolio_variance)
-
-        # Constraints
         constraint_list = [
             cp.sum(weights) == 1,
             weights >= constraints.min_weight,
             weights <= constraints.max_weight,
         ]
-
         if constraints.long_only:
             constraint_list.append(weights >= 0)
-
-        # Solve optimization problem
         problem = cp.Problem(objective, constraint_list)
         problem.solve(solver=self.config["solver"])
-
         if problem.status not in ["infeasible", "unbounded"]:
             return {
                 "weights": weights.value,
@@ -392,28 +311,18 @@ class AdvancedPortfolioOptimizer:
     ) -> Dict[str, Any]:
         """Optimize for maximum return"""
         n_assets = len(expected_returns)
-
-        # Define variables
         weights = cp.Variable(n_assets)
-
-        # Objective: maximize expected return
         portfolio_return = weights.T @ expected_returns
         objective = cp.Maximize(portfolio_return)
-
-        # Constraints
         constraint_list = [
             cp.sum(weights) == 1,
             weights >= constraints.min_weight,
             weights <= constraints.max_weight,
         ]
-
         if constraints.long_only:
             constraint_list.append(weights >= 0)
-
-        # Solve optimization problem
         problem = cp.Problem(objective, constraint_list)
         problem.solve(solver=self.config["solver"])
-
         if problem.status not in ["infeasible", "unbounded"]:
             return {
                 "weights": weights.value,
@@ -436,17 +345,10 @@ class AdvancedPortfolioOptimizer:
             )
             marginal_contrib = np.dot(covariance_matrix, weights) / portfolio_vol
             contrib = weights * marginal_contrib
-
-            # Minimize sum of squared deviations from equal risk contribution
             target_contrib = portfolio_vol / n_assets
             return np.sum((contrib - target_contrib) ** 2)
 
-        # Constraints
-        constraint_dict = [
-            {"type": "eq", "fun": lambda x: np.sum(x) - 1},  # Weights sum to 1
-        ]
-
-        # Bounds
+        constraint_dict = [{"type": "eq", "fun": lambda x: np.sum(x) - 1}]
         bounds = [
             (constraints.min_weight, constraints.max_weight) for _ in range(n_assets)
         ]
@@ -455,11 +357,7 @@ class AdvancedPortfolioOptimizer:
                 (max(0, constraints.min_weight), constraints.max_weight)
                 for _ in range(n_assets)
             ]
-
-        # Initial guess (equal weights)
         x0 = np.ones(n_assets) / n_assets
-
-        # Optimize
         result = minimize(
             risk_parity_objective,
             x0,
@@ -468,7 +366,6 @@ class AdvancedPortfolioOptimizer:
             constraints=constraint_dict,
             options={"maxiter": self.config["max_iterations"]},
         )
-
         if result.success:
             return {
                 "weights": result.x,
@@ -486,33 +383,18 @@ class AdvancedPortfolioOptimizer:
     ) -> Dict[str, Any]:
         """Black-Litterman optimization"""
         try:
-            # Market capitalization weights (proxy for market portfolio)
             market_caps = await self._get_market_caps(assets)
             market_weights = np.array([market_caps.get(asset, 1.0) for asset in assets])
             market_weights = market_weights / np.sum(market_weights)
-
-            # Calculate covariance matrix
             covariance_matrix = self._calculate_covariance_matrix(returns_data)
-
-            # Implied returns (reverse optimization)
-            risk_aversion = 3.0  # Typical risk aversion parameter
+            risk_aversion = 3.0
             implied_returns = risk_aversion * np.dot(covariance_matrix, market_weights)
-
-            # Black-Litterman formula (without views for simplicity)
             self.config["tau"]
-
-            # New expected returns (without investor views)
             bl_returns = implied_returns
-
-            # New covariance matrix
             bl_covariance = covariance_matrix
-
-            # Optimize with Black-Litterman inputs
             return self._optimize_max_sharpe(bl_returns, bl_covariance, constraints)
-
         except Exception as e:
             logger.error(f"Error in Black-Litterman optimization: {str(e)}")
-            # Fallback to max Sharpe optimization
             expected_returns = self._calculate_expected_returns(returns_data)
             covariance_matrix = self._calculate_covariance_matrix(returns_data)
             return self._optimize_max_sharpe(
@@ -527,25 +409,14 @@ class AdvancedPortfolioOptimizer:
             from scipy.cluster.hierarchy import cut_tree, linkage
             from scipy.spatial.distance import squareform
 
-            # Calculate correlation matrix
             corr_matrix = returns_data.corr()
-
-            # Convert correlation to distance
             distance_matrix = np.sqrt(0.5 * (1 - corr_matrix))
-
-            # Hierarchical clustering
             condensed_distances = squareform(distance_matrix, checks=False)
             linkage_matrix = linkage(
                 condensed_distances, method=self.config["linkage_method"]
             )
-
-            # Get clusters
-            n_clusters = min(
-                5, len(returns_data.columns) // 2
-            )  # Adaptive number of clusters
+            n_clusters = min(5, len(returns_data.columns) // 2)
             clusters = cut_tree(linkage_matrix, n_clusters=n_clusters).flatten()
-
-            # Calculate weights for each cluster
             cluster_weights = {}
             for cluster_id in np.unique(clusters):
                 cluster_assets = [
@@ -554,42 +425,33 @@ class AdvancedPortfolioOptimizer:
                     if clusters[i] == cluster_id
                 ]
                 cluster_returns = returns_data[cluster_assets]
-
-                # Risk parity within cluster
                 cluster_cov = cluster_returns.cov().values
                 if len(cluster_assets) == 1:
                     cluster_weights[cluster_id] = {cluster_assets[0]: 1.0}
                 else:
-                    # Simple equal risk contribution within cluster
                     cluster_vol = np.sqrt(np.diag(cluster_cov))
-                    inv_vol_weights = (1 / cluster_vol) / np.sum(1 / cluster_vol)
+                    inv_vol_weights = 1 / cluster_vol / np.sum(1 / cluster_vol)
                     cluster_weights[cluster_id] = dict(
                         zip(cluster_assets, inv_vol_weights)
                     )
-
-            # Combine cluster weights
             final_weights = np.zeros(len(returns_data.columns))
             cluster_sizes = [
                 np.sum(clusters == cluster_id) for cluster_id in np.unique(clusters)
             ]
             cluster_allocation = np.array(cluster_sizes) / np.sum(cluster_sizes)
-
             for i, asset in enumerate(returns_data.columns):
                 cluster_id = clusters[i]
                 within_cluster_weight = cluster_weights[cluster_id][asset]
                 final_weights[i] = (
                     cluster_allocation[cluster_id] * within_cluster_weight
                 )
-
             return {
                 "weights": final_weights,
                 "status": "optimal",
-                "objective_value": 0.0,  # HRP doesn't have a single objective value
+                "objective_value": 0.0,
             }
-
         except Exception as e:
             logger.error(f"Error in HRP optimization: {str(e)}")
-            # Fallback to equal weights
             n_assets = len(returns_data.columns)
             return {
                 "weights": np.ones(n_assets) / n_assets,
@@ -605,27 +467,19 @@ class AdvancedPortfolioOptimizer:
         returns_data: pd.DataFrame,
     ) -> Dict[str, float]:
         """Calculate portfolio performance metrics"""
-        # Portfolio return and volatility
         portfolio_return = np.dot(weights, expected_returns)
         portfolio_variance = np.dot(weights.T, np.dot(covariance_matrix, weights))
         portfolio_volatility = np.sqrt(portfolio_variance)
-
-        # Sharpe ratio
         sharpe_ratio = (
             portfolio_return - self.config["risk_free_rate"]
         ) / portfolio_volatility
-
-        # VaR calculations
         portfolio_returns = np.dot(returns_data.values, weights)
         var_95 = np.percentile(portfolio_returns, 5)
         var_99 = np.percentile(portfolio_returns, 1)
-
-        # Maximum drawdown
         cumulative_returns = np.cumprod(1 + portfolio_returns)
         running_max = np.maximum.accumulate(cumulative_returns)
         drawdown = (cumulative_returns - running_max) / running_max
         max_drawdown = np.min(drawdown)
-
         return {
             "expected_return": float(portfolio_return),
             "volatility": float(portfolio_volatility),
@@ -642,8 +496,7 @@ class AdvancedPortfolioOptimizer:
         portfolio_vol = np.sqrt(np.dot(weights.T, np.dot(covariance_matrix, weights)))
         marginal_contrib = np.dot(covariance_matrix, weights) / portfolio_vol
         risk_contrib = weights * marginal_contrib
-
-        return risk_contrib / np.sum(risk_contrib)  # Normalize to sum to 1
+        return risk_contrib / np.sum(risk_contrib)
 
     async def _calculate_sector_allocations(
         self, assets: List[str], weights: np.ndarray
@@ -651,21 +504,16 @@ class AdvancedPortfolioOptimizer:
         """Calculate sector allocations"""
         try:
             sector_allocations = {}
-
             for i, asset in enumerate(assets):
-                # Get company info to determine sector
                 company_info = await self.market_data.get_company_info(asset)
                 sector = (
                     company_info.get("sector", "Unknown") if company_info else "Unknown"
                 )
-
                 if sector in sector_allocations:
                     sector_allocations[sector] += weights[i]
                 else:
                     sector_allocations[sector] = weights[i]
-
             return sector_allocations
-
         except Exception as e:
             logger.error(f"Error calculating sector allocations: {str(e)}")
             return {"Unknown": 1.0}
@@ -680,20 +528,14 @@ class AdvancedPortfolioOptimizer:
                 "sector_contribution": {},
                 "total_return": 0.0,
             }
-
-            # Calculate asset contributions
             portfolio_returns = np.dot(returns_data.values, weights)
-            total_return = np.mean(portfolio_returns) * 252  # Annualized
-
+            total_return = np.mean(portfolio_returns) * 252
             for i, asset in enumerate(assets):
                 asset_return = returns_data[asset].mean() * 252
                 contribution = weights[i] * asset_return
                 attribution["asset_contribution"][asset] = float(contribution)
-
             attribution["total_return"] = float(total_return)
-
             return attribution
-
         except Exception as e:
             logger.error(f"Error calculating performance attribution: {str(e)}")
             return {
@@ -705,17 +547,15 @@ class AdvancedPortfolioOptimizer:
     async def _get_market_caps(self, assets: List[str]) -> Dict[str, float]:
         """Get market capitalizations for assets"""
         market_caps = {}
-
         for asset in assets:
             try:
                 company_info = await self.market_data.get_company_info(asset)
                 if company_info and "market_cap" in company_info:
                     market_caps[asset] = company_info["market_cap"]
                 else:
-                    market_caps[asset] = 1.0  # Default weight
+                    market_caps[asset] = 1.0
             except:
                 market_caps[asset] = 1.0
-
         return market_caps
 
     async def backtest_strategy(
@@ -731,14 +571,11 @@ class AdvancedPortfolioOptimizer:
             logger.info(
                 f"Backtesting portfolio strategy from {start_date} to {end_date}"
             )
-
-            # Generate rebalancing dates
             rebalance_dates = pd.date_range(
                 start=start_date,
                 end=end_date,
                 freq="MS" if rebalance_frequency == "monthly" else "QS",
             )
-
             backtest_results = {
                 "returns": [],
                 "weights_history": [],
@@ -746,34 +583,22 @@ class AdvancedPortfolioOptimizer:
                 "turnover": [],
                 "transaction_costs": [],
             }
-
             current_weights = None
-
             for rebalance_date in rebalance_dates:
                 try:
-                    # Get data up to rebalance date
                     end_data_date = rebalance_date - timedelta(days=1)
-
-                    # This would require historical data for the specific date range
-                    # For now, we'll use a simplified approach
-
-                    # Optimize portfolio
                     result = await self.optimize_portfolio(
                         assets, constraints, current_weights
                     )
-
                     new_weights = np.array(
                         [result.weights.get(asset, 0.0) for asset in assets]
                     )
-
-                    # Calculate turnover
                     if current_weights is not None:
                         turnover = np.sum(np.abs(new_weights - current_weights))
                         transaction_cost = turnover * constraints.transaction_costs
                     else:
-                        turnover = np.sum(new_weights)  # Initial investment
+                        turnover = np.sum(new_weights)
                         transaction_cost = turnover * constraints.transaction_costs
-
                     backtest_results["weights_history"].append(new_weights.tolist())
                     backtest_results["rebalance_dates"].append(
                         rebalance_date.isoformat()
@@ -782,20 +607,15 @@ class AdvancedPortfolioOptimizer:
                     backtest_results["transaction_costs"].append(
                         float(transaction_cost)
                     )
-
                     current_weights = new_weights
-
                 except Exception as e:
                     logger.warning(
                         f"Error in backtest for date {rebalance_date}: {str(e)}"
                     )
                     continue
-
-            # Calculate overall backtest metrics
             if backtest_results["weights_history"]:
                 total_turnover = np.mean(backtest_results["turnover"])
                 total_transaction_costs = np.sum(backtest_results["transaction_costs"])
-
                 backtest_results["summary"] = {
                     "total_turnover": float(total_turnover),
                     "total_transaction_costs": float(total_transaction_costs),
@@ -804,10 +624,8 @@ class AdvancedPortfolioOptimizer:
                     ),
                     "number_of_rebalances": len(backtest_results["rebalance_dates"]),
                 }
-
             logger.info("Portfolio backtest completed successfully")
             return backtest_results
-
         except Exception as e:
             logger.error(f"Error in portfolio backtest: {str(e)}", exc_info=True)
             return {"error": str(e)}
@@ -821,30 +639,18 @@ class AdvancedPortfolioOptimizer:
         """Generate efficient frontier"""
         try:
             logger.info(f"Generating efficient frontier with {n_points} points")
-
-            # This would require the returns data to be available
-            # For now, return a placeholder structure
-
             frontier_data = {
                 "returns": [],
                 "volatilities": [],
                 "sharpe_ratios": [],
                 "weights": [],
             }
-
-            # In a full implementation, this would:
-            # 1. Get returns data for assets
-            # 2. Calculate expected returns and covariance matrix
-            # 3. Optimize for different target returns/volatilities
-            # 4. Store results for each point on the frontier
-
             return {
                 "success": True,
                 "frontier_data": frontier_data,
-                "optimal_portfolio": None,  # Would be the max Sharpe ratio portfolio
+                "optimal_portfolio": None,
                 "min_volatility_portfolio": None,
             }
-
         except Exception as e:
             logger.error(f"Error generating efficient frontier: {str(e)}")
             return {"success": False, "error": str(e)}
@@ -855,23 +661,18 @@ class AdvancedPortfolioOptimizer:
         """Stress test portfolio under various scenarios"""
         try:
             stress_results = {}
-
             for i, scenario in enumerate(stress_scenarios):
-                scenario_name = scenario.get("name", f"Scenario_{i+1}")
+                scenario_name = scenario.get("name", f"Scenario_{i + 1}")
                 asset_shocks = scenario.get("asset_shocks", {})
-
-                # Calculate portfolio impact
                 portfolio_impact = 0.0
                 for asset, weight in weights.items():
                     shock = asset_shocks.get(asset, 0.0)
                     portfolio_impact += weight * shock
-
                 stress_results[scenario_name] = {
                     "portfolio_impact": float(portfolio_impact),
                     "description": scenario.get("description", ""),
                     "probability": scenario.get("probability", None),
                 }
-
             return {
                 "success": True,
                 "stress_results": stress_results,
@@ -882,7 +683,6 @@ class AdvancedPortfolioOptimizer:
                     [result["portfolio_impact"] for result in stress_results.values()]
                 ),
             }
-
         except Exception as e:
             logger.error(f"Error in portfolio stress test: {str(e)}")
             return {"success": False, "error": str(e)}

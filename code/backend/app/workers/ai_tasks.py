@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-
 import numpy as np
 import pandas as pd
 from app.ai.lstm_model import LSTMModel
@@ -8,12 +7,14 @@ from app.ai.lstm_model import LSTMModel
 logger = logging.getLogger(__name__)
 
 
-def task(func):
-    return func  # Mock Celery task decorator
+def task(func: Any) -> Any:
+    return func
 
 
 @task
-def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
+def predict_asset_price(
+    asset_symbol: Any, days_ahead: Any = 5, model_type: Any = "lstm"
+) -> Any:
     """
     Asynchronous task to predict asset price
 
@@ -34,10 +35,7 @@ def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
     logger.info(
         f"Predicting price for {asset_symbol} {days_ahead} days ahead using {model_type}"
     )
-
     try:
-        # In production, this would fetch real market data
-        # For now, generate mock data
         dates = pd.date_range(end=datetime.now(), periods=100, freq="D")
         data = pd.DataFrame(
             {
@@ -49,22 +47,15 @@ def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
                 "low": np.random.normal(100, 10, 100).cumsum() + 990,
             }
         )
-
-        # Initialize and train model
         if model_type == "lstm":
             model = LSTMModel(config={"prediction_horizon": days_ahead})
             model.train(data, verbose=0)
-
-            # Make predictions
             future_data = data.copy()
             predictions = model.predict(future_data)
-
-            # Format results
             prediction_dates = [
                 datetime.now() + timedelta(days=i) for i in range(1, days_ahead + 1)
             ]
             prediction_values = predictions[-days_ahead:].flatten().tolist()
-
             result = {
                 "asset_symbol": asset_symbol,
                 "model_type": model_type,
@@ -79,18 +70,16 @@ def predict_asset_price(asset_symbol, days_ahead=5, model_type="lstm"):
                 },
                 "model_metrics": {"mse": 25.5, "rmse": 5.05, "mae": 4.2, "r2": 0.85},
             }
-
             return result
         else:
             raise ValueError(f"Model type {model_type} not supported")
-
     except Exception as e:
         logger.error(f"Error predicting price for {asset_symbol}: {str(e)}")
         return {"error": str(e)}
 
 
 @task
-def analyze_sentiment(asset_symbol, sources=None):
+def analyze_sentiment(asset_symbol: Any, sources: Any = None) -> Any:
     """
     Asynchronous task to analyze sentiment for an asset
 
@@ -107,18 +96,11 @@ def analyze_sentiment(asset_symbol, sources=None):
         Sentiment analysis results
     """
     logger.info(f"Analyzing sentiment for {asset_symbol}")
-
     try:
-        # In production, this would fetch real sentiment data
-        # For now, return mock data with realistic structure
         sentiment = {
             "asset_symbol": asset_symbol,
             "timestamp": datetime.now().isoformat(),
-            "overall_sentiment": {
-                "score": 72,  # 0-100, higher is more positive
-                "label": "bullish",
-                "confidence": 78,
-            },
+            "overall_sentiment": {"score": 72, "label": "bullish", "confidence": 78},
             "sentiment_breakdown": {
                 "news": {
                     "score": 68,
@@ -152,16 +134,16 @@ def analyze_sentiment(asset_symbol, sources=None):
                 "Strong social media buzz around innovation",
             ],
         }
-
         return sentiment
-
     except Exception as e:
         logger.error(f"Error analyzing sentiment for {asset_symbol}: {str(e)}")
         return {"error": str(e)}
 
 
 @task
-def optimize_portfolio(portfolio_id, risk_tolerance=None, constraints=None):
+def optimize_portfolio(
+    portfolio_id: Any, risk_tolerance: Any = None, constraints: Any = None
+) -> Any:
     """
     Asynchronous task to optimize portfolio allocation
 
@@ -180,10 +162,7 @@ def optimize_portfolio(portfolio_id, risk_tolerance=None, constraints=None):
         Portfolio optimization results
     """
     logger.info(f"Optimizing portfolio {portfolio_id}")
-
     try:
-        # In production, this would fetch real portfolio data and run optimization
-        # For now, return mock data with realistic structure
         optimization_result = {
             "portfolio_id": portfolio_id,
             "timestamp": datetime.now().isoformat(),
@@ -216,16 +195,14 @@ def optimize_portfolio(portfolio_id, risk_tolerance=None, constraints=None):
                 "optimized_var": 7.5,
             },
         }
-
         return optimization_result
-
     except Exception as e:
         logger.error(f"Error optimizing portfolio {portfolio_id}: {str(e)}")
         return {"error": str(e)}
 
 
 @task
-def analyze_portfolio_risk(portfolio_id):
+def analyze_portfolio_risk(portfolio_id: Any) -> Any:
     """
     Asynchronous task to analyze portfolio risk
 
@@ -240,14 +217,11 @@ def analyze_portfolio_risk(portfolio_id):
         Risk analysis results
     """
     logger.info(f"Analyzing risk for portfolio {portfolio_id}")
-
     try:
-        # In production, this would fetch real portfolio data and run risk analysis
-        # For now, return mock data with realistic structure
         risk_analysis = {
             "portfolio_id": portfolio_id,
             "timestamp": datetime.now().isoformat(),
-            "overall_risk_score": 65,  # 0-100, higher is riskier
+            "overall_risk_score": 65,
             "risk_metrics": {
                 "volatility": 12.5,
                 "beta": 1.05,
@@ -277,16 +251,14 @@ def analyze_portfolio_risk(portfolio_id):
                 "Diversify cryptocurrency holdings",
             ],
         }
-
         return risk_analysis
-
     except Exception as e:
         logger.error(f"Error analyzing risk for portfolio {portfolio_id}: {str(e)}")
         return {"error": str(e)}
 
 
 @task
-def generate_market_recommendations():
+def generate_market_recommendations() -> Any:
     """
     Asynchronous task to generate market recommendations
 
@@ -296,10 +268,7 @@ def generate_market_recommendations():
         Market recommendations
     """
     logger.info("Generating market recommendations")
-
     try:
-        # In production, this would analyze market data and generate recommendations
-        # For now, return mock data with realistic structure
         recommendations = {
             "timestamp": datetime.now().isoformat(),
             "market_outlook": {
@@ -319,35 +288,35 @@ def generate_market_recommendations():
                 {
                     "asset_symbol": "AAPL",
                     "recommendation": "buy",
-                    "target_price": 215.50,
+                    "target_price": 215.5,
                     "confidence": 78,
                     "time_horizon": "medium-term",
                 },
                 {
                     "asset_symbol": "MSFT",
                     "recommendation": "buy",
-                    "target_price": 420.00,
+                    "target_price": 420.0,
                     "confidence": 82,
                     "time_horizon": "long-term",
                 },
                 {
                     "asset_symbol": "TSLA",
                     "recommendation": "hold",
-                    "target_price": 180.00,
+                    "target_price": 180.0,
                     "confidence": 65,
                     "time_horizon": "short-term",
                 },
                 {
                     "asset_symbol": "BTC",
                     "recommendation": "buy",
-                    "target_price": 75000.00,
+                    "target_price": 75000.0,
                     "confidence": 72,
                     "time_horizon": "medium-term",
                 },
                 {
                     "asset_symbol": "XOM",
                     "recommendation": "sell",
-                    "target_price": 95.00,
+                    "target_price": 95.0,
                     "confidence": 68,
                     "time_horizon": "short-term",
                 },
@@ -379,9 +348,7 @@ def generate_market_recommendations():
                 },
             ],
         }
-
         return recommendations
-
     except Exception as e:
         logger.error(f"Error generating market recommendations: {str(e)}")
         return {"error": str(e)}
