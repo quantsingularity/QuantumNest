@@ -1,30 +1,30 @@
 {
-    "name": "quantumnest",
-    "version": "1.0.0",
-    "description": "QuantumNest: A project for advanced blockchain and quantum-inspired DeFi solutions.",
-    "main": "index.js",
-    "directories": {
-        "doc": "docs"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [
-        "blockchain",
-        "DeFi",
-        "smart-contracts",
-        "quantum",
-        "finance"
-    ],
-    "author": "Abrar Ahmed",
-    "license": "ISC",
-    "devDependencies": {
-        "@eslint/js": "^9.39.1",
-        "@typescript-eslint/eslint-plugin": "^8.47.0",
-        "@typescript-eslint/parser": "^8.47.0",
-        "eslint": "^9.39.1",
-        "eslint-plugin-prettier": "^5.5.4",
-        "prettier": "^3.6.2",
-        "prettier-plugin-solidity": "^2.2.0"
-    }
+  "name": "quantumnest",
+  "version": "1.0.0",
+  "description": "QuantumNest",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blockchain",
+    "DeFi",
+    "smart-contracts",
+    "quantum",
+    "finance"
+  ],
+  "author": "Abrar Ahmed",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "prettier-plugin-solidity": "^2.2.0"
+  }
 }
