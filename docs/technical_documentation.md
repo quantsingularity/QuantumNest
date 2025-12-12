@@ -15,7 +15,7 @@ The system follows a microservices architecture pattern where each component has
 
 ### Component Structure
 
-The frontend is built with Next.js and follows a component-based architecture:
+The frontends are built with Next.js and follows a component-based architecture:
 
 - **Layout Components**: Define the overall structure of the application
     - `Layout.js`: Main layout wrapper
@@ -363,11 +363,3 @@ The platform integrates with Ethereum wallets through:
 - Database: Daily automated backups
 - Code: Version control with Git
 - Configuration: Infrastructure as code
-
-## Future Enhancements
-
-1. **Multi-chain Support**: Expand beyond Ethereum to other blockchains
-2. **Advanced AI Models**: Implement transformer-based prediction models
-3. **Mobile Application**: Develop native mobile apps
-4. **Regulatory Compliance**: Add KYC/AML integration
-5. **Social Trading**: Implement copy trading functionality
