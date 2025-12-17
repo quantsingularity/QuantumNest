@@ -1,0 +1,18 @@
+---
+skip_list:
+    - yaml[line-length]  # Allow long lines
+    - name[casing]       # Allow various casing styles
+    - command-instead-of-module  # Sometimes we need raw commands
+
+warn_list:
+    - experimental  # Warn about experimental features
+    - no-changed-when  # Warn about missing changed_when
+
+exclude_paths:
+    - .cache/
+    - .git/
+    - molecule/
+
+parseable: true
+quiet: false
+verbosity: 1

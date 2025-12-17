@@ -81,3 +81,79 @@ variable "default_tags" {
     Environment = "dev"
   }
 }
+
+variable "kubernetes_version" {
+  description = "Kubernetes version for EKS cluster"
+  type        = string
+  default     = "1.28"
+}
+
+variable "allowed_cidr_blocks" {
+  description = "CIDR blocks allowed to access EKS API"
+  type        = list(string)
+  default     = ["10.0.0.0/8"]
+}
+
+variable "vault_address" {
+  description = "Vault server address"
+  type        = string
+  default     = "https://vault.example.com:8200"
+}
+
+variable "vault_token" {
+  description = "Vault authentication token"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "assume_role_arn" {
+  description = "IAM role ARN to assume for cross-account access"
+  type        = string
+  default     = ""
+}
+
+variable "external_id" {
+  description = "External ID for IAM role assumption"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "kubernetes_version" {
+  description = "Kubernetes version for EKS cluster"
+  type        = string
+  default     = "1.28"
+}
+
+variable "allowed_cidr_blocks" {
+  description = "CIDR blocks allowed to access EKS API"
+  type        = list(string)
+  default     = ["10.0.0.0/8"]
+}
+
+variable "vault_address" {
+  description = "Vault server address"
+  type        = string
+  default     = "https://vault.example.com:8200"
+}
+
+variable "vault_token" {
+  description = "Vault authentication token"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "assume_role_arn" {
+  description = "IAM role ARN to assume for cross-account access"
+  type        = string
+  default     = ""
+}
+
+variable "external_id" {
+  description = "External ID for IAM role assumption"
+  type        = string
+  default     = ""
+  sensitive   = true
+}

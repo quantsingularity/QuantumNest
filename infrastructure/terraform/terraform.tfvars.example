@@ -1,0 +1,29 @@
+# QuantumNest Terraform Variables Example
+# Copy this file to terraform.tfvars and fill in your values
+
+# AWS Configuration
+aws_region = "us-west-2"
+environment = "dev"  # dev, staging, or prod
+app_name = "quantumnest"
+
+# Network Configuration
+vpc_cidr = "10.2.0.0/16"
+availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
+
+# Security Configuration
+allowed_cidr_blocks = ["10.0.0.0/8"]  # Replace with your IP ranges
+
+# Kubernetes Configuration
+kubernetes_version = "1.28"
+
+# Database Configuration (will be generated randomly, or specify)
+# db_username = "quantumnest_admin"
+# db_password = "CHANGE_ME_TO_SECURE_PASSWORD"
+
+# Vault Configuration
+vault_address = "https://vault.example.com:8200"
+# vault_token = "s.EXAMPLE_TOKEN_REPLACE_ME"
+
+# IAM Configuration (optional for cross-account access)
+# assume_role_arn = "arn:aws:iam::123456789012:role/TerraformRole"
+# external_id = "unique-external-id"

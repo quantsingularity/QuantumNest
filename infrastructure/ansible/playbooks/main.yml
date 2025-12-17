@@ -3,13 +3,55 @@
 - name: Configure web servers
   hosts: webservers
   become: true
+  gather_facts: true
+
+  pre_tasks:
+      - name: Update apt cache (Debian/Ubuntu)
+        ansible.builtin.apt:
+            update_cache: true
+            cache_valid_time: 3600
+        when: ansible_os_family == "Debian"
+
+      - name: Update yum cache (RedHat/CentOS)
+        ansible.builtin.yum:
+            update_cache: true
+        when: ansible_os_family == "RedHat"
+
   roles:
       - common
       - webserver
 
+  post_tasks:
+      - name: Verify webserver is running
+        ansible.builtin.uri:
+            url: 'http://localhost:80'
+            status_code: 200
+        register: result
+        retries: 3
+        delay: 5
+        until: result.status == 200
+
 - name: Configure database servers
   hosts: databases
   become: true
+  gather_facts: true
+
+  pre_tasks:
+      - name: Ensure database data directory exists
+        ansible.builtin.file:
+            path: /var/lib/postgresql/data
+            state: directory
+            owner: postgres
+            group: postgres
+            mode: '0700'
+
   roles:
       - common
       - database
+
+  post_tasks:
+      - name: Verify database is running
+        ansible.builtin.command: systemctl is-active postgresql
+        register: db_status
+        changed_when: false
+        failed_when: db_status.stdout != "active"

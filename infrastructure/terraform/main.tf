@@ -3,7 +3,7 @@
 # for financial services applications meeting SOX, PCI DSS, GDPR, and FINRA requirements
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.5.0, < 2.0.0"
 
   required_providers {
     aws = {
@@ -32,25 +32,6 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "quantumnest-terraform-state-prod"
-    key            = "infrastructure/terraform.tfstate"
-    region         = "us-west-2"
-    encrypt        = true
-    kms_key_id     = "arn:aws:kms:us-west-2:123456789012:key/terraform-state-key"
-    dynamodb_table = "quantumnest-terraform-locks"
-
-    # Additional security configurations
-    versioning                = true
-    server_side_encryption_configuration {
-      rule {
-        apply_server_side_encryption_by_default {
-          kms_master_key_id = "arn:aws:kms:us-west-2:123456789012:key/terraform-state-key"
-          sse_algorithm     = "aws:kms"
-        }
-      }
-    }
-  }
 }
 
 # Provider Configurations

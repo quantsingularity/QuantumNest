@@ -201,25 +201,3 @@ The QuantumNest infrastructure represents a comprehensive, enterprise-grade plat
 Our commitment to continuous improvement ensures that the QuantumNest infrastructure will continue to evolve to meet changing business requirements and take advantage of new technologies. By maintaining our focus on security, compliance, and operational excellence, we will continue to provide a platform that enables our business partners to innovate and compete effectively in the rapidly evolving financial services industry.
 
 The comprehensive documentation, procedures, and automation capabilities described in this document provide the foundation for reliable, secure, and compliant operation of the QuantumNest platform. Through regular review and updates of these materials, we ensure that our infrastructure continues to meet the highest standards of the financial services industry while providing the flexibility and capability needed to support future growth and innovation.
-
-## References and Standards
-
-[1] NIST Cybersecurity Framework. (2018). Framework for Improving Critical Infrastructure Cybersecurity. Retrieved from [https://www.nist.gov/cyberframework](https://www.nist.gov/cyberframework)
-
-[2] Payment Card Industry Security Standards Council. (2022). PCI DSS Requirements and Security Assessment Procedures. Retrieved from [https://www.pcisecuritystandards.org/](https://www.pcisecuritystandards.org/)
-
-[3] International Organization for Standardization. (2013). ISO/IEC 27001:2013 Information Security Management Systems. Retrieved from [https://www.iso.org/standard/54534.html](https://www.iso.org/standard/54534.html)
-
-[4] Financial Industry Regulatory Authority. (2023). FINRA Rules and Regulations. Retrieved from [https://www.finra.org/rules-guidance](https://www.finra.org/rules-guidance)
-
-[5] European Union. (2018). General Data Protection Regulation (GDPR). Retrieved from [https://gdpr-info.eu/](https://gdpr-info.eu/)
-
-[6] U.S. Congress. (2002). Sarbanes-Oxley Act of 2002. Retrieved from [https://www.congress.gov/bill/107th-congress/house-bill/3763](https://www.congress.gov/bill/107th-congress/house-bill/3763)
-
-[7] Cloud Security Alliance. (2021). Cloud Controls Matrix (CCM). Retrieved from [https://cloudsecurityalliance.org/research/cloud-controls-matrix/](https://cloudsecurityalliance.org/research/cloud-controls-matrix/)
-
-[8] Center for Internet Security. (2023). CIS Controls and CIS Benchmarks. Retrieved from [https://www.cisecurity.org/](https://www.cisecurity.org/)
-
-[9] OWASP Foundation. (2023). OWASP Top 10 and Application Security Guidelines. Retrieved from [https://owasp.org/](https://owasp.org/)
-
-[10] Kubernetes Documentation. (2023). Kubernetes Security Best Practices. Retrieved from [https://kubernetes.io/docs/concepts/security/](https://kubernetes.io/docs/concepts/security/)
