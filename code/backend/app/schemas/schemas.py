@@ -37,7 +37,7 @@ class UserResponse(UserBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Authentication schemas
@@ -67,7 +67,7 @@ class Portfolio(PortfolioBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Asset schemas
@@ -88,7 +88,7 @@ class Asset(AssetBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Portfolio Asset schemas
@@ -110,7 +110,7 @@ class PortfolioAsset(PortfolioAssetBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Asset Price schemas
@@ -128,7 +128,7 @@ class AssetPrice(AssetPriceBase):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Transaction schemas
@@ -165,7 +165,7 @@ class Transaction(TransactionBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # AI Model schemas
@@ -186,7 +186,7 @@ class AIModel(AIModelBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # AI Prediction schemas
@@ -208,7 +208,7 @@ class AIPrediction(AIPredictionBase):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Smart Contract schemas
@@ -231,7 +231,7 @@ class SmartContract(SmartContractBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Blockchain Transaction schemas
@@ -254,7 +254,7 @@ class BlockchainTransaction(BlockchainTransactionBase):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # System Log schemas
@@ -273,7 +273,7 @@ class SystemLog(SystemLogBase):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Portfolio with assets

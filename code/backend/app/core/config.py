@@ -2,8 +2,9 @@ import os
 import secrets
 from enum import Enum
 from functools import lru_cache
-from typing import Dict, List, Optional
-from pydantic import BaseSettings, validator
+from typing import Any, Dict, List, Optional
+from pydantic_settings import BaseSettings
+from pydantic import validator
 
 
 class Environment(str, Enum):
@@ -38,6 +39,8 @@ class Settings(BaseSettings):
     PORT: int = 8000
     WORKERS: int = 1
     SECRET_KEY: str = os.getenv("SECRET_KEY", secrets.token_urlsafe(32))
+    API_SECRET_KEY: str = os.getenv("API_SECRET_KEY", secrets.token_urlsafe(32))
+    API_KEY: str = os.getenv("API_KEY", "default-api-key")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
@@ -50,6 +53,8 @@ class Settings(BaseSettings):
     DATABASE_POOL_TIMEOUT: int = 30
     DATABASE_POOL_RECYCLE: int = 3600
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
     REDIS_PASSWORD: Optional[str] = os.getenv("REDIS_PASSWORD")
     REDIS_DB: int = 0
     CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
@@ -62,12 +67,22 @@ class Settings(BaseSettings):
     CELERY_TIMEZONE: str = "UTC"
     CELERY_ENABLE_UTC: bool = True
     CORS_ORIGINS: List[str] = ["*"]
+    ALLOWED_ORIGINS: List[str] = ["*"]
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: List[str] = ["*"]
     CORS_ALLOW_HEADERS: List[str] = ["*"]
     RATE_LIMIT_ENABLED: bool = True
     RATE_LIMIT_REQUESTS_PER_MINUTE: int = 100
     RATE_LIMIT_BURST: int = 200
+    ENABLE_REQUEST_SIGNING: bool = (
+        os.getenv("ENABLE_REQUEST_SIGNING", "false").lower() == "true"
+    )
+    ENABLE_IP_FILTERING: bool = (
+        os.getenv("ENABLE_IP_FILTERING", "false").lower() == "true"
+    )
+    ENABLE_CSRF_PROTECTION: bool = (
+        os.getenv("ENABLE_CSRF_PROTECTION", "true").lower() == "true"
+    )
     AI_MODELS_DIR: str = os.getenv("AI_MODELS_DIR", "./models")
     AI_MODEL_CACHE_SIZE: int = 5
     AI_PREDICTION_TIMEOUT: int = 30

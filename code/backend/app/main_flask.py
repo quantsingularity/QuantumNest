@@ -1,19 +1,50 @@
 import os
 import traceback
 from datetime import datetime
+from typing import Any
 import redis
-from app.ai.financial_advisor import AIFinancialAdvisor
-from app.ai.fraud_detection import AdvancedFraudDetectionSystem
-from app.ai.portfolio_optimization import PortfolioOptimizer
-from app.auth.authentication import AdvancedAuthenticationSystem
-from app.auth.authorization import RoleBasedAccessControl
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
 from app.middleware.security_middleware import SecurityConfig, SecurityMiddleware
-from app.models.models import db
-from app.services.market_data_service import MarketDataService
-from app.services.risk_management_service import RiskManagementService
-from app.services.trading_service import TradingService
+from app.db.flask_db import db
+
+# Conditional imports for services and AI modules
+try:
+    from app.ai.financial_advisor import AIFinancialAdvisor
+    from app.ai.fraud_detection import AdvancedFraudDetectionSystem
+    from app.ai.portfolio_optimization import PortfolioOptimizer
+
+    AI_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: AI modules not available: {e}")
+    AIFinancialAdvisor = None
+    AdvancedFraudDetectionSystem = None
+    PortfolioOptimizer = None
+    AI_AVAILABLE = False
+
+try:
+    from app.auth.authentication import AdvancedAuthenticationSystem
+    from app.auth.authorization import RoleBasedAccessControl
+
+    AUTH_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Auth modules not available: {e}")
+    AdvancedAuthenticationSystem = None
+    RoleBasedAccessControl = None
+    AUTH_AVAILABLE = False
+
+try:
+    from app.services.market_data_service import MarketDataService
+    from app.services.risk_management_service import RiskManagementService
+    from app.services.trading_service import TradingService
+
+    SERVICES_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Service modules not available: {e}")
+    MarketDataService = None
+    RiskManagementService = None
+    TradingService = None
+    SERVICES_AVAILABLE = False
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -79,22 +110,38 @@ def create_app(config_name: Any = "development") -> Any:
             logger.info("Database tables created successfully")
         except Exception as e:
             logger.error(f"Database initialization error: {str(e)}")
-        auth_system = AdvancedAuthenticationSystem(db.session)
-        rbac_system = RoleBasedAccessControl(db.session)
-        trading_service = TradingService()
-        market_data_service = MarketDataService()
-        risk_management_service = RiskManagementService()
-        fraud_detection_system = AdvancedFraudDetectionSystem()
-        ai_financial_advisor = AIFinancialAdvisor()
-        portfolio_optimizer = PortfolioOptimizer()
-        app.auth_system = auth_system
-        app.rbac_system = rbac_system
-        app.trading_service = trading_service
-        app.market_data_service = market_data_service
-        app.risk_management_service = risk_management_service
-        app.fraud_detection_system = fraud_detection_system
-        app.ai_financial_advisor = ai_financial_advisor
-        app.portfolio_optimizer = portfolio_optimizer
+        # Initialize services conditionally
+        if AUTH_AVAILABLE:
+            app.auth_system = AdvancedAuthenticationSystem(db.session)
+            app.rbac_system = RoleBasedAccessControl(db.session)
+            logger.info("Auth systems initialized")
+        else:
+            app.auth_system = None
+            app.rbac_system = None
+            logger.warning("Auth systems not available")
+
+        if SERVICES_AVAILABLE:
+            app.trading_service = TradingService()
+            app.market_data_service = MarketDataService()
+            app.risk_management_service = RiskManagementService()
+            logger.info("Trading services initialized")
+        else:
+            app.trading_service = None
+            app.market_data_service = None
+            app.risk_management_service = None
+            logger.warning("Trading services not available")
+
+        if AI_AVAILABLE:
+            app.fraud_detection_system = AdvancedFraudDetectionSystem()
+            app.ai_financial_advisor = AIFinancialAdvisor()
+            app.portfolio_optimizer = PortfolioOptimizer()
+            logger.info("AI systems initialized")
+        else:
+            app.fraud_detection_system = None
+            app.ai_financial_advisor = None
+            app.portfolio_optimizer = None
+            logger.warning("AI systems not available")
+
         app.redis_client = redis_client
 
     @app.errorhandler(HTTPException)

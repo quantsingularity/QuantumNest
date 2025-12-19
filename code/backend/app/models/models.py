@@ -1,7 +1,9 @@
 import enum
 import uuid
 
-from app.db.database import Base
+from app.db.flask_db import db
+
+Base = db.Model
 from sqlalchemy import (
     DECIMAL,
     JSON,

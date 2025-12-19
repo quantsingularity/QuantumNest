@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Any, List, Optional
 import bcrypt
 import jwt
 from app.db.database import get_db
@@ -29,7 +29,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     )
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> Any:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create a JWT token"""
     to_encode = data.copy()
     if expires_delta:
