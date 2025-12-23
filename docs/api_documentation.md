@@ -4,12 +4,6 @@
 
 The QuantumNest Capital API provides programmatic access to the platform's features, allowing developers to integrate with the system and build custom applications. This RESTful API uses JSON for request and response bodies and JWT for authentication.
 
-## Base URL
-
-```
-https://api.quantumnest.capital/v1
-```
-
 ## Authentication
 
 ### JWT Authentication
@@ -886,14 +880,3 @@ Webhook payloads include:
 - `timestamp`: When the event occurred
 - `data`: Event-specific data
 - `signature`: HMAC signature for verification
-
-## SDKs and Client Libraries
-
-Official client libraries are available for:
-
-- JavaScript/TypeScript
-- Python
-- Java
-- Ruby
-
-Visit our [GitHub repository](https://github.com/quantumnest/api-clients) for documentation and examples.
