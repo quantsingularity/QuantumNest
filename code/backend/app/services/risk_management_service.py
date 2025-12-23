@@ -73,7 +73,7 @@ class OrderRiskCheck:
 class RiskManagementService:
     """Comprehensive risk management and compliance service"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.market_data = MarketDataService()
         self.logger = get_logger(__name__)

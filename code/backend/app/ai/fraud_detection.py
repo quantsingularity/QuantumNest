@@ -77,7 +77,7 @@ class UserRiskProfile:
 class AdvancedFraudDetectionSystem:
     """Advanced fraud detection system with multiple ML models and rule engines"""
 
-    def __init__(self, config: Optional[Dict] = None) -> Any:
+    def __init__(self, config: Optional[Dict] = None) -> None:
         """Initialize fraud detection system"""
         self.config = {
             "models": [

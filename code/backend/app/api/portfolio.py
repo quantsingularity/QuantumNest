@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models

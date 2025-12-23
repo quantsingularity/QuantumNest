@@ -95,7 +95,7 @@ class PortfolioRecommendation:
 class AIFinancialAdvisor:
     """AI-powered financial advisor with personalized recommendations"""
 
-    def __init__(self, config: Optional[Dict] = None) -> Any:
+    def __init__(self, config: Optional[Dict] = None) -> None:
         """Initialize AI financial advisor"""
         self.config = {
             "openai_model": "gpt-4",

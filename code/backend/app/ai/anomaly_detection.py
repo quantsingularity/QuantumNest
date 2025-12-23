@@ -52,7 +52,7 @@ class AnomalyResult:
 class FinancialAnomalyDetector:
     """Advanced anomaly detection system for financial data"""
 
-    def __init__(self, config: Optional[Dict] = None) -> Any:
+    def __init__(self, config: Optional[Dict] = None) -> None:
         """Initialize anomaly detector"""
         self.config = {
             "methods": [

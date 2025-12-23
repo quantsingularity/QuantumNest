@@ -76,7 +76,7 @@ class AuthorizationResult:
 class RoleBasedAccessControl:
     """Role-Based Access Control (RBAC) system"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.logger = get_logger(__name__)
         self.permission_cache = {}
@@ -626,7 +626,7 @@ def require_role(role: str) -> Any:
 class AttributeBasedAccessControl:
     """Attribute-Based Access Control (ABAC) system for fine-grained permissions"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.logger = get_logger(__name__)
 

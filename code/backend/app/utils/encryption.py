@@ -67,7 +67,7 @@ class KeyInfo:
 class AdvancedEncryptionManager:
     """Advanced encryption manager with multiple algorithms and key management"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.settings = get_settings()
         self.logger = get_logger(__name__)
         self.keys = {}
@@ -460,7 +460,7 @@ class AdvancedEncryptionManager:
 class PasswordManager:
     """Advanced password hashing and verification"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.bcrypt_rounds = 12
         self.scrypt_n = 2**14
@@ -585,7 +585,7 @@ class PasswordManager:
 class TokenManager:
     """Secure token generation and management"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
 
     def generate_secure_token(self, length: int = 32) -> str:
@@ -621,7 +621,7 @@ class TokenManager:
 class DataMasking:
     """Data masking and anonymization utilities"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
 
     def mask_email(self, email: str) -> str:

@@ -67,7 +67,7 @@ class PortfolioResult:
 class AdvancedPortfolioOptimizer:
     """Advanced portfolio optimization with multiple objectives and constraints"""
 
-    def __init__(self, config: Optional[Dict] = None) -> Any:
+    def __init__(self, config: Optional[Dict] = None) -> None:
         """Initialize portfolio optimizer"""
         self.config = {
             "lookback_period": 252,

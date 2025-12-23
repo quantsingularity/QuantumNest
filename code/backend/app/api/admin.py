@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Any, List, Optional
 from app.db.database import get_db
 from app.main import get_current_active_user
 from app.models import models

@@ -27,7 +27,7 @@ pwd_context = CryptContext(
 class SecurityManager:
     """Comprehensive security manager for the application"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.settings = get_settings()
         self.logger = get_logger(__name__)
         self._failed_attempts: Dict[str, List[datetime]] = {}

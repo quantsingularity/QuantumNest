@@ -1,3 +1,4 @@
+from typing import Any
 import logging
 from datetime import datetime, timedelta
 import numpy as np

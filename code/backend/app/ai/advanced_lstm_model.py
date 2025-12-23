@@ -33,7 +33,7 @@ logger = get_logger(__name__)
 class AdvancedLSTMModel:
     """Advanced LSTM model with attention mechanism and multi-feature support"""
 
-    def __init__(self, config: Optional[Dict] = None) -> Any:
+    def __init__(self, config: Optional[Dict] = None) -> None:
         """Initialize advanced LSTM model"""
         self.config = {
             "sequence_length": 60,

@@ -121,9 +121,9 @@ def create_app(config_name: Any = "development") -> Any:
             logger.warning("Auth systems not available")
 
         if SERVICES_AVAILABLE:
-            app.trading_service = TradingService()
+            app.trading_service = TradingService(db.session)
             app.market_data_service = MarketDataService()
-            app.risk_management_service = RiskManagementService()
+            app.risk_management_service = RiskManagementService(db.session)
             logger.info("Trading services initialized")
         else:
             app.trading_service = None
@@ -273,7 +273,7 @@ def create_app(config_name: Any = "development") -> Any:
         )
 
     @app.route("/auth/login", methods=["POST"])
-    async def login():
+    def login():
         """User login endpoint"""
         try:
             data = request.get_json()
@@ -290,7 +290,9 @@ def create_app(config_name: Any = "development") -> Any:
             device_fingerprint = request.headers.get("X-Device-Fingerprint", "unknown")
             ip_address = request.remote_addr
             user_agent = request.headers.get("User-Agent", "unknown")
-            result = await app.auth_system.authenticate_user(
+            if not app.auth_system:
+                return jsonify({"error": "Authentication not available"}), 503
+            result = app.auth_system.authenticate_user_sync(
                 email=data["email"],
                 password=data["password"],
                 device_fingerprint=device_fingerprint,
@@ -337,7 +339,7 @@ def create_app(config_name: Any = "development") -> Any:
             )
 
     @app.route("/auth/2fa/verify", methods=["POST"])
-    async def verify_2fa():
+    def verify_2fa():
         """2FA verification endpoint"""
         try:
             data = request.get_json()
@@ -355,7 +357,9 @@ def create_app(config_name: Any = "development") -> Any:
             device_fingerprint = request.headers.get("X-Device-Fingerprint", "unknown")
             ip_address = request.remote_addr
             user_agent = request.headers.get("User-Agent", "unknown")
-            result = await app.auth_system.verify_2fa(
+            if not app.auth_system:
+                return jsonify({"error": "2FA verification not available"}), 503
+            result = app.auth_system.verify_2fa_sync(
                 user_id=data["user_id"],
                 temp_session=data["temp_session"],
                 totp_code=data["totp_code"],

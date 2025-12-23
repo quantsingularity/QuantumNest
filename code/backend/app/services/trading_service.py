@@ -63,7 +63,7 @@ class OrderResult:
 class TradingService:
     """Advanced trading service with algorithmic capabilities"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.market_data = MarketDataService()
         self.risk_manager = RiskManagementService(db)
@@ -417,7 +417,7 @@ class TradingService:
 class AlgorithmicTradingService:
     """Advanced algorithmic trading strategies"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.trading_service = TradingService(db)
         self.market_data = MarketDataService()

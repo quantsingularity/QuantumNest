@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 class ValidationError(Exception):
     """Custom validation error"""
 
-    def __init__(self, message: str, field: str = None, code: str = None) -> Any:
+    def __init__(self, message: str, field: str = None, code: str = None) -> None:
         self.message = message
         self.field = field
         self.code = code
@@ -26,7 +26,7 @@ class ValidationResult:
 
     def __init__(
         self, is_valid: bool = True, errors: List[Dict[str, Any]] = None
-    ) -> Any:
+    ) -> None:
         self.is_valid = is_valid
         self.errors = errors or []
 
@@ -478,7 +478,7 @@ class ComplianceValidator:
 class CompositeValidator:
     """Main validator that combines all validation logic"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.financial = FinancialValidator()
         self.user = UserValidator()
         self.security = SecurityValidator()

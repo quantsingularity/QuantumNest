@@ -45,7 +45,7 @@ class MarketQuote:
 class MarketDataService:
     """Comprehensive market data service with multiple providers"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.settings = get_settings()
         self.logger = get_logger(__name__)
         self._cache = {}
@@ -413,7 +413,7 @@ class MarketDataService:
 class RealTimeDataService:
     """Real-time market data streaming service"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.subscribers = {}
         self.is_running = False

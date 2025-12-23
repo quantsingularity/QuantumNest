@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class DatabaseManager:
     """Advanced database manager with connection pooling, monitoring, and optimization"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.settings = get_settings()
         self.database_url = get_database_url(self.settings)
         self.engine = None
@@ -305,7 +305,7 @@ def close_database() -> Any:
 class DatabaseMiddleware:
     """Middleware for database session management and monitoring"""
 
-    def __init__(self, app: Any) -> Any:
+    def __init__(self, app: Any) -> None:
         self.app = app
 
     async def __call__(self, scope, receive, send):
@@ -368,7 +368,7 @@ class QueryOptimizer:
 class PoolMonitor:
     """Monitor database connection pool health"""
 
-    def __init__(self, db_manager: DatabaseManager) -> Any:
+    def __init__(self, db_manager: DatabaseManager) -> None:
         self.db_manager = db_manager
         self.alerts_sent = set()
 

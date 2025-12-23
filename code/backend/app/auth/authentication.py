@@ -71,7 +71,7 @@ class SessionInfo:
 class AdvancedAuthenticationSystem:
     """Advanced authentication system with multi-factor authentication and security features"""
 
-    def __init__(self, db: Session) -> Any:
+    def __init__(self, db: Session) -> None:
         self.db = db
         self.settings = get_settings()
         self.security_manager = SecurityManager()

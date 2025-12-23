@@ -33,7 +33,7 @@ class SecurityConfig:
 class RateLimiter:
     """Advanced rate limiting with multiple strategies"""
 
-    def __init__(self, redis_client: redis.Redis) -> Any:
+    def __init__(self, redis_client: redis.Redis) -> None:
         self.redis = redis_client
         self.logger = get_logger(__name__)
         self.limits = {
@@ -129,7 +129,7 @@ class RateLimiter:
 class RequestValidator:
     """Request validation and sanitization"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.sql_injection_patterns = [
             "(\\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\\b)",
@@ -229,7 +229,7 @@ class RequestValidator:
 class IPFilter:
     """IP address filtering and geolocation"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.blocked_ranges = []
         self.allowed_ranges = []
@@ -288,7 +288,7 @@ class IPFilter:
 class RequestSigner:
     """Request signing and verification"""
 
-    def __init__(self, secret_key: str) -> Any:
+    def __init__(self, secret_key: str) -> None:
         self.secret_key = secret_key.encode("utf-8")
         self.logger = get_logger(__name__)
 
@@ -324,7 +324,7 @@ class RequestSigner:
 class SecurityMiddleware:
     """Comprehensive security middleware"""
 
-    def __init__(self, app: Flask, config: SecurityConfig = None) -> Any:
+    def __init__(self, app: Flask, config: SecurityConfig = None) -> None:
         self.app = app
         self.config = config or SecurityConfig()
         self.settings = get_settings()
@@ -556,7 +556,7 @@ def log_security_event(event_type: str, details: Dict[str, Any]) -> Any:
 class SecurityMonitor:
     """Security monitoring and alerting"""
 
-    def __init__(self, redis_client: redis.Redis) -> Any:
+    def __init__(self, redis_client: redis.Redis) -> None:
         self.redis = redis_client
         self.logger = get_logger(__name__)
         self.thresholds = {
