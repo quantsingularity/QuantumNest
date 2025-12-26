@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { AssetCard, StatCard } from '@/components/ui/Cards';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
 
 export default function Recommendations() {
@@ -154,33 +153,30 @@ export default function Recommendations() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <Navbar />
-            <main className="container mx-auto px-4 py-8">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        AI Recommendations
-                    </h1>
-                    <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                            Risk Level:
-                        </span>
-                        <select
-                            value={riskLevel}
-                            onChange={(e) => setRiskLevel(e.target.value)}
-                            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-sm p-2"
-                        >
-                            <option value="conservative">Conservative</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="aggressive">Aggressive</option>
-                        </select>
-                    </div>
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                    AI Recommendations
+                </h1>
+                <div className="flex items-center space-x-2 w-full sm:w-auto">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Risk Level:</span>
+                    <select
+                        value={riskLevel}
+                        onChange={(e) => setRiskLevel(e.target.value)}
+                        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-sm p-2 w-full sm:w-auto"
+                    >
+                        <option value="conservative">Conservative</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="aggressive">Aggressive</option>
+                    </select>
                 </div>
+            </div>
 
-                {/* Tabs */}
-                <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
+            {/* Tabs - Scrollable on mobile */}
+            <div className="overflow-x-auto pb-2 mb-8">
+                <div className="flex border-b border-gray-200 dark:border-gray-700 min-w-max">
                     <button
-                        className={`py-4 px-6 text-sm font-medium ${
+                        className={`py-3 px-4 sm:py-4 sm:px-6 text-sm font-medium ${
                             activeTab === 'personalized'
                                 ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
                                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
@@ -190,7 +186,7 @@ export default function Recommendations() {
                         Personalized Recommendations
                     </button>
                     <button
-                        className={`py-4 px-6 text-sm font-medium ${
+                        className={`py-3 px-4 sm:py-4 sm:px-6 text-sm font-medium ${
                             activeTab === 'assets'
                                 ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
                                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
@@ -200,7 +196,7 @@ export default function Recommendations() {
                         Recommended Assets
                     </button>
                     <button
-                        className={`py-4 px-6 text-sm font-medium ${
+                        className={`py-3 px-4 sm:py-4 sm:px-6 text-sm font-medium ${
                             activeTab === 'insights'
                                 ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
                                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
@@ -210,220 +206,219 @@ export default function Recommendations() {
                         Market Insights
                     </button>
                 </div>
+            </div>
 
-                {activeTab === 'personalized' && (
-                    <>
-                        {/* AI Summary */}
-                        <Card className="mb-8">
-                            <CardContent className="p-6">
-                                <div className="flex items-center mb-4">
-                                    <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mr-4">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="w-6 h-6"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
-                                            />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                            AI Portfolio Analysis
+            {activeTab === 'personalized' && (
+                <>
+                    {/* AI Summary */}
+                    <Card className="mb-8">
+                        <CardContent className="p-6">
+                            <div className="flex items-center mb-4">
+                                <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mr-4">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-6 h-6"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
+                                        />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                        AI Portfolio Analysis
+                                    </h3>
+                                    <p className="text-gray-600 dark:text-gray-400">
+                                        Last updated: April 13, 2025
+                                    </p>
+                                </div>
+                            </div>
+                            <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                Based on your {riskLevel} risk profile and current market
+                                conditions, our AI has analyzed your portfolio and identified
+                                several optimization opportunities. Your current portfolio has a
+                                projected annual return of 8.2% with a risk score of 65/100.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <StatCard title="Current Return" value="8.2%" />
+                                <StatCard title="Optimized Return" value="10.5%" change={2.3} />
+                                <StatCard title="Risk Score" value="65/100" />
+                            </div>
+                            <Button>View Detailed Analysis</Button>
+                        </CardContent>
+                    </Card>
+
+                    {/* Portfolio Recommendations */}
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        Portfolio Recommendations
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        {portfolioRecommendations.map((recommendation) => (
+                            <Card key={recommendation.id}>
+                                <CardContent className="p-6">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            {recommendation.title}
                                         </h3>
-                                        <p className="text-gray-600 dark:text-gray-400">
-                                            Last updated: April 13, 2025
-                                        </p>
+                                        <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                            {recommendation.confidence}% confidence
+                                        </div>
                                     </div>
-                                </div>
-                                <p className="text-gray-700 dark:text-gray-300 mb-4">
-                                    Based on your {riskLevel} risk profile and current market
-                                    conditions, our AI has analyzed your portfolio and identified
-                                    several optimization opportunities. Your current portfolio has a
-                                    projected annual return of 8.2% with a risk score of 65/100.
-                                </p>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                    <StatCard title="Current Return" value="8.2%" />
-                                    <StatCard title="Optimized Return" value="10.5%" change={2.3} />
-                                    <StatCard title="Risk Score" value="65/100" />
-                                </div>
-                                <Button>View Detailed Analysis</Button>
-                            </CardContent>
-                        </Card>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        {recommendation.description}
+                                    </p>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        <strong>Potential Impact:</strong> {recommendation.impact}
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <Button variant="outline" size="sm">
+                                            Details
+                                        </Button>
+                                        <Button size="sm">Apply</Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </>
+            )}
 
-                        {/* Portfolio Recommendations */}
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                            Portfolio Recommendations
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            {portfolioRecommendations.map((recommendation) => (
-                                <Card key={recommendation.id}>
-                                    <CardContent className="p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                                {recommendation.title}
-                                            </h3>
-                                            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                                {recommendation.confidence}% confidence
+            {activeTab === 'assets' && (
+                <>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        Top Recommended Assets
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                        Based on your {riskLevel} risk profile, market conditions, and AI analysis,
+                        these assets are recommended for your consideration.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {recommendedAssets.map((asset, index) => (
+                            <Card key={index} className="overflow-hidden">
+                                <CardContent className="p-0">
+                                    <div className="p-4">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div>
+                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                    {asset.symbol}
+                                                </h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {asset.name}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                    asset.recommendation === 'Strong Buy'
+                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                        : asset.recommendation === 'Buy'
+                                                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                }`}
+                                            >
+                                                {asset.recommendation}
                                             </div>
                                         </div>
-                                        <p className="text-gray-700 dark:text-gray-300 mb-4">
-                                            {recommendation.description}
-                                        </p>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                            <strong>Potential Impact:</strong>{' '}
-                                            {recommendation.impact}
+                                        <div className="flex justify-between mb-4">
+                                            <div>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                    {formatCurrency(asset.price)}
+                                                </p>
+                                                <p
+                                                    className={`text-sm ${
+                                                        asset.change24h >= 0
+                                                            ? 'text-green-600 dark:text-green-400'
+                                                            : 'text-red-600 dark:text-red-400'
+                                                    }`}
+                                                >
+                                                    {asset.change24h >= 0 ? '+' : ''}
+                                                    {asset.change24h}%
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="inline-flex items-center">
+                                                    <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
+                                                        AI Confidence:
+                                                    </span>
+                                                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                                                        <div
+                                                            className="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full"
+                                                            style={{
+                                                                width: `${asset.aiConfidence}%`,
+                                                            }}
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                                            {asset.reason}
+                                        </p>
                                         <div className="flex justify-between">
                                             <Button variant="outline" size="sm">
                                                 Details
                                             </Button>
-                                            <Button size="sm">Apply</Button>
+                                            <Button size="sm">Add to Portfolio</Button>
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </>
-                )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </>
+            )}
 
-                {activeTab === 'assets' && (
-                    <>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                            Top Recommended Assets
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            Based on your {riskLevel} risk profile, market conditions, and AI
-                            analysis, these assets are recommended for your consideration.
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {recommendedAssets.map((asset, index) => (
-                                <Card key={index} className="overflow-hidden">
-                                    <CardContent className="p-0">
-                                        <div className="p-4">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div>
-                                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                                        {asset.symbol}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                        {asset.name}
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                        asset.recommendation === 'Strong Buy'
-                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                                            : asset.recommendation === 'Buy'
-                                                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                                    }`}
-                                                >
-                                                    {asset.recommendation}
-                                                </div>
-                                            </div>
-                                            <div className="flex justify-between mb-4">
-                                                <div>
-                                                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                                        {formatCurrency(asset.price)}
-                                                    </p>
-                                                    <p
-                                                        className={`text-sm ${
-                                                            asset.change24h >= 0
-                                                                ? 'text-green-600 dark:text-green-400'
-                                                                : 'text-red-600 dark:text-red-400'
-                                                        }`}
-                                                    >
-                                                        {asset.change24h >= 0 ? '+' : ''}
-                                                        {asset.change24h}%
-                                                    </p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="inline-flex items-center">
-                                                        <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
-                                                            AI Confidence:
-                                                        </span>
-                                                        <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                                                            <div
-                                                                className="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full"
-                                                                style={{
-                                                                    width: `${asset.aiConfidence}%`,
-                                                                }}
-                                                            ></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                                                {asset.reason}
-                                            </p>
-                                            <div className="flex justify-between">
-                                                <Button variant="outline" size="sm">
-                                                    Details
-                                                </Button>
-                                                <Button size="sm">Add to Portfolio</Button>
-                                            </div>
+            {activeTab === 'insights' && (
+                <>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                        AI Market Insights
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                        Our AI analyzes market trends, news, and sentiment to provide actionable
+                        insights for your investment strategy.
+                    </p>
+                    <div className="space-y-6">
+                        {marketInsights.map((insight) => (
+                            <Card key={insight.id}>
+                                <CardContent className="p-6">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            {insight.title}
+                                        </h3>
+                                        <div className="flex space-x-2">
+                                            <span
+                                                className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                    insight.sentiment === 'Bullish'
+                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                        : insight.sentiment === 'Bearish'
+                                                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                          : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                                }`}
+                                            >
+                                                {insight.sentiment}
+                                            </span>
+                                            <span className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                                {insight.timeframe}
+                                            </span>
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </>
-                )}
-
-                {activeTab === 'insights' && (
-                    <>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                            AI Market Insights
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            Our AI analyzes market trends, news, and sentiment to provide actionable
-                            insights for your investment strategy.
-                        </p>
-                        <div className="space-y-6">
-                            {marketInsights.map((insight) => (
-                                <Card key={insight.id}>
-                                    <CardContent className="p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                                {insight.title}
-                                            </h3>
-                                            <div className="flex space-x-2">
-                                                <span
-                                                    className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                        insight.sentiment === 'Bullish'
-                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                                            : insight.sentiment === 'Bearish'
-                                                              ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                                              : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                                    }`}
-                                                >
-                                                    {insight.sentiment}
-                                                </span>
-                                                <span className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                                    {insight.timeframe}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className="text-gray-700 dark:text-gray-300 mb-4">
-                                            {insight.description}
-                                        </p>
-                                        <Button variant="link" className="p-0">
-                                            Read full analysis
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </>
-                )}
-            </main>
+                                    </div>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        {insight.description}
+                                    </p>
+                                    <Button variant="link" className="p-0">
+                                        Read full analysis
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     );
 }

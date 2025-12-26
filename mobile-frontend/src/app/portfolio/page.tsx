@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-// Removed Navbar import as it's handled in layout.tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
     Table,
     TableHeader,
@@ -10,11 +9,13 @@ import {
     TableHead,
     TableBody,
     TableCell,
-} from '@/components/ui/Table';
-import { PortfolioCard } from '@/components/ui/Cards'; // Assuming Cards.tsx exports PortfolioCard
-import { DoughnutChart } from '@/components/ui/Charts'; // Assuming Charts.tsx exports DoughnutChart
-import { Button } from '@/components/ui/Button';
+} from '@/components/ui/table';
+import { PortfolioCard } from '@/components/ui/Cards';
+import { DoughnutChart, LineChart } from '@/components/ui/Charts';
+import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
+import PerformanceTab from '@/components/portfolio/PerformanceTab';
+import TransactionsTab from '@/components/portfolio/TransactionsTab';
 
 export default function Portfolio() {
     const [activeTab, setActiveTab] = useState('portfolios');
@@ -345,27 +346,9 @@ export default function Portfolio() {
                 </div>
             )}
 
-            {activeTab === 'performance' && (
-                <div className="text-center py-8">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        Performance Analysis
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Detailed performance metrics and charts will be displayed here.
-                    </p>
-                </div>
-            )}
+            {activeTab === 'performance' && <PerformanceTab />}
 
-            {activeTab === 'transactions' && (
-                <div className="text-center py-8">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        Transaction History
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        A complete history of all portfolio transactions will be displayed here.
-                    </p>
-                </div>
-            )}
+            {activeTab === 'transactions' && <TransactionsTab />}
         </div>
     );
 }

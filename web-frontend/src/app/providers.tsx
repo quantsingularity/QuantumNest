@@ -1,17 +1,15 @@
 'use client';
 
-import React from 'react';
 import { ApiProvider } from '@/lib/api';
 import { BlockchainProvider } from '@/lib/blockchain';
+import { AuthProvider } from './auth/AuthContext';
 
-interface ProvidersProps {
-    children: React.ReactNode;
-}
-
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <ApiProvider>
-            <BlockchainProvider>{children}</BlockchainProvider>
-        </ApiProvider>
+        <AuthProvider>
+            <ApiProvider>
+                <BlockchainProvider>{children}</BlockchainProvider>
+            </ApiProvider>
+        </AuthProvider>
     );
 }

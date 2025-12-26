@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import { StatCard } from '@/components/ui/Cards';
+import { LineChart, DoughnutChart } from '@/components/ui/Charts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import {
     Table,
@@ -11,140 +13,122 @@ import {
     TableBody,
     TableCell,
 } from '@/components/ui/Table';
-import { PortfolioCard } from '@/components/ui/Cards';
-import { DoughnutChart } from '@/components/ui/Charts';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
+import { useApi } from '@/lib/api';
+import { useBlockchain } from '@/lib/blockchain';
+
+interface PortfolioAsset {
+    id: string;
+    symbol: string;
+    name: string;
+    quantity: number;
+    averagePrice: number;
+    currentPrice: number;
+    totalValue: number;
+    profitLoss: number;
+    profitLossPercentage: number;
+}
 
 export default function Portfolio() {
-    const [activeTab, setActiveTab] = useState('portfolios');
+    const { get, isLoading } = useApi();
+    const { account, isConnected } = useBlockchain();
+    const [assets, setAssets] = useState<PortfolioAsset[]>([]);
+    const [loadingAssets, setLoadingAssets] = useState(true);
 
-    // Mock data for portfolios
-    const portfolios = [
-        {
-            id: 1,
-            name: 'Growth Portfolio',
-            value: 750000,
-            change: 8.5,
-            assetCount: 8,
-            lastUpdated: '2025-04-12',
-        },
-        {
-            id: 2,
-            name: 'Income Portfolio',
-            value: 350000,
-            change: 3.2,
-            assetCount: 5,
-            lastUpdated: '2025-04-12',
-        },
-        {
-            id: 3,
-            name: 'Crypto Portfolio',
-            value: 150000,
-            change: -2.8,
-            assetCount: 6,
-            lastUpdated: '2025-04-12',
-        },
-    ];
+    useEffect(() => {
+        const fetchPortfolio = async () => {
+            try {
+                setLoadingAssets(true);
+                // Try to fetch from backend API
+                const data = await get<{ assets: PortfolioAsset[] }>('/portfolio/assets');
+                setAssets(data.assets || []);
+            } catch (error) {
+                console.error('Error fetching portfolio:', error);
+                // Use mock data if API fails
+                setAssets(getMockAssets());
+            } finally {
+                setLoadingAssets(false);
+            }
+        };
 
-    // Mock data for assets in selected portfolio
-    const portfolioAssets = [
+        fetchPortfolio();
+    }, [get]);
+
+    const getMockAssets = (): PortfolioAsset[] => [
         {
-            id: 1,
+            id: '1',
             symbol: 'AAPL',
             name: 'Apple Inc.',
-            quantity: 100,
-            purchasePrice: 150.25,
-            currentPrice: 180.5,
-            value: 18050,
-            change: 20.13,
+            quantity: 50,
+            averagePrice: 150.0,
+            currentPrice: 180.25,
+            totalValue: 9012.5,
+            profitLoss: 1512.5,
+            profitLossPercentage: 20.17,
         },
         {
-            id: 2,
-            symbol: 'MSFT',
-            name: 'Microsoft Corporation',
-            quantity: 75,
-            purchasePrice: 280.75,
-            currentPrice: 410.25,
-            value: 30768.75,
-            change: 46.13,
-        },
-        {
-            id: 3,
-            symbol: 'GOOGL',
-            name: 'Alphabet Inc.',
-            quantity: 25,
-            purchasePrice: 2100.5,
-            currentPrice: 2450.75,
-            value: 61268.75,
-            change: 16.67,
-        },
-        {
-            id: 4,
-            symbol: 'AMZN',
-            name: 'Amazon.com Inc.',
-            quantity: 30,
-            purchasePrice: 3200.0,
-            currentPrice: 3550.25,
-            value: 106507.5,
-            change: 10.95,
-        },
-        {
-            id: 5,
+            id: '2',
             symbol: 'TSLA',
             name: 'Tesla, Inc.',
-            quantity: 50,
-            purchasePrice: 220.5,
+            quantity: 25,
+            averagePrice: 200.0,
             currentPrice: 210.75,
-            value: 10537.5,
-            change: -4.42,
+            totalValue: 5268.75,
+            profitLoss: 268.75,
+            profitLossPercentage: 5.38,
         },
         {
-            id: 6,
-            symbol: 'BTC',
-            name: 'Bitcoin',
-            quantity: 2.5,
-            purchasePrice: 50000.0,
-            currentPrice: 65000.0,
-            value: 162500,
-            change: 30.0,
-        },
-        {
-            id: 7,
+            id: '3',
             symbol: 'ETH',
             name: 'Ethereum',
-            quantity: 15,
-            purchasePrice: 2800.0,
+            quantity: 10,
+            averagePrice: 3000.0,
             currentPrice: 3200.0,
-            value: 48000,
-            change: 14.29,
+            totalValue: 32000.0,
+            profitLoss: 2000.0,
+            profitLossPercentage: 6.67,
         },
         {
-            id: 8,
-            symbol: 'VTI',
-            name: 'Vanguard Total Stock Market ETF',
-            quantity: 200,
-            purchasePrice: 210.25,
-            currentPrice: 230.5,
-            value: 46100,
-            change: 9.63,
+            id: '4',
+            symbol: 'MSFT',
+            name: 'Microsoft Corporation',
+            quantity: 30,
+            averagePrice: 400.0,
+            currentPrice: 410.5,
+            totalValue: 12315.0,
+            profitLoss: 315.0,
+            profitLossPercentage: 2.63,
+        },
+        {
+            id: '5',
+            symbol: 'GOOGL',
+            name: 'Alphabet Inc.',
+            quantity: 20,
+            averagePrice: 140.0,
+            currentPrice: 142.5,
+            totalValue: 2850.0,
+            profitLoss: 50.0,
+            profitLossPercentage: 1.79,
         },
     ];
 
-    // Mock data for allocation chart
+    const totalValue = assets.reduce((sum, asset) => sum + asset.totalValue, 0);
+    const totalProfitLoss = assets.reduce((sum, asset) => sum + asset.profitLoss, 0);
+    const totalProfitLossPercentage =
+        totalValue > 0 ? (totalProfitLoss / (totalValue - totalProfitLoss)) * 100 : 0;
+
     const allocationData = {
-        labels: ['Technology', 'Finance', 'Healthcare', 'Consumer', 'Energy', 'Crypto', 'ETFs'],
+        labels: assets.map((asset) => asset.symbol),
         datasets: [
             {
-                data: [35, 15, 10, 12, 8, 15, 5],
+                data: assets.map((asset) => asset.totalValue),
                 backgroundColor: [
                     'rgba(99, 102, 241, 0.8)',
                     'rgba(79, 70, 229, 0.8)',
                     'rgba(67, 56, 202, 0.8)',
                     'rgba(55, 48, 163, 0.8)',
                     'rgba(49, 46, 129, 0.8)',
-                    'rgba(129, 140, 248, 0.8)',
-                    'rgba(165, 180, 252, 0.8)',
                 ],
                 borderColor: [
                     'rgba(99, 102, 241, 1)',
@@ -152,10 +136,21 @@ export default function Portfolio() {
                     'rgba(67, 56, 202, 1)',
                     'rgba(55, 48, 163, 1)',
                     'rgba(49, 46, 129, 1)',
-                    'rgba(129, 140, 248, 1)',
-                    'rgba(165, 180, 252, 1)',
                 ],
                 borderWidth: 1,
+            },
+        ],
+    };
+
+    const performanceData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [
+            {
+                label: 'Portfolio Value',
+                data: [50000, 52000, 55000, 54000, 59000, totalValue],
+                borderColor: 'rgba(99, 102, 241, 1)',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                fill: true,
             },
         ],
     };
@@ -165,202 +160,138 @@ export default function Portfolio() {
             <Navbar />
             <main className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        Portfolio Management
-                    </h1>
-                    <Button>Create New Portfolio</Button>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Portfolio</h1>
+                    <Button>Add Asset</Button>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
-                    <button
-                        className={`py-4 px-6 text-sm font-medium ${
-                            activeTab === 'portfolios'
-                                ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                        }`}
-                        onClick={() => setActiveTab('portfolios')}
-                    >
-                        My Portfolios
-                    </button>
-                    <button
-                        className={`py-4 px-6 text-sm font-medium ${
-                            activeTab === 'performance'
-                                ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                        }`}
-                        onClick={() => setActiveTab('performance')}
-                    >
-                        Performance Analysis
-                    </button>
-                    <button
-                        className={`py-4 px-6 text-sm font-medium ${
-                            activeTab === 'transactions'
-                                ? 'text-indigo-600 border-b-2 border-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                        }`}
-                        onClick={() => setActiveTab('transactions')}
-                    >
-                        Transactions
-                    </button>
-                </div>
-
-                {activeTab === 'portfolios' && (
-                    <>
-                        {/* Portfolios Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {portfolios.map((portfolio) => (
-                                <PortfolioCard
-                                    key={portfolio.id}
-                                    name={portfolio.name}
-                                    value={portfolio.value}
-                                    change={portfolio.change}
-                                    assetCount={portfolio.assetCount}
-                                    lastUpdated={portfolio.lastUpdated}
-                                    onClick={() => {}}
-                                />
-                            ))}
-                        </div>
-
-                        {/* Selected Portfolio Details */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                            <div className="lg:col-span-2">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Growth Portfolio Assets</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Asset</TableHead>
-                                                    <TableHead>Quantity</TableHead>
-                                                    <TableHead>Purchase Price</TableHead>
-                                                    <TableHead>Current Price</TableHead>
-                                                    <TableHead>Value</TableHead>
-                                                    <TableHead>Change</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {portfolioAssets.map((asset) => (
-                                                    <TableRow key={asset.id}>
-                                                        <TableCell className="font-medium">
-                                                            <div>
-                                                                <div className="font-semibold">
-                                                                    {asset.symbol}
-                                                                </div>
-                                                                <div className="text-xs text-gray-500">
-                                                                    {asset.name}
-                                                                </div>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>{asset.quantity}</TableCell>
-                                                        <TableCell>
-                                                            {formatCurrency(asset.purchasePrice)}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {formatCurrency(asset.currentPrice)}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {formatCurrency(asset.value)}
-                                                        </TableCell>
-                                                        <TableCell
-                                                            className={
-                                                                asset.change >= 0
-                                                                    ? 'text-green-600'
-                                                                    : 'text-red-600'
-                                                            }
-                                                        >
-                                                            {asset.change >= 0 ? '+' : ''}
-                                                            {asset.change}%
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                            <div>
-                                <DoughnutChart
-                                    data={allocationData}
-                                    title="Asset Allocation"
-                                    height={350}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Portfolio Actions */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Card>
-                                <CardContent className="p-6">
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                        Add Assets
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                        Add new assets to your portfolio by purchasing stocks,
-                                        crypto, or other investments.
-                                    </p>
-                                    <Button variant="default" fullWidth={true}>
-                                        Add Assets
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="p-6">
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                        Rebalance Portfolio
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                        Optimize your portfolio allocation based on AI
-                                        recommendations and market conditions.
-                                    </p>
-                                    <Button variant="outline" fullWidth={true}>
-                                        Rebalance
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="p-6">
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                        Export Data
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                        Download your portfolio data in CSV or PDF format for record
-                                        keeping.
-                                    </p>
-                                    <Button variant="subtle" fullWidth={true}>
-                                        Export
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </>
-                )}
-
-                {activeTab === 'performance' && (
-                    <div className="text-center py-12">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                            Performance Analysis
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
-                            This tab would contain detailed performance metrics, historical charts,
-                            and comparison with benchmarks.
+                {!isConnected && (
+                    <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                        <p className="text-yellow-800 dark:text-yellow-300">
+                            Connect your wallet to view blockchain-based assets and perform
+                            transactions.
                         </p>
                     </div>
                 )}
 
-                {activeTab === 'transactions' && (
-                    <div className="text-center py-12">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                            Transaction History
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
-                            This tab would display a complete history of all portfolio transactions
-                            with filtering options.
-                        </p>
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <StatCard
+                        title="Total Value"
+                        value={formatCurrency(totalValue)}
+                        change={totalProfitLossPercentage}
+                        description="Overall P&L"
+                    />
+                    <StatCard title="Total Assets" value={assets.length} />
+                    <StatCard
+                        title="Profit/Loss"
+                        value={formatCurrency(totalProfitLoss)}
+                        change={totalProfitLossPercentage}
+                        description={`${totalProfitLossPercentage >= 0 ? '+' : ''}${totalProfitLossPercentage.toFixed(2)}%`}
+                    />
+                </div>
+
+                {/* Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div className="lg:col-span-2">
+                        <LineChart
+                            data={performanceData}
+                            title="Portfolio Performance"
+                            height={350}
+                        />
                     </div>
-                )}
+                    <div>
+                        <DoughnutChart
+                            data={allocationData}
+                            title="Asset Allocation"
+                            height={350}
+                        />
+                    </div>
+                </div>
+
+                {/* Assets Table */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Your Assets</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {loadingAssets ? (
+                            <div className="flex justify-center py-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                            </div>
+                        ) : assets.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                                No assets in your portfolio. Add your first asset to get started.
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Symbol</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Quantity</TableHead>
+                                            <TableHead>Avg. Price</TableHead>
+                                            <TableHead>Current Price</TableHead>
+                                            <TableHead>Total Value</TableHead>
+                                            <TableHead>P&L</TableHead>
+                                            <TableHead>P&L %</TableHead>
+                                            <TableHead>Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {assets.map((asset) => (
+                                            <TableRow key={asset.id}>
+                                                <TableCell className="font-bold">
+                                                    {asset.symbol}
+                                                </TableCell>
+                                                <TableCell>{asset.name}</TableCell>
+                                                <TableCell>{asset.quantity}</TableCell>
+                                                <TableCell>
+                                                    {formatCurrency(asset.averagePrice)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {formatCurrency(asset.currentPrice)}
+                                                </TableCell>
+                                                <TableCell className="font-medium">
+                                                    {formatCurrency(asset.totalValue)}
+                                                </TableCell>
+                                                <TableCell
+                                                    className={
+                                                        asset.profitLoss >= 0
+                                                            ? 'text-green-600 dark:text-green-400'
+                                                            : 'text-red-600 dark:text-red-400'
+                                                    }
+                                                >
+                                                    {formatCurrency(asset.profitLoss)}
+                                                </TableCell>
+                                                <TableCell
+                                                    className={
+                                                        asset.profitLossPercentage >= 0
+                                                            ? 'text-green-600 dark:text-green-400'
+                                                            : 'text-red-600 dark:text-red-400'
+                                                    }
+                                                >
+                                                    {asset.profitLossPercentage >= 0 ? '+' : ''}
+                                                    {asset.profitLossPercentage.toFixed(2)}%
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex gap-2">
+                                                        <Button size="sm" variant="outline">
+                                                            Buy
+                                                        </Button>
+                                                        <Button size="sm" variant="outline">
+                                                            Sell
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </main>
         </div>
     );

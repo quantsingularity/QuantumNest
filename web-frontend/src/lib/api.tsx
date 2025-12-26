@@ -4,8 +4,10 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 interface ApiContextType {
     apiUrl: string;
+    token: string | null;
     isLoading: boolean;
     error: string | null;
+    setToken: (token: string | null) => void;
     get: <T>(endpoint: string) => Promise<T>;
     post: <T>(endpoint: string, data: any) => Promise<T>;
     put: <T>(endpoint: string, data: any) => Promise<T>;
@@ -21,9 +23,43 @@ interface ApiProviderProps {
 export function ApiProvider({ children }: ApiProviderProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [token, setTokenState] = useState<string | null>(null);
 
-    // In production, this would be set based on environment variables
-    const apiUrl = 'http://localhost:8000';
+    // Get API URL from environment or default to localhost
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    // Load token from localStorage on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedToken = localStorage.getItem('auth_token');
+            if (savedToken) {
+                setTokenState(savedToken);
+            }
+        }
+    }, []);
+
+    const setToken = (newToken: string | null) => {
+        setTokenState(newToken);
+        if (typeof window !== 'undefined') {
+            if (newToken) {
+                localStorage.setItem('auth_token', newToken);
+            } else {
+                localStorage.removeItem('auth_token');
+            }
+        }
+    };
+
+    const getHeaders = () => {
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        return headers;
+    };
 
     const handleResponse = async (response: Response) => {
         setIsLoading(false);
@@ -31,9 +67,16 @@ export function ApiProvider({ children }: ApiProviderProps) {
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             const errorMessage =
-                errorData.detail || `Error: ${response.status} ${response.statusText}`;
+                errorData.detail ||
+                errorData.message ||
+                `Error: ${response.status} ${response.statusText}`;
             setError(errorMessage);
             throw new Error(errorMessage);
+        }
+
+        // Handle 204 No Content
+        if (response.status === 204) {
+            return {} as any;
         }
 
         return response.json();
@@ -46,10 +89,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         try {
             const response = await fetch(`${apiUrl}${endpoint}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // In a real app, we would include authentication headers here
-                },
+                headers: getHeaders(),
             });
 
             return handleResponse(response);
@@ -68,10 +108,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         try {
             const response = await fetch(`${apiUrl}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // In a real app, we would include authentication headers here
-                },
+                headers: getHeaders(),
                 body: JSON.stringify(data),
             });
 
@@ -91,10 +128,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         try {
             const response = await fetch(`${apiUrl}${endpoint}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // In a real app, we would include authentication headers here
-                },
+                headers: getHeaders(),
                 body: JSON.stringify(data),
             });
 
@@ -114,10 +148,7 @@ export function ApiProvider({ children }: ApiProviderProps) {
         try {
             const response = await fetch(`${apiUrl}${endpoint}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // In a real app, we would include authentication headers here
-                },
+                headers: getHeaders(),
             });
 
             return handleResponse(response);
@@ -131,8 +162,10 @@ export function ApiProvider({ children }: ApiProviderProps) {
 
     const value = {
         apiUrl,
+        token,
         isLoading,
         error,
+        setToken,
         get,
         post,
         put,

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 // Removed Navbar import as it's handled in layout.tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
     Table,
     TableHeader,
@@ -10,10 +10,10 @@ import {
     TableHead,
     TableBody,
     TableCell,
-} from '@/components/ui/Table';
+} from '@/components/ui/table';
 import { AssetCard, StatCard } from '@/components/ui/Cards';
 import { LineChart, BarChart } from '@/components/ui/Charts';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
 
 export default function MarketAnalysis() {

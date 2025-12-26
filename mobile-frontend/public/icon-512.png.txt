@@ -1,0 +1,3 @@
+# Placeholder for icon-512.png  
+# In production, replace with actual 512x512 PNG icon
+# Use tools like https://realfavicongenerator.net/ to generate proper icons
