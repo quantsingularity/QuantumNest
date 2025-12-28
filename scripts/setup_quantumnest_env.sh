@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Setup script for QuantumNest project
+# Setup script for QuantumNest project
 # This script handles the initial setup of the project environment.
 
 set -euo pipefail # Exit on error, exit on unset variable, fail on pipe error

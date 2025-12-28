@@ -24,7 +24,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 
-# Enhanced Enums
+# Enums
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
     PORTFOLIO_MANAGER = "portfolio_manager"
@@ -104,7 +104,7 @@ class ComplianceStatus(str, enum.Enum):
     EXEMPT = "exempt"
 
 
-# Enhanced User Model
+# User Model
 class User(Base):
     __tablename__ = "users"
 
@@ -187,7 +187,7 @@ class APIKey(Base):
     user = relationship("User", back_populates="api_keys")
 
 
-# Enhanced Portfolio Model
+# Portfolio Model
 class Portfolio(Base):
     __tablename__ = "portfolios"
 
@@ -236,7 +236,7 @@ class Portfolio(Base):
     rebalancing_history = relationship("RebalancingEvent", back_populates="portfolio")
 
 
-# Enhanced Asset Model
+# Asset Model
 class Asset(Base):
     __tablename__ = "assets"
 
@@ -571,7 +571,7 @@ class AuditLog(Base):
     user = relationship("User", back_populates="audit_logs")
 
 
-# AI and ML Models (Enhanced)
+# AI and ML Models
 class AIModel(Base):
     __tablename__ = "ai_models"
 
@@ -633,7 +633,7 @@ class AIPrediction(Base):
     asset = relationship("Asset")
 
 
-# Blockchain Models (Enhanced)
+# Blockchain Models
 class SmartContract(Base):
     __tablename__ = "smart_contracts"
 

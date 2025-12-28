@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Run script for QuantumNest project
+# Run script for QuantumNest project
 # This script starts the backend, blockchain, and frontend components.
 # It is designed to be run from the project root (QuantumNest/).
 

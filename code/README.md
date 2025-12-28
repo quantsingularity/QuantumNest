@@ -2,7 +2,7 @@
 
 ## Overview
 
-QuantumNest Capital is a comprehensive financial technology platform designed for institutional and retail investors. This enhanced version includes advanced AI capabilities, robust security features, and enterprise-grade financial services suitable for investor presentation and production deployment.
+QuantumNest Capital is a comprehensive financial technology platform designed for institutional and retail investors. This version includes advanced AI capabilities, robust security features, and enterprise-grade financial services suitable for investor presentation and production deployment.
 
 ## 🚀 Key Features
 
@@ -72,7 +72,7 @@ code/
 │   │   ├── utils/             # Utilities
 │   │   │   └── encryption.py
 │   │   ├── main.py           # Original FastAPI app
-│   │   └── main_flask.py     # Enhanced Flask app
+│   │   └── main_flask.py     # Flask app
 │   ├── tests/                 # Test suite
 │   │   ├── conftest.py
 │   │   └── test_unit_authentication.py

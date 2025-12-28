@@ -23,7 +23,7 @@ class LogLevel(str, Enum):
 
 class Settings(BaseSettings):
     """
-    Enhanced application settings with comprehensive configuration support
+    Application settings with comprehensive configuration support
 
     This class centralizes all configuration settings for the application
     and supports loading from environment variables with validation and defaults.

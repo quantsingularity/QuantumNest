@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Linting and Fixing Script for QuantumNest Project
+# Linting and Fixing Script for QuantumNest Project
 # This script is designed to be run from the project root (QuantumNest/).
 
 set -euo pipefail # Exit on error, exit on unset variable, fail on pipe error

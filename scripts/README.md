@@ -86,10 +86,6 @@ Checks the health and versions of all dependencies across the QuantumNest projec
 - `fix [component]` - Attempt to fix dependency issues (optional: specify component)
 - `help` - Display help message
 
-### 4. CI/CD Enhancer (`cicd.sh`)
-
-Provides additional CI/CD capabilities to complement the existing GitHub Actions workflow.
-
 **Features:**
 
 - Check status of CI/CD configuration
@@ -146,7 +142,6 @@ These automation scripts complement the existing scripts in the QuantumNest repo
 1. Run the environment variable manager before starting development to ensure proper configuration
 2. Use the log aggregator to troubleshoot issues across components
 3. Run the dependency checker regularly to keep dependencies up-to-date and secure
-4. Use the CI/CD enhancer to test changes locally before pushing to the repository
 
 ## Requirements
 
@@ -154,4 +149,3 @@ These automation scripts complement the existing scripts in the QuantumNest repo
 - Access to the QuantumNest repository
 - Standard Unix utilities (find, grep, sed, etc.)
 - Optional: tmux (for log watching functionality)
-- Optional: yamllint (for enhanced CI/CD workflow validation)
