@@ -1,114 +1,117 @@
 # QuantumNest Documentation
 
-## Overview
+> **QuantumNest** is an AI-powered tokenized asset investment platform that combines artificial intelligence, blockchain technology, and quantitative finance to provide sophisticated investment strategies.
 
-The `docs` directory contains comprehensive documentation for the QuantumNest Capital platform. This documentation is designed to serve various stakeholders including developers, administrators, and end users.
+## 🚀 Quick Start
 
-## Directory Structure
+1. **Clone the repository**
 
-```
-docs/
-├── api_documentation.md
-├── technical_documentation.md
-├── user_guide.md
-└── images/
-```
+    ```bash
+    git clone https://github.com/abrar2030/QuantumNest.git
+    cd QuantumNest
+    ```
 
-## Documentation Files
+2. **Run the setup script**
 
-### API Documentation
+    ```bash
+    ./setup_quantumnest_env.sh
+    ```
 
-The `api_documentation.md` file provides detailed information about the QuantumNest API endpoints, including:
+3. **Start the application**
+    ```bash
+    ./run_quantumnest.sh
+    ```
 
-- Authentication requirements
-- Request and response formats
-- Parameter descriptions
-- Example requests and responses
-- Error codes and handling
-- Rate limiting information
+## 📚 Documentation Index
 
-This documentation is essential for developers integrating with the QuantumNest platform or building extensions.
+### Getting Started
 
-### Technical Documentation
+- **[Installation Guide](INSTALLATION.md)** - Complete setup instructions for all platforms
+- **[Usage Guide](USAGE.md)** - Common usage patterns and workflows
+- **[Configuration](CONFIGURATION.md)** - Environment variables and configuration options
 
-The `technical_documentation.md` file covers the technical architecture and implementation details of the QuantumNest platform, including:
+### Developer Resources
 
-- System architecture
-- Component interactions
-- Database schema
-- Security implementation
-- Blockchain integration
-- AI/ML model specifications
-- Performance considerations
-- Deployment architecture
+- **[API Reference](API.md)** - Complete REST API documentation
+- **[CLI Reference](CLI.md)** - Command-line interface guide
+- **[Architecture](ARCHITECTURE.md)** - System design and component overview
+- **[Feature Matrix](FEATURE_MATRIX.md)** - Complete feature listing with examples
 
-This documentation is primarily intended for developers and system administrators who need to understand the inner workings of the platform.
+### Examples & Tutorials
 
-### User Guide
+- **[Examples Directory](examples/)** - Practical code examples
+    - [AI Model Usage](examples/ai-model-usage.md)
+    - [Portfolio Management](examples/portfolio-management.md)
+    - [Blockchain Integration](examples/blockchain-integration.md)
 
-The `user_guide.md` file provides end-user instructions for using the QuantumNest platform, including:
+### Advanced Topics
 
-- Account setup and management
-- Portfolio creation and management
-- Trading functionality
-- Analytics and reporting features
-- Settings and preferences
-- Mobile app usage
-- Troubleshooting common issues
+- **[Migrations Guide](MIGRATIONS.md)** - Upgrading between versions
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
+- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
 
-This guide is written in user-friendly language and includes step-by-step instructions for all major platform features.
+## 🎯 What is QuantumNest?
 
-### Images Directory
+QuantumNest revolutionizes investment management by leveraging:
 
-The `images/` directory contains visual assets used throughout the documentation, including:
+- **AI-Powered Analytics**: Machine learning models for predictive analytics and portfolio optimization
+- **Blockchain Technology**: Tokenized assets with fractional ownership and transparent transactions
+- **Quantitative Finance**: Advanced risk assessment and performance analytics
+- **Real-time Market Data**: Integration with multiple financial data sources
 
-- Screenshots
-- Diagrams
-- Flowcharts
-- UI mockups
-- Logos and icons
+## 🏗️ Core Components
 
-## Usage Guidelines
+| Component           | Description                 | Technology                        |
+| ------------------- | --------------------------- | --------------------------------- |
+| **Web Frontend**    | Modern responsive dashboard | Next.js, TypeScript, TailwindCSS  |
+| **Mobile Frontend** | Full-featured mobile app    | React Native, Expo                |
+| **Backend API**     | RESTful API services        | FastAPI, Python 3.8+              |
+| **AI Engine**       | ML models and analytics     | TensorFlow, PyTorch, scikit-learn |
+| **Blockchain**      | Smart contracts & DeFi      | Solidity, Ethereum, Polygon       |
+| **Infrastructure**  | DevOps and orchestration    | Docker, Kubernetes, Terraform     |
 
-### Viewing Documentation
+## 📖 Key Features
 
-The documentation files are written in Markdown format and can be viewed:
+### AI & Machine Learning
 
-1. Directly on GitHub with proper formatting
-2. Using any Markdown viewer or editor
-3. Converted to HTML or PDF for distribution
+- LSTM models for time series prediction
+- GARCH models for volatility forecasting
+- Sentiment analysis using NLP
+- Portfolio optimization algorithms
+- Anomaly detection systems
 
-### Updating Documentation
+### Blockchain Integration
 
-When updating the documentation:
+- ERC-20 tokenized assets
+- Smart contract automation
+- Multi-chain support (Ethereum, Polygon, BSC)
+- DeFi protocol integration
+- Transparent on-chain transactions
 
-1. Maintain the existing structure and formatting
-2. Ensure technical accuracy of all content
-3. Update relevant sections when platform features change
-4. Add new screenshots to the images directory as needed
-5. Verify all links and references remain valid
+### Portfolio Management
 
-### Documentation Standards
+- Real-time portfolio tracking
+- Performance analytics
+- Risk assessment tools
+- Automated rebalancing
+- Tax optimization
 
-All documentation should follow these standards:
+## 🔗 Quick Links
 
-- Clear, concise language
-- Proper headings and organization
-- Code examples where appropriate
-- Visual aids for complex concepts
-- Consistent terminology throughout
+- [GitHub Repository](https://github.com/abrar2030/QuantumNest)
+- [API Endpoint Reference](API.md#endpoints)
+- [CLI Commands](CLI.md#commands)
+- [Configuration Options](CONFIGURATION.md#environment-variables)
+- [Troubleshooting Guide](TROUBLESHOOTING.md)
 
-## Contributing
+## 📊 Project Status
 
-To contribute to the documentation:
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
+[![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/abrar2030/QuantumNest/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 
-1. Fork the repository
-2. Make your changes following the guidelines above
-3. Submit a pull request with a clear description of your changes
-4. Respond to any feedback during the review process
+## 📝 License
 
-## Related Resources
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
-- Main README.md at the repository root
-- Code comments within the implementation
-- External API documentation at the deployed API endpoints
+---
