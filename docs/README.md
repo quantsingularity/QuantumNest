@@ -7,7 +7,7 @@
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/abrar2030/QuantumNest.git
+    git clone https://github.com/quantsingularity/QuantumNest.git
     cd QuantumNest
     ```
 
@@ -98,7 +98,7 @@ QuantumNest revolutionizes investment management by leveraging:
 
 ## 🔗 Quick Links
 
-- [GitHub Repository](https://github.com/abrar2030/QuantumNest)
+- [GitHub Repository](https://github.com/quantsingularity/QuantumNest)
 - [API Endpoint Reference](API.md#endpoints)
 - [CLI Commands](CLI.md#commands)
 - [Configuration Options](CONFIGURATION.md#environment-variables)
@@ -106,8 +106,8 @@ QuantumNest revolutionizes investment management by leveraging:
 
 ## 📊 Project Status
 
-![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
-[![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/abrar2030/QuantumNest/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/quantsingularity/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
+[![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/quantsingularity/QuantumNest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 
 ## 📝 License

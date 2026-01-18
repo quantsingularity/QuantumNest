@@ -573,4 +573,4 @@ def get_portfolio(client, portfolio_id):
 
 ---
 
-**Need Help?** [Open an issue](https://github.com/abrar2030/QuantumNest/issues) or check [Troubleshooting Guide](TROUBLESHOOTING.md).
+**Need Help?** [Open an issue](https://github.com/quantsingularity/QuantumNest/issues) or check [Troubleshooting Guide](TROUBLESHOOTING.md).

@@ -1,7 +1,7 @@
 # QuantumNest
 
-![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
-[![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/abrar2030/QuantumNest/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/quantsingularity/QuantumNest/cicd.yml?branch=main&label=CI/CD&logo=github)
+[![Test Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/quantsingularity/QuantumNest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 🚀 AI-Powered Tokenized Asset Investment Platform
@@ -163,7 +163,7 @@ QuantumNest/
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 
 # Run the setup script
@@ -178,7 +178,7 @@ cd QuantumNest
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 ```
 

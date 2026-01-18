@@ -27,11 +27,11 @@ Thank you for contributing to QuantumNest! This guide will help you get started.
 # Fork the repository on GitHub
 
 # Clone your fork
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 
 # Add upstream remote
-git remote add upstream https://github.com/abrar2030/QuantumNest.git
+git remote add upstream https://github.com/quantsingularity/QuantumNest.git
 ```
 
 ### Setup Development Environment

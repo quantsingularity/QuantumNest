@@ -47,7 +47,7 @@ The fastest way to get started with QuantumNest:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 
 # 2. Run the automated setup script
@@ -80,7 +80,7 @@ If you prefer manual installation or the setup script fails:
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 ```
 
@@ -171,7 +171,7 @@ Docker provides the easiest way to run QuantumNest with all dependencies:
 
 ```bash
 # Clone repository
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 
 # Copy environment file
@@ -438,4 +438,4 @@ dropdb quantumnest
 
 ---
 
-**Need Help?** See [Troubleshooting Guide](TROUBLESHOOTING.md) or [open an issue](https://github.com/abrar2030/QuantumNest/issues).
+**Need Help?** See [Troubleshooting Guide](TROUBLESHOOTING.md) or [open an issue](https://github.com/quantsingularity/QuantumNest/issues).

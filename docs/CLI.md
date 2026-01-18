@@ -18,7 +18,7 @@ QuantumNest provides several command-line scripts for development, deployment, a
 CLI scripts are included in the repository:
 
 ```bash
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 chmod +x scripts/*.sh
 ```
@@ -415,7 +415,7 @@ Setup complete! Run ./run_quantumnest.sh to start.
 
 ```bash
 # Clone and setup
-git clone https://github.com/abrar2030/QuantumNest.git
+git clone https://github.com/quantsingularity/QuantumNest.git
 cd QuantumNest
 ./setup_quantumnest_env.sh
 
