@@ -17,6 +17,7 @@ QuantumNest is an innovative investment platform that combines artificial intell
 ## Table of Contents
 
 - [Overview](#overview)
+- [Project Structure](#project-structure)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
