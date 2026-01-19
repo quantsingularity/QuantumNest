@@ -32,6 +32,24 @@ QuantumNest is an innovative investment platform that combines artificial intell
 
 QuantumNest revolutionizes investment management by leveraging artificial intelligence and blockchain technology to create a platform where users can invest in tokenized assets with sophisticated, AI-driven strategies. The platform combines traditional financial analysis with machine learning to optimize investment decisions while using blockchain to ensure transparency, security, and fractional ownership of high-value assets.
 
+## Project Structure
+
+The project is organized into several main components:
+
+```
+QuantumNest/
+├── code/                   # Core backend logic, services, and shared utilities
+├── docs/                   # Project documentation
+├── infrastructure/         # DevOps, deployment, and infra-related code
+├── mobile-frontend/        # Mobile application
+├── web-frontend/           # Web dashboard
+├── scripts/                # Automation, setup, and utility scripts
+├── LICENSE                 # License information
+├── README.md               # Project overview and instructions
+├── eslint.config.js        # ESLint configuration
+└── package.json            # Node.js project metadata and dependencies
+```
+
 ## Key Features
 
 ### AI-Powered Investment Strategies
