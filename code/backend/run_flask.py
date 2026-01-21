@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 """Run Flask application"""
+
 import os
 
 # Set environment variables for testing
